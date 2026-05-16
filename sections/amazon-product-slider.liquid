@@ -29,12 +29,17 @@
             <div class="amz-slider__item">
               <a href="{{ product.url }}" class="amz-prod-card">
                 <div class="amz-prod-card__img-wrap">
-                  <img 
-                    src="{{ product.featured_image | img_url: '200x200', crop: 'center' }}" 
-                    alt="{{ product.title | escape }}"
-                    class="amz-prod-card__img"
-                    loading="lazy"
-                  >
+                  {%- if product.featured_image != blank -%}
+                    <img
+                      src="{{ product.featured_image | image_url: width: 200 }}"
+                      alt="{{ product.title | escape }}"
+                      class="amz-prod-card__img"
+                      loading="lazy"
+                      width="200" height="200"
+                    >
+                  {%- else -%}
+                    {{ 'product-' | append: forloop.index | modulo: 6 | plus: 1 | placeholder_svg_tag: 'amz-prod-card__img amz-placeholder-svg' }}
+                  {%- endif -%}
                 </div>
                 <div class="amz-prod-card__info">
                   <p class="amz-prod-card__title">{{ product.title | truncate: 60 }}</p>

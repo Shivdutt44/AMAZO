@@ -1,16 +1,98 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "current": {
+    "enable_currency_converter": true,
+    "supported_currencies": "USD,EUR,GBP,CAD,AUD,INR",
+    "enable_language_selector": false,
+    "enable_newsletter_popup": true,
+    "popup_heading": "Join our VIP List",
+    "popup_text": "Subscribe to get special offers, free giveaways, and once-in-a-lifetime deals.",
+    "popup_delay": 5,
+    "enable_sales_notification": true,
+    "enable_cookie_banner": true,
+    "cookie_text": "We use cookies to improve your experience on our website. By browsing this website, you agree to our use of cookies.",
+    "cookie_button_text": "Got it!",
+    "enable_age_verification": false,
+    "age_verification_heading": "Are you 18 or older?",
+    "age_verification_subheading": "You must be 18 years of age or older to enter this site.",
+    "age_verification_yes": "Yes, I am 18 or older",
+    "age_verification_no": "No, I am under 18",
     "enable_buy_now_card": true,
     "logo": "shopify://shop_images/74d97a469873774f841633779c982d.webp",
+    "enable_wishlist": true,
+    "enable_quick_view": true,
+    "enable_add_to_cart": true,
+    "enable_add_to_cart_card": true,
+    "enable_buy_now": true,
+    "enable_reviews": true,
+    "show_rating": true,
+    "show_review_count": true,
+    "enable_cro_social_proof": true,
+    "enable_cro_urgency": true,
+    "enable_trust_badges": true,
+    "show_secure_transaction": true,
+    "show_return_policy": true,
+    "enable_cro_recently_viewed": true,
+    "color_primary": "#ff9900",
+    "color_primary_dark": "#e47911",
+    "color_secondary": "#146eb4",
+    "color_accent": "#febd69",
+    "color_header_bg": "#131921",
+    "color_nav_bg": "#232f3e",
+    "color_footer_bg": "#232f3e",
+    "color_footer_bottom_bg": "#131921",
+    "color_body_bg": "#eaeded",
+    "color_text": "#0f1111",
+    "color_text_light": "#565959",
+    "color_border": "#dddddd",
+    "color_sale": "#cc0000",
+    "color_rating": "#ff9900",
+    "color_button_bg": "#ffd814",
+    "color_button_text": "#0f1111",
+    "color_add_to_cart_bg": "#ffd814",
+    "color_buy_now_bg": "#ffa41c",
+    "font_size_base": 14,
+    "heading_scale": 120,
+    "page_width": 1500,
+    "border_radius": 4,
+    "product_card_radius": 4,
+    "button_radius": 3,
+    "cart_type": "drawer",
+    "cart_show_free_shipping": true,
+    "free_shipping_threshold": "35",
+    "enable_predictive_search": true,
+    "show_search_categories": true,
+    "predictive_search_results": 8,
+    "products_per_page": 24,
+    "default_products_per_row_desktop": "4",
+    "default_products_per_row_mobile": "2",
+    "enable_filtering": true,
+    "enable_sorting": true,
+    "seo_enable_structured_data": true,
+    "seo_enable_breadcrumbs": true,
+    "enable_lazy_loading": true,
+    "enable_image_srcset": true,
+    "critical_css_inline": true,
+    "enable_animations": true,
+    "animation_speed": "normal",
+    "show_vendor": true,
+    "show_compare_price": true,
+    "show_savings_amount": true,
+    "show_prime_badge": true,
+    "product_image_ratio": "1/1",
+    "product_image_fit": "contain",
+    "show_product_breadcrumb": true,
+    "enable_zoom": true,
+    "show_quantity_selector": true,
+    "show_delivery_date": true,
+    "show_product_tabs": true,
+    "enable_related_products": true,
+    "show_delivery_location": true,
+    "sticky_header": true,
+    "logo_width": 130,
+    "logo_text": "amazo",
+    "delivery_location_text": "United States",
+    "announcement_bar_bg": "#232f3e",
+    "announcement_bar_text_color": "#ffffff",
     "sections": {
       "hero-banner": {
         "type": "hero-banner",
@@ -24,6 +106,8 @@
               "badge": "Today's Deal",
               "heading": "Big Savings",
               "subheading": "",
+              "text_position": "left",
+              "overlay_opacity": 0,
               "button_text": "Shop now",
               "button_link": ""
             }
@@ -31,13 +115,15 @@
           "slide_V4eBc3": {
             "type": "slide",
             "settings": {
-              "bg_color": "#d4e9e2",
+              "bg_color": "#003087",
               "bg_color_2": "#0066cc",
-              "badge": "Today's Deal",
-              "heading": "Big Savings",
-              "subheading": "",
+              "badge": "New Arrivals",
+              "heading": "Discover What's New",
+              "subheading": "Fresh styles and products just for you",
+              "text_position": "center",
+              "overlay_opacity": 0,
               "button_text": "Shop now",
-              "button_link": ""
+              "button_link": "/collections/all"
             }
           }
         },
@@ -46,7 +132,9 @@
           "slide_V4eBc3"
         ],
         "settings": {
-          "autoplay_speed": 5
+          "autoplay_speed": 5,
+          "banner_height_desktop": 600,
+          "banner_height_mobile": 350
         }
       },
       "category-grid": {
@@ -90,6 +178,39 @@
       },
       "promo-banners": {
         "type": "promo-banners",
+        "blocks": {
+          "promo_1": {
+            "type": "banner",
+            "settings": {
+              "bg_color": "#4a90d9",
+              "title": "Top Deals in Electronics",
+              "description": "Save up to 40% on top-rated electronics & gadgets",
+              "link": "/collections/electronics",
+              "link_text": "Shop electronics"
+            }
+          },
+          "promo_2": {
+            "type": "banner",
+            "settings": {
+              "bg_color": "#7ed321",
+              "title": "Fashion Sale: Up to 60% Off",
+              "description": "Trending styles for men, women & kids at unbeatable prices",
+              "link": "/collections/fashion",
+              "link_text": "Shop fashion"
+            }
+          },
+          "promo_3": {
+            "type": "banner",
+            "settings": {
+              "bg_color": "#f5a623",
+              "title": "Home Essentials",
+              "description": "Upgrade your home with top picks in kitchen, decor & furniture",
+              "link": "/collections/home-kitchen",
+              "link_text": "Shop home"
+            }
+          }
+        },
+        "block_order": ["promo_1", "promo_2", "promo_3"],
         "settings": {}
       },
       "newsletter": {
@@ -107,6 +228,9 @@
           "delivery_location": "India",
           "search_placeholder": "Search products...",
           "main_menu": "main-menu",
+          "logo_width": 140,
+          "header_height_desktop": 65,
+          "header_height_mobile": 55,
           "nav_item_1": "",
           "nav_url_1": "",
           "nav_item_2": "",
@@ -121,7 +245,20 @@
       },
       "footer": {
         "type": "footer",
-        "settings": {}
+        "settings": {
+          "footer_heading_1": "Get to Know Us",
+          "footer_heading_2": "Sell & Partner With Us",
+          "footer_heading_3": "Payments & Security",
+          "footer_heading_4": "Let Us Help You",
+          "show_social_icons": true,
+          "show_payment_icons": true,
+          "copyright_text": "All rights reserved.",
+          "back_to_top_text": "Back to top",
+          "footer_bg_color": "#232f3e",
+          "footer_bottom_bg_color": "#131921",
+          "footer_text_color": "#dddddd",
+          "footer_logo_width": 120
+        }
       },
       "trust-badges": {
         "type": "trust-badges",
@@ -145,6 +282,17 @@
         }
       }
     },
-    "content_for_index": []
+    "content_for_index": [
+      "hero-banner",
+      "category-grid",
+      "deals-of-the-day",
+      "featured-products",
+      "promo-banners",
+      "amazon-product-slider",
+      "featured-collection-2",
+      "featured-collection-3",
+      "trust-badges",
+      "newsletter"
+    ]
   }
 }

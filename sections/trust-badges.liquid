@@ -1,34 +1,65 @@
-{% comment %} Amazon Trust Badges {% endcomment %}
+{% comment %} Amazon Trust Badges — v4.1 with inline SVG icons {% endcomment %}
 <div class="amz-trust">
   <div class="amz-trust__grid">
+
     <div class="amz-trust__item">
-      <span class="amz-trust__icon">🚚</span>
+      <span class="amz-trust__icon" aria-hidden="true">
+        <!-- Free Delivery Truck SVG -->
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="1" y="3" width="15" height="13" rx="1"/>
+          <path d="M16 8h4l3 3v5h-7V8z"/>
+          <circle cx="5.5" cy="18.5" r="2.5"/>
+          <circle cx="18.5" cy="18.5" r="2.5"/>
+        </svg>
+      </span>
       <div class="amz-trust__text">
         <strong>FREE Delivery</strong>
         <span>On orders over $35</span>
       </div>
     </div>
+
     <div class="amz-trust__item">
-      <span class="amz-trust__icon">🔒</span>
+      <span class="amz-trust__icon" aria-hidden="true">
+        <!-- Secure / Lock SVG -->
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+          <path d="M7 11V7a5 5 0 0110 0v4"/>
+          <circle cx="12" cy="16" r="1" fill="currentColor"/>
+        </svg>
+      </span>
       <div class="amz-trust__text">
         <strong>Secure Shopping</strong>
         <span>SSL encrypted checkout</span>
       </div>
     </div>
+
     <div class="amz-trust__item">
-      <span class="amz-trust__icon">↩️</span>
+      <span class="amz-trust__icon" aria-hidden="true">
+        <!-- Easy Returns / Refresh Arrow SVG -->
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="1 4 1 10 7 10"/>
+          <path d="M3.51 15a9 9 0 102.13-9.36L1 10"/>
+        </svg>
+      </span>
       <div class="amz-trust__text">
         <strong>Easy Returns</strong>
         <span>30-day return policy</span>
       </div>
     </div>
+
     <div class="amz-trust__item">
-      <span class="amz-trust__icon">⭐</span>
+      <span class="amz-trust__icon" aria-hidden="true">
+        <!-- Top Rated / Star SVG -->
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="32" height="32" fill="currentColor">
+          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+        </svg>
+      </span>
       <div class="amz-trust__text">
         <strong>Top Rated</strong>
         <span>Millions of 5-star reviews</span>
       </div>
     </div>
+
   </div>
 </div>
 {% schema %}

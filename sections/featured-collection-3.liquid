@@ -7,15 +7,19 @@
       {%- for product in col limit: 4 offset: 8 -%}
         <div class="amz-fc__grid-item">
           <a href="{{ product.url }}">
-            <img src="{{ product.featured_image | img_url: '160x160', crop: 'center' }}" alt="{{ product.title | escape }}" loading="lazy">
+            {%- if product.featured_image != blank -%}
+              <img src="{{ product.featured_image | image_url: width: 160 }}" alt="{{ product.title | escape }}" loading="lazy" class="amz-fc__grid-img" width="160" height="160">
+            {%- else -%}
+              {{ 'product-' | append: forloop.index | placeholder_svg_tag: 'amz-fc__grid-img amz-placeholder-svg' }}
+            {%- endif -%}
             <p style="font-size:12px;color:#0f1111;margin-top:4px;">{{ product.title | truncate: 22 }}</p>
           </a>
         </div>
       {%- else -%}
         {%- for i in (1..4) -%}
           <div class="amz-fc__grid-item">
-            <div style="background:#f8bbd0;height:120px;border-radius:2px;"></div>
-            <p style="font-size:12px;margin-top:4px;">Item {{ i }}</p>
+            {{ 'product-' | append: i | placeholder_svg_tag: 'amz-fc__grid-img amz-placeholder-svg' }}
+            <p style="font-size:12px;margin-top:4px;color:#565959;">Item {{ i }}</p>
           </div>
         {%- endfor -%}
       {%- endfor -%}

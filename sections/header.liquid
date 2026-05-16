@@ -1,6 +1,29 @@
-{% comment %} Amazo Premium Header — Fully Responsive, All UI Bugs Fixed {% endcomment %}
+{% comment %} Amazo Premium Header — v4.1 with full automation {% endcomment %}
 
-<header class="amz-header" id="amz-header" role="banner">
+{%- style -%}
+  .amz-header__main {
+    min-height: {{ section.settings.header_height_desktop | default: 65 }}px;
+  }
+  .amz-logo-img {
+    width: {{ section.settings.logo_width | default: 140 }}px !important;
+    height: auto;
+    object-fit: contain;
+  }
+  {% if settings.sticky_header %}
+  .amz-header {
+    position: sticky;
+    top: 0;
+    z-index: 9999;
+  }
+  {% endif %}
+  @media (max-width: 768px) {
+    .amz-header__main {
+      min-height: {{ section.settings.header_height_mobile | default: 55 }}px;
+    }
+  }
+{%- endstyle -%}
+
+<header class="amz-header{% if settings.sticky_header %} amz-header--sticky{% endif %}" id="amz-header" role="banner">
 
   <!-- TOP HEADER: Logo | Deliver | Search | Account | Orders | Cart -->
   <div class="amz-header__main">
@@ -19,7 +42,14 @@
       <a href="{{ routes.root_url }}" class="amz-header__logo" aria-label="{{ shop.name }} - Home">
         <div class="amz-logo-wrap">
           {%- if section.settings.logo != blank -%}
-            <img src="{{ section.settings.logo | image_url: width: 140 }}" alt="{{ shop.name }}" class="amz-logo-img" width="140" height="40" loading="eager">
+            {%- if section.settings.image_mobile_logo != blank -%}
+              <picture>
+                <source media="(max-width: 768px)" srcset="{{ section.settings.image_mobile_logo | image_url: width: 120 }}">
+                <img src="{{ section.settings.logo | image_url: width: section.settings.logo_width }}" alt="{{ shop.name }}" class="amz-logo-img" width="{{ section.settings.logo_width | default: 140 }}" height="40" loading="eager">
+              </picture>
+            {%- else -%}
+              <img src="{{ section.settings.logo | image_url: width: section.settings.logo_width }}" alt="{{ shop.name }}" class="amz-logo-img" width="{{ section.settings.logo_width | default: 140 }}" height="40" loading="eager">
+            {%- endif -%}
           {%- else -%}
             <svg viewBox="0 0 130 42" xmlns="http://www.w3.org/2000/svg" class="amz-logo-svg" aria-hidden="true" focusable="false">
               <text x="0" y="28" font-family="Arial Black, sans-serif" font-size="24" font-weight="900" fill="#ffffff" letter-spacing="-1">{{ shop.name | downcase | truncate: 8, '' }}</text>
@@ -30,6 +60,7 @@
       </a>
 
       <!-- DELIVER TO (desktop only) -->
+      {%- if settings.show_delivery_location != false -%}
       <div class="amz-header__deliver amz-hide-mobile">
         <a href="#" class="amz-header__deliver-link">
           <div class="amz-deliver-icon" aria-hidden="true">
@@ -41,6 +72,7 @@
           </div>
         </a>
       </div>
+      {%- endif -%}
 
       <!-- SEARCH BAR -->
       <div class="amz-header__search">
@@ -320,7 +352,23 @@
 {
   "name": "Premium Header",
   "settings": [
-    { "type": "image_picker", "id": "logo", "label": "Logo Image" },
+    {
+      "type": "header",
+      "content": "Logo"
+    },
+    { "type": "image_picker", "id": "logo", "label": "Logo Image (Desktop)" },
+    { "type": "image_picker", "id": "image_mobile_logo", "label": "Logo Image (Mobile)", "info": "Optional smaller/different logo for mobile. Falls back to desktop logo if empty." },
+    { "type": "range", "id": "logo_width", "label": "Logo Width", "min": 60, "max": 300, "step": 5, "unit": "px", "default": 140 },
+    {
+      "type": "header",
+      "content": "Header Height"
+    },
+    { "type": "range", "id": "header_height_desktop", "label": "Desktop Height", "min": 50, "max": 100, "step": 1, "unit": "px", "default": 65 },
+    { "type": "range", "id": "header_height_mobile", "label": "Mobile Height", "min": 50, "max": 80, "step": 1, "unit": "px", "default": 55 },
+    {
+      "type": "header",
+      "content": "Navigation"
+    },
     { "type": "text", "id": "delivery_location", "label": "Delivery Location", "default": "United States" },
     { "type": "text", "id": "search_placeholder", "label": "Search Placeholder", "default": "Search products..." },
     { "type": "link_list", "id": "main_menu", "label": "Main Menu", "default": "main-menu" },

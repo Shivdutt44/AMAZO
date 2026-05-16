@@ -5,9 +5,11 @@
       {%- if block.type == 'banner' -%}
         <div class="amz-promo-card" {{ block.shopify_attributes }}>
           {%- if block.settings.image != blank -%}
-            <img src="{{ block.settings.image | img_url: '740x380', crop: 'center' }}" alt="{{ block.settings.title }}" class="amz-promo-card__img" loading="lazy">
+            <img src="{{ block.settings.image | image_url: width: 740 }}" alt="{{ block.settings.title | escape }}" class="amz-promo-card__img" loading="lazy" width="740" height="380">
           {%- else -%}
-            <div class="amz-promo-card__img" style="background:{{ block.settings.bg_color | default: '#e0e0e0' }};height:190px;"></div>
+            <div class="amz-promo-card__img-placeholder" style="background:{{ block.settings.bg_color | default: '#4a90d9' }};height:190px;display:flex;align-items:center;justify-content:center;overflow:hidden;border-radius:4px;">
+              {{ 'lifestyle-' | append: forloop.index | placeholder_svg_tag: 'amz-placeholder-svg' }}
+            </div>
           {%- endif -%}
           <div class="amz-promo-card__body">
             <h3 class="amz-promo-card__title">{{ block.settings.title }}</h3>
@@ -21,7 +23,9 @@
       {%- assign promo_colors = "#4a90d9,#7ed321,#f5a623" | split: "," -%}
       {%- for t in promo_titles -%}
         <div class="amz-promo-card">
-          <div class="amz-promo-card__img" style="background:{{ promo_colors[forloop.index0] }};height:190px;"></div>
+          <div class="amz-promo-card__img-placeholder" style="background:{{ promo_colors[forloop.index0] }};height:190px;display:flex;align-items:center;justify-content:center;overflow:hidden;border-radius:4px;">
+            {{ 'lifestyle-' | append: forloop.index | placeholder_svg_tag: 'amz-placeholder-svg' }}
+          </div>
           <div class="amz-promo-card__body">
             <h3 class="amz-promo-card__title">{{ t }}</h3>
             <p class="amz-promo-card__desc">Discover amazing deals in this category</p>

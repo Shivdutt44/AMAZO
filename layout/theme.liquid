@@ -69,6 +69,8 @@
       --page-width:       {{ settings.page_width | default: 1500 }}px;
       --btn-radius:       {{ settings.button_radius | default: 3 }}px;
       --card-radius:      {{ settings.product_card_radius | default: 4 }}px;
+      --amz-announce-bg:  {{ settings.announcement_bar_bg | default: '#232f3e' }};
+      --amz-announce-text:{{ settings.announcement_bar_text_color | default: '#ffffff' }};
     }
 
     html, body {
@@ -94,6 +96,10 @@
       font-display: swap;
     }
   </style>
+
+  {%- if settings.custom_css != blank -%}
+    <style>{{ settings.custom_css }}</style>
+  {%- endif -%}
 </head>
 <body class="amz-body template-{{ template.name }}">
 
@@ -135,14 +141,149 @@
       enableRecentlyViewed:  {{ settings.enable_cro_recently_viewed | default: true }},
       freeShippingThreshold: {{ settings.free_shipping_threshold | default: 499 }},
       currencySymbol:       '{{ cart.currency.symbol }}',
-      moneyFormat:          '{{ shop.money_format }}'
+      moneyFormat:          '{{ shop.money_format }}',
+      stickyHeader:          {{ settings.sticky_header | default: true }}
     };
   </script>
 
-  <!-- Main JS (must load first — defines window.AmazoDrw) -->
+  <!-- Main JS -->
   <script src="{{ 'amazo-main.js' | asset_url }}" defer></script>
-  <!-- CRO JS (depends on window.AmazoDrw from amazo-main.js) -->
+  <!-- CRO JS -->
   <script src="{{ 'amazo-cro.js' | asset_url }}" defer></script>
+
+  {%- if settings.custom_js != blank -%}
+    <script>{{ settings.custom_js }}</script>
+  {%- endif -%}
+
+  <!-- ═══════════════════════════════════════════════════════
+       BULLETPROOF CART DRAWER INIT
+       Runs independently — cart icon ALWAYS opens drawer
+       even if amazo-main.js has an error.
+       ═══════════════════════════════════════════════════════ -->
+  <script>
+  (function() {
+    function initCartDrawer() {
+      var cartDrawer    = document.getElementById('cartDrawer');
+      var cartOverlay   = document.getElementById('cartDrawerOverlay');
+      var cartClose     = document.getElementById('cartDrawerClose');
+
+      if (!cartDrawer) {
+        console.warn('[Amazo] Cart drawer element #cartDrawer not found in DOM.');
+        return;
+      }
+
+      /* ── open / close helpers ── */
+      function openCart() {
+        cartDrawer.classList.add('is-open');
+        cartDrawer.setAttribute('aria-hidden', 'false');
+        if (cartOverlay) { cartOverlay.classList.add('active'); cartOverlay.setAttribute('aria-hidden','false'); }
+        document.body.classList.add('cart-is-open');
+        /* Refresh cart contents via AmazoDrw if available */
+        if (window.AmazoDrw && typeof window.AmazoDrw.loadCart === 'function') {
+          window.AmazoDrw.loadCart();
+        } else {
+          /* Fallback: load cart items ourselves */
+          loadCartFallback();
+        }
+      }
+
+      function closeCart() {
+        cartDrawer.classList.remove('is-open');
+        cartDrawer.setAttribute('aria-hidden', 'true');
+        if (cartOverlay) { cartOverlay.classList.remove('active'); cartOverlay.setAttribute('aria-hidden','true'); }
+        document.body.classList.remove('cart-is-open');
+      }
+
+      /* ── Fallback cart renderer ── */
+      function loadCartFallback() {
+        fetch('/cart.js')
+          .then(function(r){ return r.json(); })
+          .then(function(cart) {
+            var itemsEl   = document.getElementById('cartDrawerItems');
+            var emptyEl   = document.getElementById('cartDrawerEmpty');
+            var footerEl  = document.getElementById('cartDrawerFooter');
+            var subtotalEl = document.getElementById('cartSubtotal');
+            var countEl   = document.getElementById('cartItemCount');
+            /* Update badge */
+            document.querySelectorAll('#amz-cart-count,.amz-cart-count,.cart-count').forEach(function(el){
+              el.textContent = cart.item_count;
+              el.style.display = cart.item_count > 0 ? 'flex' : 'none';
+            });
+            if (!itemsEl) return;
+            if (cart.item_count === 0) {
+              itemsEl.innerHTML = '';
+              if (emptyEl)  emptyEl.style.display  = 'flex';
+              if (footerEl) footerEl.style.display  = 'none';
+              return;
+            }
+            if (emptyEl)  emptyEl.style.display  = 'none';
+            if (footerEl) footerEl.style.display  = 'block';
+            if (subtotalEl) subtotalEl.textContent = formatMoney(cart.total_price);
+            if (countEl)    countEl.textContent    = cart.item_count;
+            itemsEl.innerHTML = cart.items.map(function(item){
+              return '<div class="cart-drawer-item">' +
+                (item.image ? '<img src="'+item.image+'" class="cart-drawer-item__img" width="72" height="72" alt="">' : '') +
+                '<div class="cart-drawer-item__info">' +
+                  '<div class="cart-drawer-item__title">'+item.product_title+'</div>' +
+                  '<div class="cart-drawer-item__price">'+formatMoney(item.final_line_price)+'</div>' +
+                  '<div class="cart-drawer-item__qty-row">' +
+                    '<span class="cart-drawer-item__qty-num">Qty: '+item.quantity+'</span>' +
+                  '</div>' +
+                '</div></div>';
+            }).join('');
+          })
+          .catch(function(){});
+      }
+
+      function formatMoney(cents) {
+        var sym = (window.AmezoConfig && window.AmezoConfig.currencySymbol) || '₹';
+        return sym + (cents / 100).toFixed(2).replace(/\.00$/, '');
+      }
+
+      /* ── Event delegation ── */
+      document.addEventListener('click', function(e) {
+        /* 1. Cart icon or any /cart link → open drawer */
+        var trigger = e.target.closest(
+          '.amz-header__cart-link, [data-cart-drawer-trigger], a[href="/cart"], a[href^="/cart?"]'
+        );
+        if (trigger && !trigger.closest('#cartDrawer')) {
+          e.preventDefault();
+          e.stopPropagation();
+          openCart();
+          return;
+        }
+
+        /* 2. Overlay click → close */
+        if (e.target === cartOverlay || (cartOverlay && cartOverlay.contains(e.target) && e.target === cartOverlay)) {
+          closeCart(); return;
+        }
+
+        /* 3. Close button */
+        if (cartClose && (e.target === cartClose || cartClose.contains(e.target))) {
+          closeCart(); return;
+        }
+      }, true); /* ← useCapture:true so we run BEFORE any other handler */
+
+      /* ESC closes drawer */
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeCart();
+      });
+
+      /* Expose so AmazoDrw can call us */
+      window._amzCartOpen  = openCart;
+      window._amzCartClose = closeCart;
+
+      console.log('[Amazo] Cart drawer init ✓ — clicking cart icon will open drawer.');
+    }
+
+    /* Run as soon as DOM is ready */
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initCartDrawer);
+    } else {
+      initCartDrawer();
+    }
+  })();
+  </script>
 
 </body>
 </html>

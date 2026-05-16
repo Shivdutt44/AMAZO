@@ -1,6 +1,22 @@
-{% comment %} Amazon Hero Banner - Exact Carousel Style {% endcomment %}
+{% comment %} Amazon Hero Banner - Exact Carousel Style - v4.1 with Desktop/Mobile Split {% endcomment %}
 
-<div class="amz-hero" id="amz-hero">
+{%- style -%}
+  #amz-hero-{{ section.id }} .amz-hero__img,
+  #amz-hero-{{ section.id }} .amz-hero__slide-default {
+    height: {{ section.settings.banner_height_desktop | default: 600 }}px;
+    object-fit: cover;
+    width: 100%;
+    display: block;
+  }
+  @media (max-width: 768px) {
+    #amz-hero-{{ section.id }} .amz-hero__img,
+    #amz-hero-{{ section.id }} .amz-hero__slide-default {
+      height: {{ section.settings.banner_height_mobile | default: 350 }}px;
+    }
+  }
+{%- endstyle -%}
+
+<div class="amz-hero" id="amz-hero-{{ section.id }}">
 
   <!-- HERO CAROUSEL -->
   <div class="amz-hero__carousel" id="amz-hero-carousel">
@@ -8,20 +24,63 @@
 
       {%- for block in section.blocks -%}
         {%- if block.type == 'slide' -%}
-          <div class="amz-hero__slide" {{ block.shopify_attributes }}>
+          <div class="amz-hero__slide" {{ block.shopify_attributes }} style="position:relative;">
             {%- if block.settings.image != blank -%}
-              <img 
-                src="{{ block.settings.image | img_url: '1500x600', crop: 'center' }}" 
-                srcset="{{ block.settings.image | img_url: '750x300', crop: 'center' }} 750w,
-                        {{ block.settings.image | img_url: '1500x600', crop: 'center' }} 1500w"
-                alt="{{ block.settings.heading | escape }}"
-                class="amz-hero__img"
-                loading="lazy"
-              >
+              <picture>
+                {%- if block.settings.image_mobile != blank -%}
+                  <source
+                    media="(max-width: 768px)"
+                    srcset="{{ block.settings.image_mobile | image_url: width: 480 }} 480w,
+                            {{ block.settings.image_mobile | image_url: width: 768 }} 768w"
+                    sizes="100vw"
+                  >
+                {%- endif -%}
+                <img
+                  src="{{ block.settings.image | image_url: width: 1500 }}"
+                  srcset="{{ block.settings.image | image_url: width: 750 }} 750w,
+                          {{ block.settings.image | image_url: width: 1100 }} 1100w,
+                          {{ block.settings.image | image_url: width: 1500 }} 1500w"
+                  sizes="100vw"
+                  alt="{{ block.settings.heading | escape }}"
+                  class="amz-hero__img"
+                  {% if forloop.first %}loading="eager" fetchpriority="high"{% else %}loading="lazy"{% endif %}
+                  width="1500"
+                  height="{{ section.settings.banner_height_desktop | default: 600 }}"
+                >
+              </picture>
+
+              {%- if block.settings.overlay_opacity > 0 -%}
+                <div style="position:absolute;inset:0;background:rgba(0,0,0,{{ block.settings.overlay_opacity | divided_by: 100.0 }});pointer-events:none;z-index:1;"></div>
+              {%- endif -%}
+
+              {%- if block.settings.heading != blank or block.settings.badge != blank or block.settings.button_text != blank -%}
+                {%- assign tpos = block.settings.text_position | default: 'left' -%}
+                <div class="amz-hero__slide-content amz-hero__slide-content--{{ tpos }}" style="position:absolute;bottom:15%;z-index:2;
+                  {%- if tpos == 'center' -%}left:50%;transform:translateX(-50%);text-align:center;min-width:300px;
+                  {%- elsif tpos == 'right' -%}right:5%;text-align:right;
+                  {%- else -%}left:5%;{%- endif -%}">
+                  {%- if block.settings.badge != blank -%}
+                    <span class="amz-hero__badge">{{ block.settings.badge }}</span>
+                  {%- endif -%}
+                  {%- if block.settings.heading != blank -%}
+                    <h2 class="amz-hero__heading">{{ block.settings.heading }}</h2>
+                  {%- endif -%}
+                  {%- if block.settings.subheading != blank -%}
+                    <p class="amz-hero__subheading">{{ block.settings.subheading }}</p>
+                  {%- endif -%}
+                  {%- if block.settings.button_text != blank -%}
+                    <a href="{{ block.settings.button_link | default: '#' }}" class="amz-hero__btn">
+                      {{ block.settings.button_text }}
+                    </a>
+                  {%- endif -%}
+                </div>
+              {%- endif -%}
+
             {%- else -%}
               <!-- Default Amazon-style gradient slide -->
               <div class="amz-hero__slide-default" style="background: linear-gradient(135deg, {{ block.settings.bg_color | default: '#003087' }} 0%, {{ block.settings.bg_color_2 | default: '#0066cc' }} 100%);">
-                <div class="amz-hero__slide-content">
+                {%- assign tpos = block.settings.text_position | default: 'center' -%}
+                <div class="amz-hero__slide-content amz-hero__slide-content--{{ tpos }}">
                   {%- if block.settings.badge != blank -%}
                     <span class="amz-hero__badge">{{ block.settings.badge }}</span>
                   {%- endif -%}
@@ -43,7 +102,7 @@
         {%- endif -%}
       {%- else -%}
 
-      <!-- DEFAULT SLIDES - Amazon Style -->
+      <!-- DEFAULT SLIDES - Amazon Style (shown when no blocks configured) -->
       <div class="amz-hero__slide amz-hero__slide--1">
         <div class="amz-hero__slide-default" style="background: linear-gradient(180deg, #b6c4de 0%, #e8ecf0 40%, #eaeded 100%);">
           <div class="amz-hero__slide-content amz-hero__slide-content--center">
@@ -83,11 +142,17 @@
     <div class="amz-hero__fade-left"></div>
     <div class="amz-hero__fade-right"></div>
 
-    <!-- DOTS -->
+    <!-- DOTS — dynamic, matches block count -->
     <div class="amz-hero__dots" id="amz-hero-dots">
-      <span class="amz-hero__dot amz-hero__dot--active" data-slide="0"></span>
-      <span class="amz-hero__dot" data-slide="1"></span>
-      <span class="amz-hero__dot" data-slide="2"></span>
+      {%- if section.blocks.size > 0 -%}
+        {%- for block in section.blocks -%}
+          <button class="amz-hero__dot{% if forloop.first %} amz-hero__dot--active{% endif %}" data-slide="{{ forloop.index0 }}" aria-label="Go to slide {{ forloop.index }}"></button>
+        {%- endfor -%}
+      {%- else -%}
+        <button class="amz-hero__dot amz-hero__dot--active" data-slide="0" aria-label="Go to slide 1"></button>
+        <button class="amz-hero__dot" data-slide="1" aria-label="Go to slide 2"></button>
+        <button class="amz-hero__dot" data-slide="2" aria-label="Go to slide 3"></button>
+      {%- endif -%}
     </div>
   </div>
 </div>
@@ -97,17 +162,52 @@
   "name": "Amazon Hero Banner",
   "max_blocks": 8,
   "settings": [
-    { "type": "range", "id": "autoplay_speed", "label": "Autoplay Speed (seconds)", "min": 3, "max": 10, "step": 1, "default": 5 }
+    { "type": "range", "id": "autoplay_speed", "label": "Autoplay Speed (seconds)", "min": 3, "max": 10, "step": 1, "default": 5 },
+    {
+      "type": "header",
+      "content": "Banner Height"
+    },
+    { "type": "range", "id": "banner_height_desktop", "label": "Desktop Height", "min": 300, "max": 800, "step": 10, "unit": "px", "default": 600, "info": "Banner height on screens wider than 768px" },
+    { "type": "range", "id": "banner_height_mobile", "label": "Mobile Height", "min": 150, "max": 500, "step": 10, "unit": "px", "default": 350, "info": "Banner height on screens 768px and below" }
   ],
   "blocks": [
     {
       "type": "slide",
       "name": "Slide",
       "settings": [
-        { "type": "image_picker", "id": "image", "label": "Slide Image" },
+        {
+          "type": "header",
+          "content": "Images"
+        },
+        { "type": "image_picker", "id": "image", "label": "Slide Image (Desktop)", "info": "Recommended: 1500×600px landscape" },
+        { "type": "image_picker", "id": "image_mobile", "label": "Slide Image (Mobile)", "info": "Recommended: 768×500px portrait. Falls back to desktop image if empty." },
+        {
+          "type": "header",
+          "content": "Layout & Overlay"
+        },
+        {
+          "type": "select",
+          "id": "text_position",
+          "label": "Text Position",
+          "options": [
+            { "value": "left", "label": "Left" },
+            { "value": "center", "label": "Center" },
+            { "value": "right", "label": "Right" }
+          ],
+          "default": "left"
+        },
+        { "type": "range", "id": "overlay_opacity", "label": "Dark Overlay Opacity (for image slides)", "min": 0, "max": 80, "step": 5, "unit": "%", "default": 0, "info": "Darkens the image to improve text legibility" },
+        {
+          "type": "header",
+          "content": "Gradient Background (used when no image)"
+        },
         { "type": "color", "id": "bg_color", "label": "Background Color 1", "default": "#003087" },
         { "type": "color", "id": "bg_color_2", "label": "Background Color 2", "default": "#0066cc" },
-        { "type": "text", "id": "badge", "label": "Badge Text (e.g. New, Hot)" },
+        {
+          "type": "header",
+          "content": "Text Content"
+        },
+        { "type": "text", "id": "badge", "label": "Badge Text", "info": "e.g. 'Today's Deal', 'New'" },
         { "type": "text", "id": "heading", "label": "Heading", "default": "Shop today's deals" },
         { "type": "text", "id": "subheading", "label": "Subheading" },
         { "type": "text", "id": "button_text", "label": "Button Text", "default": "Shop now" },

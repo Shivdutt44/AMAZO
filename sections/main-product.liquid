@@ -83,12 +83,16 @@
         <!-- Main Image -->
         <div class="amz-main-img-wrap">
           <div class="amz-zoom-lens" id="ZoomLens"></div>
-          <img id="ProductMainImage"
-               src="{{ featured_media | image_url: width: 600 }}"
-               alt="{{ product.title | escape }}"
-               class="amz-main-img {% if settings.enable_zoom %}amz-zoomable{% endif %}"
-               width="600" height="600"
-               itemprop="image">
+          {%- if featured_media != blank -%}
+            <img id="ProductMainImage"
+                 src="{{ featured_media | image_url: width: 600 }}"
+                 alt="{{ product.title | escape }}"
+                 class="amz-main-img {% if settings.enable_zoom %}amz-zoomable{% endif %}"
+                 width="600" height="600"
+                 itemprop="image">
+          {%- else -%}
+            {{ 'product-1' | placeholder_svg_tag: 'amz-main-img amz-placeholder-svg' }}
+          {%- endif -%}
 
           <!-- Wishlist on Product Page -->
           {%- if settings.enable_wishlist -%}
@@ -268,7 +272,8 @@
         {%- if current_variant.available -%}
           {%- if low_stock -%}
           <div class="amz-buybox__stock amz-buybox__stock--low">
-            ⚠️ Only {{ stock_count }} left in stock!
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true" style="vertical-align:middle;margin-right:4px;"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13" stroke="white" stroke-width="2"/><line x1="12" y1="17" x2="12.01" y2="17" stroke="white" stroke-width="2"/></svg>
+            Only {{ stock_count }} left in stock!
           </div>
           {%- else -%}
           <div class="amz-buybox__stock amz-buybox__stock--in">In Stock</div>
@@ -324,13 +329,13 @@
           <!-- ── ADD TO CART BUTTON ── -->
           {%- if settings.enable_add_to_cart -%}
           <button type="submit" name="add"
-                  class="amz-btn amz-btn--atc amz-add-to-cart{% unless current_variant.available %} is-unavailable{% endunless %}"
+                  class="amz-btn amz-btn--atc amz-add-to-cart{% unless current_variant.available %} is-unavailable{% endunless %}{% if section.settings.animate_buttons %} has-animation{% endif %}"
                   id="AddToCartBtn-{{ product.id }}"
                   data-product-id="{{ product.id }}"
                   data-variant-id="{{ current_variant.id }}"
                   {% unless current_variant.available %}disabled{% endunless %}>
             <svg class="btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
-            <span class="btn-text">{%- if current_variant.available -%}Add to Cart{%- else -%}Out of Stock{%- endif -%}</span>
+            <span class="btn-text">{%- if current_variant.available -%}{{ section.settings.atc_button_text }}{%- else -%}Out of Stock{%- endif -%}</span>
             <span class="btn-loading" style="display:none;">Adding…</span>
           </button>
           {%- endif -%}
@@ -343,7 +348,7 @@
                   data-product-id="{{ product.id }}"
                   data-variant-id="{{ current_variant.id }}"
                   data-form-id="ProductForm-{{ product.id }}">
-            Buy Now
+            {{ section.settings.buy_now_text }}
           </button>
           {%- endif -%}
 
@@ -385,7 +390,8 @@
           <button class="amz-btn amz-btn--notify amz-notify-me"
                   data-product-id="{{ product.id }}"
                   data-product-title="{{ product.title | escape }}">
-            🔔 Notify me when available
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true" style="vertical-align:middle;margin-right:4px;"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+            Notify me when available
           </button>
         </div>
         {%- endunless -%}
@@ -403,10 +409,76 @@
         {%- endif -%}
       </div>
       <!-- end buybox -->
-
     </div>
     <!-- end layout -->
   </div>
+
+  <!-- ─────────────────────────────────────────────────
+       CRO: STICKY BUY BAR (Automated for Mobile/Desktop)
+  ───────────────────────────────────────────────── -->
+  {%- if settings.enable_buy_now -%}
+  <div id="StickyBuyBar" class="amz-sticky-buy" style="display:none;">
+    <div class="page-width amz-sticky-buy__inner">
+      <div class="amz-sticky-buy__product">
+        {%- if featured_media != blank -%}
+          <img src="{{ featured_media | image_url: width: 100 }}" alt="{{ product.title }}" class="amz-sticky-buy__img" width="40" height="40">
+        {%- else -%}
+          {{ 'product-1' | placeholder_svg_tag: 'amz-sticky-buy__img amz-placeholder-svg' }}
+        {%- endif -%}
+        <div class="amz-sticky-buy__info">
+          <div class="amz-sticky-buy__title">{{ product.title | truncate: 30 }}</div>
+          <div class="amz-sticky-buy__price">{{ current_variant.price | money }}</div>
+        </div>
+      </div>
+      <div class="amz-sticky-buy__actions">
+        {%- if settings.enable_add_to_cart -%}
+        <button type="button" class="amz-btn amz-btn--atc amz-add-to-cart amz-sticky-atc" data-variant-id="{{ current_variant.id }}">
+          Add to Cart
+        </button>
+        {%- endif -%}
+        <button type="button" class="amz-btn amz-btn--buy amz-buy-now amz-sticky-buy-btn" data-variant-id="{{ current_variant.id }}">
+          Buy Now
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .amz-sticky-buy {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #fff;
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+      z-index: 999;
+      padding: 8px 0;
+      border-top: 1px solid #ddd;
+      animation: slideUp 0.3s ease;
+    }
+    @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+    .amz-sticky-buy__inner { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .amz-sticky-buy__product { display: flex; align-items: center; gap: 10px; }
+    .amz-sticky-buy__img { border-radius: 4px; object-fit: contain; }
+    .amz-sticky-buy__title { font-size: 13px; font-weight: 700; color: #0f1111; display: none; }
+    .amz-sticky-buy__price { font-size: 14px; font-weight: 700; color: #B12704; }
+    .amz-sticky-buy__actions { display: flex; gap: 8px; flex: 1; justify-content: flex-end; }
+    .amz-sticky-buy .amz-btn { padding: 8px 16px; font-size: 13px; height: 36px; min-width: 100px; }
+    @media (min-width: 768px) { .amz-sticky-buy__title { display: block; } }
+    @media (max-width: 480px) {
+      .amz-sticky-buy__product { display: none; }
+      .amz-sticky-buy__actions { justify-content: stretch; }
+      .amz-sticky-buy .amz-btn { flex: 1; }
+    }
+    /* Button Shake Animation for Automation Feeling */
+    .amz-btn--atc:not([disabled]) { animation: amz-pulse 3s infinite; }
+    @keyframes amz-pulse {
+      0% { transform: scale(1); }
+      5% { transform: scale(1.02); }
+      10% { transform: scale(1); }
+    }
+  </style>
+  {%- endif -%}
 </div>
 
 <!-- ─────────────────────────────────────────────────
@@ -496,15 +568,27 @@
     },
     {
       "type": "checkbox",
-      "id": "show_buy_now",
-      "label": "Show Buy Now Button",
+      "id": "enable_sticky_buy",
+      "label": "Enable Sticky Buy Bar",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "animate_buttons",
+      "label": "Animate Add to Cart Button",
       "default": true
     },
     {
       "type": "text",
-      "id": "dummy_reviews",
-      "label": "Dummy Review Count",
-      "default": "12,345"
+      "id": "atc_button_text",
+      "label": "Add to Cart Text",
+      "default": "Add to Cart"
+    },
+    {
+      "type": "text",
+      "id": "buy_now_text",
+      "label": "Buy Now Text",
+      "default": "Buy Now"
     }
   ],
   "presets": [

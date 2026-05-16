@@ -37,11 +37,16 @@
               <a href="{{ product.url }}" class="amz-deals__card">
                 <div class="amz-deals__card-img-wrap">
                   <span class="amz-deals__badge">-{{ deal_pct }}%</span>
-                  <img 
-                    src="{{ product.featured_image | img_url: '220x220', crop: 'center' }}" 
-                    alt="{{ product.title | escape }}"
-                    loading="lazy"
-                  >
+                  {%- if product.featured_image != blank -%}
+                    <img
+                      src="{{ product.featured_image | image_url: width: 220 }}"
+                      alt="{{ product.title | escape }}"
+                      loading="lazy"
+                      width="220" height="220"
+                    >
+                  {%- else -%}
+                    {{ 'product-' | append: forloop.index | modulo: 6 | plus: 1 | placeholder_svg_tag: 'amz-deals__img-placeholder' }}
+                  {%- endif -%}
                 </div>
                 <div class="amz-deals__progress-bar">
                   <div class="amz-deals__progress-fill" style="width: {{ deal_pct | plus: 20 | at_most: 90 }}%;"></div>
@@ -69,7 +74,7 @@
                 <div class="amz-deals__card">
                   <div class="amz-deals__card-img-wrap">
                     <span class="amz-deals__badge">-{{ deal_discounts[di] }}%</span>
-                    <div class="amz-deals__img-placeholder" style="background: {{ deal_colors[di] }}; width:220px; height:220px; display:flex; align-items:center; justify-content:center;"></div>
+                    {{ 'product-' | append: forloop.index | placeholder_svg_tag: 'amz-deals__img-placeholder' }}
                   </div>
                   <div class="amz-deals__progress-bar"><div class="amz-deals__progress-fill" style="width: {{ deal_discounts[di] | plus: 20 }}%;"></div></div>
                   <p class="amz-deals__claimed">{{ deal_discounts[di] | plus: 15 }}% claimed</p>

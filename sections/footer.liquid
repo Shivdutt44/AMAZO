@@ -1,9 +1,71 @@
-{% comment %} Amazon Footer - Exact Amazon.com Footer Replica {% endcomment %}
+{% comment %} Amazon Footer - v4.1 with full schema automation {% endcomment %}
+
+{%- style -%}
+  .amz-footer__main {
+    background: {{ section.settings.footer_bg_color | default: '#232f3e' }};
+    color: {{ section.settings.footer_text_color | default: '#dddddd' }};
+  }
+  .amz-footer__main a {
+    color: {{ section.settings.footer_text_color | default: '#dddddd' }};
+  }
+  .amz-footer__main a:hover {
+    color: #ffffff;
+  }
+  .amz-footer__bottom,
+  .amz-footer__sub,
+  .amz-footer__copyright {
+    background: {{ section.settings.footer_bottom_bg_color | default: '#131921' }};
+    color: {{ section.settings.footer_text_color | default: '#dddddd' }};
+  }
+  .amz-footer__bottom a,
+  .amz-footer__sub a,
+  .amz-footer__copyright a {
+    color: {{ section.settings.footer_text_color | default: '#dddddd' }};
+  }
+  .amz-footer__social {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    padding: 20px 0 8px;
+  }
+  .amz-footer__social a {
+    color: {{ section.settings.footer_text_color | default: '#dddddd' }};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.2);
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .amz-footer__social a:hover {
+    border-color: #ff9900;
+    color: #ff9900;
+  }
+  .amz-footer__payments {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    padding: 12px 0;
+    flex-wrap: wrap;
+  }
+  .amz-footer__payments .amz-payment-icon {
+    height: 24px;
+    width: auto;
+    border-radius: 3px;
+  }
+  .amz-footer__logo-img {
+    width: {{ section.settings.footer_logo_width | default: 120 }}px;
+    height: auto;
+    object-fit: contain;
+  }
+{%- endstyle -%}
 
 <!-- BACK TO TOP BUTTON (Amazon Style) -->
 <div class="amz-back-top" id="amz-back-top">
-  <button onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top">
-    Back to top
+  <button onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="{{ section.settings.back_to_top_text | default: 'Back to top' }}">
+    {{ section.settings.back_to_top_text | default: 'Back to top' }}
   </button>
 </div>
 
@@ -13,57 +75,106 @@
   <div class="amz-footer__main">
     <div class="amz-footer__inner page-width">
 
-      <div class="amz-footer__col">
-        <h3 class="amz-footer__heading">Get to Know Us</h3>
-        <ul class="amz-footer__list">
-          <li><a href="/pages/about">About Us</a></li>
-          <li><a href="/blogs/news">Our Blog</a></li>
-          <li><a href="/pages/careers">Careers</a></li>
-          <li><a href="/pages/press">Press & Media</a></li>
-          <li><a href="/pages/sustainability">Sustainability</a></li>
-          <li><a href="/pages/contact">Contact Us</a></li>
-        </ul>
-      </div>
-
-      <div class="amz-footer__col">
-        <h3 class="amz-footer__heading">Sell & Partner With Us</h3>
-        <ul class="amz-footer__list">
-          <li><a href="/pages/sell">Sell on {{ shop.name }}</a></li>
-          <li><a href="/pages/affiliate">Become an Affiliate</a></li>
-          <li><a href="/pages/advertise">Advertise Your Products</a></li>
-          <li><a href="/pages/partner">Partner Program</a></li>
-          <li><a href="/pages/bulk-orders">Bulk / B2B Orders</a></li>
-          <li><a href="/pages/contact">Business Enquiries</a></li>
-        </ul>
-      </div>
-
-      <div class="amz-footer__col">
-        <h3 class="amz-footer__heading">Payments & Security</h3>
-        <ul class="amz-footer__list">
-          <li><a href="/pages/payment-methods">Payment Methods</a></li>
-          <li><a href="/pages/emi-options">EMI Options</a></li>
-          <li><a href="/pages/gift-cards">Gift Cards</a></li>
-          <li><a href="/pages/secure-shopping">Secure Shopping</a></li>
-          <li><a href="/pages/privacy-policy">Privacy Policy</a></li>
-          <li><a href="/pages/terms-of-service">Terms of Service</a></li>
-        </ul>
-      </div>
-
-      <div class="amz-footer__col">
-        <h3 class="amz-footer__heading">Let Us Help You</h3>
-        <ul class="amz-footer__list">
-          <li><a href="{{ routes.account_url }}">Your Account</a></li>
-          <li><a href="{{ routes.account_url }}/orders">Your Orders</a></li>
-          <li><a href="/pages/shipping">Shipping Rates & Policies</a></li>
-          <li><a href="/policies/refund-policy">Returns & Replacements</a></li>
-          <li><a href="/pages/customer-service">Customer Service</a></li>
-          <li><a href="/pages/track-order">Track Your Order</a></li>
-          <li><a href="/pages/faq">FAQs</a></li>
-          <li><a href="/pages/contact">Contact Us</a></li>
-        </ul>
-      </div>
+      {%- for i in (1..4) -%}
+        {%- assign menu_key = 'footer_menu_' | append: i -%}
+        {%- assign heading_key = 'footer_heading_' | append: i -%}
+        {%- assign col_menu = section.settings[menu_key] -%}
+        {%- assign col_heading = section.settings[heading_key] -%}
+        <div class="amz-footer__col">
+          <h3 class="amz-footer__heading">{{ col_heading }}</h3>
+          <ul class="amz-footer__list">
+            {%- if col_menu != blank and linklists[col_menu].links.size > 0 -%}
+              {%- for link in linklists[col_menu].links -%}
+                <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+              {%- endfor -%}
+            {%- else -%}
+              {%- case i -%}
+                {%- when 1 -%}
+                  <li><a href="/pages/about">About Us</a></li>
+                  <li><a href="/blogs/news">Our Blog</a></li>
+                  <li><a href="/pages/careers">Careers</a></li>
+                  <li><a href="/pages/press">Press &amp; Media</a></li>
+                  <li><a href="/pages/sustainability">Sustainability</a></li>
+                  <li><a href="/pages/contact">Contact Us</a></li>
+                {%- when 2 -%}
+                  <li><a href="/pages/sell">Sell on {{ shop.name }}</a></li>
+                  <li><a href="/pages/affiliate">Become an Affiliate</a></li>
+                  <li><a href="/pages/advertise">Advertise Your Products</a></li>
+                  <li><a href="/pages/partner">Partner Program</a></li>
+                  <li><a href="/pages/bulk-orders">Bulk / B2B Orders</a></li>
+                  <li><a href="/pages/contact">Business Enquiries</a></li>
+                {%- when 3 -%}
+                  <li><a href="/pages/payment-methods">Payment Methods</a></li>
+                  <li><a href="/pages/emi-options">EMI Options</a></li>
+                  <li><a href="/pages/gift-cards">Gift Cards</a></li>
+                  <li><a href="/pages/secure-shopping">Secure Shopping</a></li>
+                  <li><a href="/policies/privacy-policy">Privacy Policy</a></li>
+                  <li><a href="/policies/terms-of-service">Terms of Service</a></li>
+                {%- when 4 -%}
+                  <li><a href="{{ routes.account_url }}">Your Account</a></li>
+                  <li><a href="{{ routes.account_url }}/orders">Your Orders</a></li>
+                  <li><a href="/pages/shipping">Shipping Rates &amp; Policies</a></li>
+                  <li><a href="/policies/refund-policy">Returns &amp; Replacements</a></li>
+                  <li><a href="/pages/customer-service">Customer Service</a></li>
+                  <li><a href="/pages/track-order">Track Your Order</a></li>
+                  <li><a href="/pages/faq">FAQs</a></li>
+                  <li><a href="/pages/contact">Contact Us</a></li>
+              {%- endcase -%}
+            {%- endif -%}
+          </ul>
+        </div>
+      {%- endfor -%}
 
     </div>
+
+    <!-- SOCIAL MEDIA ICONS -->
+    {%- if section.settings.show_social_icons -%}
+      {%- assign has_social = false -%}
+      {%- if settings.social_facebook_link != blank or settings.social_twitter_link != blank or settings.social_instagram_link != blank or settings.social_youtube_link != blank or settings.social_pinterest_link != blank -%}
+        {%- assign has_social = true -%}
+      {%- endif -%}
+      {%- if has_social -%}
+        <div class="amz-footer__social">
+          {%- if settings.social_facebook_link != blank -%}
+            <a href="{{ settings.social_facebook_link }}" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>
+            </a>
+          {%- endif -%}
+          {%- if settings.social_twitter_link != blank -%}
+            <a href="{{ settings.social_twitter_link }}" target="_blank" rel="noopener noreferrer" aria-label="Twitter / X">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"/></svg>
+            </a>
+          {%- endif -%}
+          {%- if settings.social_instagram_link != blank -%}
+            <a href="{{ settings.social_instagram_link }}" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37zm1.5-4.87h.01"/></svg>
+            </a>
+          {%- endif -%}
+          {%- if settings.social_youtube_link != blank -%}
+            <a href="{{ settings.social_youtube_link }}" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M22.54 6.42a2.78 2.78 0 00-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 00-1.94 2A29 29 0 001 11.75a29 29 0 00.46 5.33A2.78 2.78 0 003.4 19.1c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 001.94-2 29 29 0 00.46-5.33 29 29 0 00-.46-5.33zM9.75 15.02V8.48l5.75 3.27-5.75 3.27z"/></svg>
+            </a>
+          {%- endif -%}
+          {%- if settings.social_pinterest_link != blank -%}
+            <a href="{{ settings.social_pinterest_link }}" target="_blank" rel="noopener noreferrer" aria-label="Pinterest">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.08 3.15 9.42 7.6 11.18-.1-.94-.19-2.38.04-3.41.21-.93 1.36-5.77 1.36-5.77s-.35-.7-.35-1.73c0-1.62.94-2.83 2.11-2.83 1 0 1.48.75 1.48 1.64 0 1-.64 2.5-.97 3.89-.27 1.16.58 2.1 1.72 2.1 2.07 0 3.66-2.18 3.66-5.33 0-2.79-2-4.74-4.87-4.74-3.32 0-5.27 2.49-5.27 5.06 0 1 .39 2.08.87 2.66.1.12.11.22.08.34l-.33 1.32c-.05.21-.17.26-.39.16-1.46-.68-2.37-2.81-2.37-4.52 0-3.67 2.67-7.04 7.7-7.04 4.04 0 7.18 2.88 7.18 6.73 0 4.02-2.53 7.25-6.05 7.25-1.18 0-2.29-.61-2.67-1.34l-.73 2.77c-.26 1.01-1 2.27-1.48 3.04A10 10 0 0012 24c6.63 0 12-5.37 12-12S18.63 0 12 0z"/></svg>
+            </a>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    {%- endif -%}
+
+    <!-- PAYMENT ICONS -->
+    {%- if section.settings.show_payment_icons -%}
+      {%- if shop.enabled_payment_types.size > 0 -%}
+        <div class="amz-footer__payments">
+          {%- for type in shop.enabled_payment_types -%}
+            {{ type | payment_type_svg_tag: class: 'amz-payment-icon' }}
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    {%- endif -%}
+
   </div>
 
   <!-- FOOTER DIVIDER -->
@@ -75,10 +186,14 @@
 
       <!-- Logo -->
       <a href="{{ routes.root_url }}" class="amz-footer__logo" aria-label="{{ shop.name }}">
-        <svg viewBox="0 0 160 38" xmlns="http://www.w3.org/2000/svg" width="120" height="28">
-          <text x="0" y="26" font-family="Arial Black, sans-serif" font-size="20" font-weight="900" fill="#ffffff" letter-spacing="-0.5">{{ shop.name | downcase | truncate: 10, '' }}</text>
-          <path d="M5 32 Q40 42 75 34 Q92 30 110 34" stroke="#FF9900" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-        </svg>
+        {%- if section.settings.footer_logo != blank -%}
+          <img src="{{ section.settings.footer_logo | image_url: width: section.settings.footer_logo_width }}" alt="{{ shop.name }}" class="amz-footer__logo-img" width="{{ section.settings.footer_logo_width | default: 120 }}" height="auto" loading="lazy">
+        {%- else -%}
+          <svg viewBox="0 0 160 38" xmlns="http://www.w3.org/2000/svg" width="120" height="28">
+            <text x="0" y="26" font-family="Arial Black, sans-serif" font-size="20" font-weight="900" fill="#ffffff" letter-spacing="-0.5">{{ shop.name | downcase | truncate: 10, '' }}</text>
+            <path d="M5 32 Q40 42 75 34 Q92 30 110 34" stroke="#FF9900" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          </svg>
+        {%- endif -%}
       </a>
 
       <!-- Language Selector -->
@@ -145,7 +260,7 @@
         <a href="/policies/shipping-policy">Shipping Policy</a>
         <a href="/pages/contact">Contact Us</a>
       </div>
-      <p class="amz-footer__copyright-text">© 2025, {{ shop.name }}. All rights reserved.</p>
+      <p class="amz-footer__copyright-text">&copy; {{ 'now' | date: "%Y" }}, {{ shop.name }}. {{ section.settings.copyright_text | default: 'All rights reserved.' }}</p>
     </div>
   </div>
 
@@ -154,7 +269,45 @@
 {% schema %}
 {
   "name": "Amazon Footer",
-  "settings": [],
+  "settings": [
+    {
+      "type": "header",
+      "content": "Footer Logo"
+    },
+    { "type": "image_picker", "id": "footer_logo", "label": "Footer Logo Image", "info": "If empty, shop name SVG is used" },
+    { "type": "range", "id": "footer_logo_width", "label": "Logo Width", "min": 60, "max": 200, "step": 5, "unit": "px", "default": 120 },
+    {
+      "type": "header",
+      "content": "Link Columns"
+    },
+    { "type": "text", "id": "footer_heading_1", "label": "Column 1 Heading", "default": "Get to Know Us" },
+    { "type": "link_list", "id": "footer_menu_1", "label": "Column 1 Menu", "info": "Select a menu to override default links" },
+    { "type": "text", "id": "footer_heading_2", "label": "Column 2 Heading", "default": "Sell & Partner With Us" },
+    { "type": "link_list", "id": "footer_menu_2", "label": "Column 2 Menu" },
+    { "type": "text", "id": "footer_heading_3", "label": "Column 3 Heading", "default": "Payments & Security" },
+    { "type": "link_list", "id": "footer_menu_3", "label": "Column 3 Menu" },
+    { "type": "text", "id": "footer_heading_4", "label": "Column 4 Heading", "default": "Let Us Help You" },
+    { "type": "link_list", "id": "footer_menu_4", "label": "Column 4 Menu" },
+    {
+      "type": "header",
+      "content": "Social & Payments"
+    },
+    { "type": "checkbox", "id": "show_social_icons", "label": "Show Social Media Icons", "default": true, "info": "Set URLs in the Social Media settings panel" },
+    { "type": "checkbox", "id": "show_payment_icons", "label": "Show Payment Icons", "default": true, "info": "Shows your store's accepted payment methods" },
+    {
+      "type": "header",
+      "content": "Copyright & Back to Top"
+    },
+    { "type": "text", "id": "copyright_text", "label": "Copyright Text", "default": "All rights reserved.", "info": "Year and shop name are added automatically" },
+    { "type": "text", "id": "back_to_top_text", "label": "Back to Top Button Text", "default": "Back to top" },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    { "type": "color", "id": "footer_bg_color", "label": "Footer Background", "default": "#232f3e" },
+    { "type": "color", "id": "footer_bottom_bg_color", "label": "Footer Bottom Background", "default": "#131921" },
+    { "type": "color", "id": "footer_text_color", "label": "Footer Text Color", "default": "#dddddd" }
+  ],
   "presets": [{ "name": "Amazon Footer" }]
 }
 {% endschema %}

@@ -286,6 +286,155 @@
         "default": "assistant_n4"
       },
       {
+        "type": "select",
+        "id": "google_font_override",
+        "label": "100+ Google Fonts Override",
+        "info": "Select a Google font to override the default Body Font picker.",
+        "options": [
+          { "value": "none", "label": "None (Use Font Picker above)" },
+          { "value": "ABeeZee", "label": "ABeeZee" },
+          { "value": "Abel", "label": "Abel" },
+          { "value": "Abril Fatface", "label": "Abril Fatface" },
+          { "value": "Acme", "label": "Acme" },
+          { "value": "Actor", "label": "Actor" },
+          { "value": "Advent Pro", "label": "Advent Pro" },
+          { "value": "Aleo", "label": "Aleo" },
+          { "value": "Alegreya", "label": "Alegreya" },
+          { "value": "Alegreya Sans", "label": "Alegreya Sans" },
+          { "value": "Alice", "label": "Alice" },
+          { "value": "Almarai", "label": "Almarai" },
+          { "value": "Amatic SC", "label": "Amatic SC" },
+          { "value": "Antic Slab", "label": "Antic Slab" },
+          { "value": "Anton", "label": "Anton" },
+          { "value": "Architects Daughter", "label": "Architects Daughter" },
+          { "value": "Archivo", "label": "Archivo" },
+          { "value": "Archivo Black", "label": "Archivo Black" },
+          { "value": "Archivo Narrow", "label": "Archivo Narrow" },
+          { "value": "Arimo", "label": "Arimo" },
+          { "value": "Arsenica", "label": "Arsenica" },
+          { "value": "Arvo", "label": "Arvo" },
+          { "value": "Asap", "label": "Asap" },
+          { "value": "Asap Condensed", "label": "Asap Condensed" },
+          { "value": "Assistant", "label": "Assistant" },
+          { "value": "Balsamiq Sans", "label": "Balsamiq Sans" },
+          { "value": "Bebas Neue", "label": "Bebas Neue" },
+          { "value": "Bitter", "label": "Bitter" },
+          { "value": "Bodoni Moda", "label": "Bodoni Moda" },
+          { "value": "Bree Serif", "label": "Bree Serif" },
+          { "value": "Cabin", "label": "Cabin" },
+          { "value": "Cabin Condensed", "label": "Cabin Condensed" },
+          { "value": "Cairo", "label": "Cairo" },
+          { "value": "Cardo", "label": "Cardo" },
+          { "value": "Catamaran", "label": "Catamaran" },
+          { "value": "Caveat", "label": "Caveat" },
+          { "value": "Chakra Petch", "label": "Chakra Petch" },
+          { "value": "Changa", "label": "Changa" },
+          { "value": "Cinzel", "label": "Cinzel" },
+          { "value": "Comfortaa", "label": "Comfortaa" },
+          { "value": "Cormorant", "label": "Cormorant" },
+          { "value": "Cormorant Garamond", "label": "Cormorant Garamond" },
+          { "value": "Courgette", "label": "Courgette" },
+          { "value": "Crimson Pro", "label": "Crimson Pro" },
+          { "value": "Crimson Text", "label": "Crimson Text" },
+          { "value": "Cuprum", "label": "Cuprum" },
+          { "value": "Dancing Script", "label": "Dancing Script" },
+          { "value": "DM Sans", "label": "DM Sans" },
+          { "value": "DM Serif Display", "label": "DM Serif Display" },
+          { "value": "DM Serif Text", "label": "DM Serif Text" },
+          { "value": "Dosis", "label": "Dosis" },
+          { "value": "EB Garamond", "label": "EB Garamond" },
+          { "value": "Eczar", "label": "Eczar" },
+          { "value": "Exo", "label": "Exo" },
+          { "value": "Exo 2", "label": "Exo 2" },
+          { "value": "Fira Sans", "label": "Fira Sans" },
+          { "value": "Fira Sans Condensed", "label": "Fira Sans Condensed" },
+          { "value": "Fjalla One", "label": "Fjalla One" },
+          { "value": "Francois One", "label": "Francois One" },
+          { "value": "Frank Ruhl Libre", "label": "Frank Ruhl Libre" },
+          { "value": "Fredoka One", "label": "Fredoka One" },
+          { "value": "Gelasio", "label": "Gelasio" },
+          { "value": "Heebo", "label": "Heebo" },
+          { "value": "Hind", "label": "Hind" },
+          { "value": "Hind Madurai", "label": "Hind Madurai" },
+          { "value": "Hind Siliguri", "label": "Hind Siliguri" },
+          { "value": "IBM Plex Mono", "label": "IBM Plex Mono" },
+          { "value": "IBM Plex Sans", "label": "IBM Plex Sans" },
+          { "value": "IBM Plex Serif", "label": "IBM Plex Serif" },
+          { "value": "Inconsolata", "label": "Inconsolata" },
+          { "value": "Indie Flower", "label": "Indie Flower" },
+          { "value": "Inter", "label": "Inter" },
+          { "value": "Josefin Sans", "label": "Josefin Sans" },
+          { "value": "Josefin Slab", "label": "Josefin Slab" },
+          { "value": "Jost", "label": "Jost" },
+          { "value": "Kanit", "label": "Kanit" },
+          { "value": "Karla", "label": "Karla" },
+          { "value": "Lato", "label": "Lato" },
+          { "value": "Lexend", "label": "Lexend" },
+          { "value": "Lexend Deca", "label": "Lexend Deca" },
+          { "value": "Libre Baskerville", "label": "Libre Baskerville" },
+          { "value": "Libre Franklin", "label": "Libre Franklin" },
+          { "value": "Lobster", "label": "Lobster" },
+          { "value": "Lora", "label": "Lora" },
+          { "value": "Macondo", "label": "Macondo" },
+          { "value": "Manrope", "label": "Manrope" },
+          { "value": "Martel", "label": "Martel" },
+          { "value": "Mate", "label": "Mate" },
+          { "value": "Merriweather", "label": "Merriweather" },
+          { "value": "Merriweather Sans", "label": "Merriweather Sans" },
+          { "value": "Montserrat", "label": "Montserrat" },
+          { "value": "Montserrat Alternates", "label": "Montserrat Alternates" },
+          { "value": "Mukta", "label": "Mukta" },
+          { "value": "Mulish", "label": "Mulish" },
+          { "value": "Nanum Gothic", "label": "Nanum Gothic" },
+          { "value": "Nunito", "label": "Nunito" },
+          { "value": "Nunito Sans", "label": "Nunito Sans" },
+          { "value": "Open Sans", "label": "Open Sans" },
+          { "value": "Oswald", "label": "Oswald" },
+          { "value": "Outfit", "label": "Outfit" },
+          { "value": "Overpass", "label": "Overpass" },
+          { "value": "Oxygen", "label": "Oxygen" },
+          { "value": "Pacifico", "label": "Pacifico" },
+          { "value": "Playfair Display", "label": "Playfair Display" },
+          { "value": "Poppins", "label": "Poppins" },
+          { "value": "Prompt", "label": "Prompt" },
+          { "value": "PT Sans", "label": "PT Sans" },
+          { "value": "PT Serif", "label": "PT Serif" },
+          { "value": "Public Sans", "label": "Public Sans" },
+          { "value": "Quicksand", "label": "Quicksand" },
+          { "value": "Rajdhani", "label": "Rajdhani" },
+          { "value": "Raleway", "label": "Raleway" },
+          { "value": "Red Hat Display", "label": "Red Hat Display" },
+          { "value": "Righteous", "label": "Righteous" },
+          { "value": "Roboto", "label": "Roboto" },
+          { "value": "Roboto Condensed", "label": "Roboto Condensed" },
+          { "value": "Roboto Mono", "label": "Roboto Mono" },
+          { "value": "Roboto Slab", "label": "Roboto Slab" },
+          { "value": "Rubik", "label": "Rubik" },
+          { "value": "Sarabun", "label": "Sarabun" },
+          { "value": "Signika", "label": "Signika" },
+          { "value": "Signika Negative", "label": "Signika Negative" },
+          { "value": "Slabo 27px", "label": "Slabo 27px" },
+          { "value": "Source Code Pro", "label": "Source Code Pro" },
+          { "value": "Source Sans Pro", "label": "Source Sans Pro" },
+          { "value": "Source Serif Pro", "label": "Source Serif Pro" },
+          { "value": "Space Grotesk", "label": "Space Grotesk" },
+          { "value": "Space Mono", "label": "Space Mono" },
+          { "value": "Spectral", "label": "Spectral" },
+          { "value": "Syne", "label": "Syne" },
+          { "value": "Tajawal", "label": "Tajawal" },
+          { "value": "Teko", "label": "Teko" },
+          { "value": "Titillium Web", "label": "Titillium Web" },
+          { "value": "Ubuntu", "label": "Ubuntu" },
+          { "value": "Ubuntu Condensed", "label": "Ubuntu Condensed" },
+          { "value": "Varela Round", "label": "Varela Round" },
+          { "value": "Vollkorn", "label": "Vollkorn" },
+          { "value": "Work Sans", "label": "Work Sans" },
+          { "value": "Yanone Kaffeesatz", "label": "Yanone Kaffeesatz" },
+          { "value": "Zilla Slab", "label": "Zilla Slab" }
+        ],
+        "default": "none"
+      },
+      {
         "type": "font_picker",
         "id": "type_header_font",
         "label": "Heading Font",
@@ -373,11 +522,6 @@
     "name": "Header",
     "settings": [
       {
-        "type": "image_picker",
-        "id": "logo",
-        "label": "Logo Image"
-      },
-      {
         "type": "range",
         "id": "logo_width",
         "label": "Logo Width",
@@ -410,6 +554,23 @@
         "id": "sticky_header",
         "label": "Sticky Header",
         "default": true
+      }
+    ]
+  },
+  {
+    "name": "Announcement Bar",
+    "settings": [
+      {
+        "type": "color",
+        "id": "announcement_bar_bg",
+        "label": "Background Color",
+        "default": "#232f3e"
+      },
+      {
+        "type": "color",
+        "id": "announcement_bar_text_color",
+        "label": "Text Color",
+        "default": "#ffffff"
       }
     ]
   },
@@ -700,6 +861,156 @@
           { "value": "slow",   "label": "Slow (500ms)" }
         ],
         "default": "normal"
+      }
+    ]
+  },
+  {
+    "name": "🌐 Currency & Language",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "enable_currency_converter",
+        "label": "Enable Currency Converter",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "supported_currencies",
+        "label": "Supported Currencies (Comma separated)",
+        "default": "USD,EUR,GBP,CAD,AUD,INR",
+        "info": "Use standard ISO currency codes"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_language_selector",
+        "label": "Enable Language Selector",
+        "default": false
+      }
+    ]
+  },
+  {
+    "name": "🔔 Popups & Notifications",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Newsletter Popup"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_newsletter_popup",
+        "label": "Enable Newsletter Popup",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "popup_heading",
+        "label": "Popup Heading",
+        "default": "Join our VIP List"
+      },
+      {
+        "type": "textarea",
+        "id": "popup_text",
+        "label": "Popup Text",
+        "default": "Subscribe to get special offers, free giveaways, and once-in-a-lifetime deals."
+      },
+      {
+        "type": "range",
+        "id": "popup_delay",
+        "label": "Popup Delay (Seconds)",
+        "min": 0,
+        "max": 30,
+        "step": 1,
+        "default": 5
+      },
+      {
+        "type": "header",
+        "content": "Sales Notification (Recent Sales)"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_sales_notification",
+        "label": "Enable Sales Notification",
+        "default": true,
+        "info": "Shows a popup 'Someone just bought...'"
+      }
+    ]
+  },
+  {
+    "name": "🍪 Cookie Banner",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "enable_cookie_banner",
+        "label": "Enable Cookie Consent Banner",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "cookie_text",
+        "label": "Cookie Text",
+        "default": "We use cookies to improve your experience on our website. By browsing this website, you agree to our use of cookies."
+      },
+      {
+        "type": "text",
+        "id": "cookie_button_text",
+        "label": "Accept Button Text",
+        "default": "Got it!"
+      }
+    ]
+  },
+  {
+    "name": "🔞 Age Verification",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "enable_age_verification",
+        "label": "Enable Age Verification Popup",
+        "default": false
+      },
+      {
+        "type": "text",
+        "id": "age_verification_heading",
+        "label": "Heading",
+        "default": "Are you 18 or older?"
+      },
+      {
+        "type": "text",
+        "id": "age_verification_subheading",
+        "label": "Subheading",
+        "default": "You must be 18 years of age or older to enter this site."
+      },
+      {
+        "type": "text",
+        "id": "age_verification_yes",
+        "label": "Yes Button Text",
+        "default": "Yes, I am 18 or older"
+      },
+      {
+        "type": "text",
+        "id": "age_verification_no",
+        "label": "No Button Text",
+        "default": "No, I am under 18"
+      }
+    ]
+  },
+  {
+    "name": "Advanced",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Custom Code"
+      },
+      {
+        "type": "textarea",
+        "id": "custom_css",
+        "label": "Custom CSS",
+        "info": "Add custom CSS rules. Wrapped in <style> tags automatically."
+      },
+      {
+        "type": "textarea",
+        "id": "custom_js",
+        "label": "Custom JavaScript",
+        "info": "Add custom JS. Wrapped in <script> tags automatically. Runs after page load."
       }
     ]
   }

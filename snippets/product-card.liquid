@@ -77,10 +77,16 @@
         <span class="badge badge--new">New</span>
       {%- endif -%}
       {%- if product.tags contains 'bestseller' or product.tags contains 'best-seller' -%}
-        <span class="badge badge--bestseller">🏆 Best Seller</span>
+        <span class="badge badge--bestseller">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="10" height="10" fill="currentColor" aria-hidden="true"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>
+          Best Seller
+        </span>
       {%- endif -%}
       {%- if product.tags contains 'prime' -%}
-        <span class="badge badge--prime">⚡Prime</span>
+        <span class="badge badge--prime">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="10" height="10" fill="currentColor" aria-hidden="true"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          Prime
+        </span>
       {%- endif -%}
       {%- if low_stock -%}
         <span class="badge badge--stock">Only {{ stock_count }} left!</span>

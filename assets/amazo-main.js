@@ -35,7 +35,7 @@ window.AmazoDrw = (function () {
   function shpFill()  { return document.getElementById('cartShippingFill'); }
 
   /* ── Open / Close ── */
-  function open() {
+  function openDrawer() {
     var d = drawer(); var o = overlay();
     if (!d) return;
     d.classList.add('is-open');
@@ -45,7 +45,7 @@ window.AmazoDrw = (function () {
     loadCart();
   }
 
-  function close() {
+  function closeDrawer() {
     var d = drawer(); var o = overlay();
     if (!d) return;
     d.classList.remove('is-open');
@@ -178,7 +178,7 @@ window.AmazoDrw = (function () {
           afterAdd(cart);
         } else {
           /* DEFAULT: open cart drawer */
-          open();
+          openDrawer();
         }
         return cart;
       })
@@ -221,12 +221,32 @@ window.AmazoDrw = (function () {
 
     /* Cart icon → open drawer */
     document.addEventListener('click', function (e) {
-      var cartLink = e.target.closest('.amz-header__cart-link, [data-cart-drawer-trigger]');
-      if (cartLink) { e.preventDefault(); open(); return; }
+      /* Intercept any link pointing to /cart or having specific classes */
+      var cartLink = e.target.closest('a[href="/cart"], a[href^="/cart?"], .amz-header__cart-link, [data-cart-drawer-trigger]');
+      
+      /* Don't intercept if cart_type is explicitly 'page' (unless triggered via button) */
+      if (cartLink && window.AmezoConfig && window.AmezoConfig.cartType === 'page' && !cartLink.classList.contains('amz-header__cart-link')) {
+        return; 
+      }
+      
+      /* Only prevent default if it's not the cart drawer checkout/view cart buttons */
+      if (cartLink && !cartLink.closest('#cartDrawer')) { 
+        e.preventDefault(); 
+        openDrawer(); 
+        /* Also close side menu if it's open */
+        var sideMenu = document.getElementById('amz-side-menu');
+        if (sideMenu && sideMenu.classList.contains('open')) {
+          sideMenu.classList.remove('open');
+          var sideOverlay = document.getElementById('amz-side-overlay');
+          if (sideOverlay) sideOverlay.classList.remove('active');
+          document.body.classList.remove('menu-open');
+        }
+        return; 
+      }
 
       /* Close overlay or close btn */
       if (e.target.closest('#cartDrawerOverlay') || e.target.closest('#cartDrawerClose')) {
-        close(); return;
+        closeDrawer(); return;
       }
 
       /* Cart qty buttons */
@@ -364,13 +384,13 @@ window.AmazoDrw = (function () {
 
     /* ESC closes drawer */
     document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape') close();
+      if (e.key === 'Escape') closeDrawer();
     });
   }
 
   return {
-    open: open,
-    close: close,
+    open: openDrawer,
+    close: closeDrawer,
     addToCart: addToCart,
     loadCart: loadCart,
     showToast: showToast,
@@ -1100,13 +1120,17 @@ window.AmazQV = (function () {
       atcBtn.classList.toggle('is-unavailable', !variant.available);
     }
 
-    var priceEl = document.querySelector('.amz-price-main');
-    if (priceEl && variant.price) {
-      var symEl = priceEl.querySelector('.amz-price-sym');
-      var symText = symEl ? symEl.textContent : '₹';
+    var priceEl = document.querySelectorAll('.amz-price-main, .amz-sticky-buy__price');
+    if (priceEl.length && variant.price) {
+      var symText = '₹';
+      var mainSym = document.querySelector('.amz-price-sym');
+      if (mainSym) symText = mainSym.textContent;
+      
       var formatted = (variant.price / 100).toFixed(2);
-      priceEl.innerHTML = '<span class="amz-price-sym">' + symText + '</span>' +
-        formatted.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      priceEl.forEach(function(el) {
+        el.innerHTML = (el.classList.contains('amz-price-main') ? '<span class="amz-price-sym">' + symText + '</span>' : symText) +
+          formatted.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      });
     }
 
     if (variant.featured_image && variant.featured_image.src) {

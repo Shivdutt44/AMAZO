@@ -1,4 +1,17 @@
 {% comment %} Amazon Announcement Bar {% endcomment %}
+{%- style -%}
+  .amz-announce {
+    background: {{ settings.announcement_bar_bg | default: '#232f3e' }};
+    color: {{ settings.announcement_bar_text_color | default: '#ffffff' }};
+  }
+  .amz-announce a {
+    color: {{ settings.announcement_bar_text_color | default: '#ffffff' }};
+    text-decoration: none;
+  }
+  .amz-announce a:hover {
+    text-decoration: underline;
+  }
+{%- endstyle -%}
 {%- if section.settings.text != blank -%}
 <div class="amz-announce">
   <div class="amz-announce__inner">
