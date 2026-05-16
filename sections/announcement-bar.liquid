@@ -1,35 +1,477 @@
-{% comment %} Amazon Announcement Bar {% endcomment %}
-{%- style -%}
-  .amz-announce {
-    background: {{ settings.announcement_bar_bg | default: '#232f3e' }};
-    color: {{ settings.announcement_bar_text_color | default: '#ffffff' }};
-  }
-  .amz-announce a {
-    color: {{ settings.announcement_bar_text_color | default: '#ffffff' }};
-    text-decoration: none;
-  }
-  .amz-announce a:hover {
-    text-decoration: underline;
-  }
-{%- endstyle -%}
-{%- if section.settings.text != blank -%}
-<div class="amz-announce">
-  <div class="amz-announce__inner">
-    {%- if section.settings.link != blank -%}
-      <a href="{{ section.settings.link }}">{{ section.settings.text }}</a>
-    {%- else -%}
-      {{ section.settings.text }}
+{% comment %} Amazo Announcement Bar — Premium v2: blocks, D:H:M:S timer, coupon, per-block colors, mobile-optimized {% endcomment %}
+{%- assign fallback_bg    = settings.announcement_bar_bg | default: '#232f3e' -%}
+{%- assign fallback_color = settings.announcement_bar_text_color | default: '#ffffff' -%}
+
+{%- if section.blocks.size > 0 -%}
+<div class="amz-ann" id="amz-ann-{{ section.id }}"
+  data-speed="{{ section.settings.rotation_speed | default: 4000 }}"
+  data-animate="{{ section.settings.animation | default: 'fade' }}">
+
+  <div class="amz-ann__inner">
+
+    {%- if section.settings.show_arrows and section.blocks.size > 1 -%}
+      <button class="amz-ann__arrow amz-ann__arrow--prev" aria-label="Previous">&#8249;</button>
     {%- endif -%}
+
+    <div class="amz-ann__track">
+      {%- for block in section.blocks -%}
+        {%- assign b_bg    = block.settings.bg_color    | default: fallback_bg -%}
+        {%- assign b_color = block.settings.text_color  | default: fallback_color -%}
+        {%- assign b_badge = block.settings.badge_color | default: '#ff9900' -%}
+
+        <div class="amz-ann__slide{% if forloop.first %} is-active{% endif %}"
+          {{ block.shopify_attributes }}
+          data-endtime="{{ block.settings.timer_end }}"
+          style="background:{{ b_bg }};color:{{ b_color }};">
+
+          <div class="amz-ann__content">
+
+            {%- comment %} — Message — {%- endcomment %}
+            <span class="amz-ann__msg">
+              {%- if block.settings.emoji != blank -%}
+                <span class="amz-ann__emoji" aria-hidden="true">{{ block.settings.emoji }}</span>
+              {%- endif -%}
+              {%- if block.settings.link != blank -%}
+                <a href="{{ block.settings.link }}" class="amz-ann__link" style="color:{{ b_color }};">{{ block.settings.text }}</a>
+              {%- else -%}
+                <span>{{ block.settings.text }}</span>
+              {%- endif -%}
+            </span>
+
+            {%- comment %} — Countdown Timer (D:H:M:S) — {%- endcomment %}
+            {%- if block.settings.timer_end != blank -%}
+              <span class="amz-ann__timer" aria-label="Time remaining">
+                {%- if block.settings.timer_label != blank -%}
+                  <span class="amz-ann__timer-caption">{{ block.settings.timer_label }}:</span>
+                {%- endif -%}
+                <span class="amz-ann__timer-unit">
+                  <span class="amz-ann__timer-seg">
+                    <span class="amz-ann__timer-num" data-unit="d">00</span>
+                    <span class="amz-ann__timer-lbl">d</span>
+                  </span>
+                  <span class="amz-ann__timer-sep">:</span>
+                  <span class="amz-ann__timer-seg">
+                    <span class="amz-ann__timer-num" data-unit="h">00</span>
+                    <span class="amz-ann__timer-lbl">h</span>
+                  </span>
+                  <span class="amz-ann__timer-sep">:</span>
+                  <span class="amz-ann__timer-seg">
+                    <span class="amz-ann__timer-num" data-unit="m">00</span>
+                    <span class="amz-ann__timer-lbl">m</span>
+                  </span>
+                  <span class="amz-ann__timer-sep">:</span>
+                  <span class="amz-ann__timer-seg">
+                    <span class="amz-ann__timer-num" data-unit="s">00</span>
+                    <span class="amz-ann__timer-lbl">s</span>
+                  </span>
+                </span>
+              </span>
+            {%- endif -%}
+
+            {%- comment %} — Coupon Code — {%- endcomment %}
+            {%- if block.settings.coupon_code != blank -%}
+              <span class="amz-ann__coupon" style="border-color:{{ b_badge }};color:{{ b_badge }};">
+                <span class="amz-ann__coupon-label">USE:</span>
+                <strong class="amz-ann__coupon-code">{{ block.settings.coupon_code }}</strong>
+                <button class="amz-ann__coupon-copy" data-code="{{ block.settings.coupon_code }}" aria-label="Copy coupon" style="background:{{ b_badge }};color:{{ b_bg }};">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+                  <span class="amz-ann__copy-text">Copy</span>
+                </button>
+              </span>
+            {%- endif -%}
+
+          </div>
+        </div>
+      {%- endfor -%}
+    </div>
+
+    {%- if section.settings.show_arrows and section.blocks.size > 1 -%}
+      <button class="amz-ann__arrow amz-ann__arrow--next" aria-label="Next">&#8250;</button>
+    {%- endif -%}
+
+    {%- if section.settings.show_dots and section.blocks.size > 1 -%}
+      <div class="amz-ann__dots" aria-hidden="true">
+        {%- for block in section.blocks -%}
+          <span class="amz-ann__dot{% if forloop.first %} is-active{% endif %}" data-index="{{ forloop.index0 }}"></span>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
   </div>
 </div>
+
+<style>
+/* ── Base wrapper ──────────────────────────────────── */
+.amz-ann {
+  font-size: 13px; font-weight: 500;
+  overflow: hidden; position: relative;
+}
+.amz-ann__inner { display: flex; align-items: stretch; }
+.amz-ann__track { flex: 1; position: relative; min-height: 40px; }
+
+/* ── Slides ────────────────────────────────────────── */
+.amz-ann__slide {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  padding: 7px 14px;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.45s ease;
+}
+.amz-ann__slide.is-active {
+  opacity: 1; position: relative; pointer-events: auto;
+}
+.amz-ann[data-animate="slide"] .amz-ann__slide {
+  transform: translateX(50px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+.amz-ann[data-animate="slide"] .amz-ann__slide.is-active { transform: translateX(0); }
+.amz-ann[data-animate="slide"] .amz-ann__slide.is-leaving { transform: translateX(-50px); opacity: 0; }
+
+/* ── Content row ───────────────────────────────────── */
+.amz-ann__content {
+  display: flex; align-items: center; justify-content: center;
+  gap: 10px; flex-wrap: nowrap; /* NO wrap — single line always */
+  width: 100%; overflow: hidden;
+}
+.amz-ann__msg {
+  display: flex; align-items: center; gap: 5px;
+  min-width: 0; /* allow shrink */
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  flex-shrink: 1;
+}
+.amz-ann__emoji { font-size: 14px; flex-shrink: 0; }
+.amz-ann__msg > span,
+.amz-ann__link {
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  color: inherit; text-decoration: none;
+  font-size: 13px;
+}
+.amz-ann__link:hover { text-decoration: underline; }
+
+/* ── Timer ─────────────────────────────────────────── */
+.amz-ann__timer {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: rgba(0,0,0,0.18); border-radius: 20px;
+  padding: 3px 9px; flex-shrink: 0; white-space: nowrap;
+}
+.amz-ann__timer-caption {
+  font-size: 11px; opacity: 0.8; letter-spacing: 0.2px;
+}
+.amz-ann__timer-unit {
+  display: inline-flex; align-items: center; gap: 2px;
+  font-variant-numeric: tabular-nums;
+}
+.amz-ann__timer-seg { display: inline-flex; align-items: baseline; gap: 1px; }
+.amz-ann__timer-num {
+  background: rgba(0,0,0,0.28); border-radius: 3px;
+  padding: 1px 4px; font-size: 12px; font-weight: 800;
+  min-width: 20px; text-align: center;
+  transition: transform 0.15s ease;
+}
+.amz-ann__timer-num.tick { transform: scale(1.2); }
+.amz-ann__timer-lbl { font-size: 9px; opacity: 0.7; letter-spacing: 0; }
+.amz-ann__timer-sep { font-weight: 700; opacity: 0.5; font-size: 11px; margin: 0 1px; }
+
+/* ── Coupon ────────────────────────────────────────── */
+.amz-ann__coupon {
+  display: inline-flex; align-items: center; gap: 5px;
+  border: 1.5px dashed currentColor; border-radius: 5px;
+  padding: 2px 7px; flex-shrink: 0; white-space: nowrap;
+}
+.amz-ann__coupon-label { font-size: 10px; opacity: 0.7; font-weight: 600; }
+.amz-ann__coupon-code { font-size: 12px; font-weight: 800; letter-spacing: 0.8px; }
+.amz-ann__coupon-copy {
+  display: inline-flex; align-items: center; gap: 2px;
+  border: none; border-radius: 3px; padding: 2px 6px;
+  font-size: 10px; font-weight: 700; cursor: pointer;
+  transition: opacity 0.2s, transform 0.15s;
+  white-space: nowrap;
+}
+.amz-ann__coupon-copy:hover { opacity: 0.85; transform: scale(1.04); }
+.amz-ann__coupon-copy.copied svg { display: none; }
+
+/* ── Arrows ────────────────────────────────────────── */
+.amz-ann__arrow {
+  flex-shrink: 0; background: transparent; border: none;
+  color: inherit; font-size: 20px; cursor: pointer;
+  padding: 0 8px; opacity: 0.6; transition: opacity 0.2s;
+  display: flex; align-items: center;
+}
+.amz-ann__arrow:hover { opacity: 1; }
+
+/* ── Dots ──────────────────────────────────────────── */
+.amz-ann__dots {
+  position: absolute; bottom: 3px; left: 50%;
+  transform: translateX(-50%);
+  display: flex; gap: 4px; align-items: center;
+}
+.amz-ann__dot {
+  width: 4px; height: 4px; border-radius: 50%;
+  background: currentColor; opacity: 0.35; cursor: pointer;
+  transition: opacity 0.3s, transform 0.3s;
+}
+.amz-ann__dot.is-active { opacity: 1; transform: scale(1.4); }
+
+/* ══════════════════════════════════════
+   MOBILE RESPONSIVE — compact single bar
+   ══════════════════════════════════════ */
+@media (max-width: 768px) {
+  .amz-ann__slide { padding: 6px 10px; }
+  .amz-ann__content { gap: 7px; }
+
+  /* text truncates to give space for timer + coupon */
+  .amz-ann__msg { max-width: 38%; }
+  .amz-ann__emoji { font-size: 12px; }
+  .amz-ann__msg > span,
+  .amz-ann__link { font-size: 12px; }
+
+  /* timer compact */
+  .amz-ann__timer { padding: 2px 7px; gap: 4px; }
+  .amz-ann__timer-caption { font-size: 10px; }
+  .amz-ann__timer-num { font-size: 11px; min-width: 17px; padding: 1px 3px; border-radius: 2px; }
+  .amz-ann__timer-lbl { font-size: 8px; }
+  .amz-ann__timer-sep { font-size: 10px; margin: 0; }
+
+  /* coupon compact */
+  .amz-ann__coupon { padding: 2px 5px; gap: 4px; border-radius: 4px; }
+  .amz-ann__coupon-label { display: none; } /* hide "USE:" on mobile */
+  .amz-ann__coupon-code { font-size: 11px; letter-spacing: 0.5px; }
+  .amz-ann__coupon-copy { padding: 2px 5px; font-size: 9px; }
+  .amz-ann__coupon-copy svg { display: none; } /* icon only, save space */
+}
+
+@media (max-width: 480px) {
+  .amz-ann__slide { padding: 5px 8px; }
+  .amz-ann__content { gap: 6px; }
+  .amz-ann__msg { max-width: 42%; }
+
+  /* on very small: hide days unit to save space */
+  .amz-ann__timer-seg:first-child { display: none; }
+  .amz-ann__timer-sep:first-of-type { display: none; }
+  /* timer even more compact */
+  .amz-ann__timer { padding: 2px 6px; }
+  .amz-ann__timer-num { min-width: 16px; font-size: 10px; }
+}
+</style>
+
+<script>
+(function () {
+  var wrap = document.getElementById('amz-ann-{{ section.id }}');
+  if (!wrap) return;
+
+  var slides  = Array.from(wrap.querySelectorAll('.amz-ann__slide'));
+  var dots    = Array.from(wrap.querySelectorAll('.amz-ann__dot'));
+  var speed   = parseInt(wrap.dataset.speed, 10) || 4000;
+  var animate = wrap.dataset.animate || 'fade';
+  var current = 0, rotateTimer;
+
+  /* ── Rotation ───────────────────────────────────── */
+  function goTo(idx) {
+    var prev = current;
+    slides[prev].classList.remove('is-active');
+    if (animate === 'slide') slides[prev].classList.add('is-leaving');
+    if (dots[prev]) dots[prev].classList.remove('is-active');
+    current = (idx + slides.length) % slides.length;
+    slides[current].classList.add('is-active');
+    if (animate === 'slide') setTimeout(function () { slides[prev].classList.remove('is-leaving'); }, 450);
+    if (dots[current]) dots[current].classList.add('is-active');
+  }
+  function next() { goTo(current + 1); }
+  function prev_slide() { goTo(current - 1); }
+  function startRot() { if (slides.length > 1) rotateTimer = setInterval(next, speed); }
+  function resetRot()  { clearInterval(rotateTimer); startRot(); }
+
+  var btnN = wrap.querySelector('.amz-ann__arrow--next');
+  var btnP = wrap.querySelector('.amz-ann__arrow--prev');
+  if (btnN) btnN.addEventListener('click', function () { next(); resetRot(); });
+  if (btnP) btnP.addEventListener('click', function () { prev_slide(); resetRot(); });
+  dots.forEach(function (d) {
+    d.addEventListener('click', function () { goTo(parseInt(d.dataset.index, 10)); resetRot(); });
+  });
+  startRot();
+
+  /* ── Countdown — D : H : M : S ──────────────────── */
+  slides.forEach(function (slide) {
+    var endStr = slide.dataset.endtime;
+    if (!endStr) return;
+    var endTime = new Date(endStr).getTime();
+    if (isNaN(endTime)) return;
+
+    var dEl = slide.querySelector('[data-unit="d"]');
+    var hEl = slide.querySelector('[data-unit="h"]');
+    var mEl = slide.querySelector('[data-unit="m"]');
+    var sEl = slide.querySelector('[data-unit="s"]');
+
+    function pad(n) { return n < 10 ? '0' + n : String(n); }
+
+    function tick(el, val, pad2) {
+      if (!el) return;
+      var str = pad2 ? pad(val) : String(val);
+      if (el.textContent !== str) {
+        el.textContent = str;
+        el.classList.add('tick');
+        setTimeout(function () { el.classList.remove('tick'); }, 180);
+      }
+    }
+
+    function update() {
+      var diff = Math.max(0, endTime - Date.now());
+      if (diff === 0) clearInterval(clockTimer);
+      var d = Math.floor(diff / 86400000);
+      var h = Math.floor((diff % 86400000) / 3600000);
+      var m = Math.floor((diff % 3600000)  / 60000);
+      var s = Math.floor((diff % 60000)    / 1000);
+      tick(dEl, d, false);   /* days: no leading zero (15d looks better) */
+      tick(hEl, h, true);
+      tick(mEl, m, true);
+      tick(sEl, s, true);
+    }
+    var clockTimer = setInterval(update, 1000);
+    update();
+  });
+
+  /* ── Copy coupon ─────────────────────────────────── */
+  wrap.addEventListener('click', function (e) {
+    var btn = e.target.closest('.amz-ann__coupon-copy');
+    if (!btn) return;
+    var code = btn.dataset.code;
+    if (!code) return;
+    (navigator.clipboard
+      ? navigator.clipboard.writeText(code).catch(function () { fbCopy(code); })
+      : fbCopy(code));
+    var txt = btn.querySelector('.amz-ann__copy-text');
+    btn.classList.add('copied');
+    if (txt) txt.textContent = '✓';
+    setTimeout(function () {
+      btn.classList.remove('copied');
+      if (txt) txt.textContent = 'Copy';
+    }, 2000);
+  });
+
+  function fbCopy(text) {
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.cssText = 'position:fixed;opacity:0';
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); } catch (_) {}
+    document.body.removeChild(ta);
+  }
+})();
+</script>
 {%- endif -%}
+
 {% schema %}
 {
-  "name": "Amazon Announcement Bar",
+  "name": "Announcement Bar",
+  "max_blocks": 10,
   "settings": [
-    { "type": "text", "id": "text", "label": "Announcement Text", "default": "🎉 Free Shipping on orders over $35! Shop now and save big →" },
-    { "type": "url", "id": "link", "label": "Announcement Link" }
+    {
+      "type": "range",
+      "id": "rotation_speed",
+      "label": "Auto-rotate Speed (ms)",
+      "min": 1000,
+      "max": 9500,
+      "step": 500,
+      "default": 4000,
+      "info": "Milliseconds between slides"
+    },
+    {
+      "type": "select",
+      "id": "animation",
+      "label": "Transition",
+      "options": [
+        { "value": "fade",  "label": "Fade" },
+        { "value": "slide", "label": "Slide" }
+      ],
+      "default": "fade"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_arrows",
+      "label": "Show Prev / Next Arrows",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_dots",
+      "label": "Show Dot Indicators",
+      "default": false
+    }
   ],
-  "presets": [{ "name": "Amazon Announcement Bar" }]
+  "blocks": [
+    {
+      "type": "announcement",
+      "name": "Announcement",
+      "settings": [
+        {
+          "type": "header",
+          "content": "Colors"
+        },
+        { "type": "color", "id": "bg_color",    "label": "Background Color",      "default": "#232f3e" },
+        { "type": "color", "id": "text_color",  "label": "Text Color",            "default": "#ffffff" },
+        { "type": "color", "id": "badge_color", "label": "Coupon / Accent Color", "default": "#ff9900" },
+        {
+          "type": "header",
+          "content": "Message"
+        },
+        { "type": "text", "id": "emoji", "label": "Emoji / Icon", "default": "🎉" },
+        { "type": "text", "id": "text",  "label": "Announcement Text", "default": "Free Shipping on orders over $35!" },
+        { "type": "url",  "id": "link",  "label": "Link (optional)" },
+        {
+          "type": "header",
+          "content": "Countdown Timer"
+        },
+        {
+          "type": "text",
+          "id": "timer_end",
+          "label": "End Date & Time",
+          "info": "Format: YYYY-MM-DDTHH:MM:SS — e.g. 2026-05-31T23:59:00"
+        },
+        { "type": "text", "id": "timer_label", "label": "Timer Label", "default": "ends in" },
+        {
+          "type": "header",
+          "content": "Coupon Code"
+        },
+        {
+          "type": "text",
+          "id": "coupon_code",
+          "label": "Coupon Code",
+          "info": "Leave blank to hide. Click to copy."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Announcement Bar",
+      "blocks": [
+        {
+          "type": "announcement",
+          "settings": {
+            "bg_color": "#232f3e", "text_color": "#ffffff", "badge_color": "#ff9900",
+            "emoji": "🎉", "text": "Free Shipping on orders over $35! Shop now →",
+            "timer_end": "2026-05-31T23:59:00", "timer_label": "ends in",
+            "coupon_code": "FREESHIP35"
+          }
+        },
+        {
+          "type": "announcement",
+          "settings": {
+            "bg_color": "#b12704", "text_color": "#ffffff", "badge_color": "#ffd814",
+            "emoji": "🔥", "text": "Today only — Up to 50% off top brands!",
+            "timer_end": "2026-05-17T23:59:00", "timer_label": "deal ends in",
+            "coupon_code": "DEAL50"
+          }
+        },
+        {
+          "type": "announcement",
+          "settings": {
+            "bg_color": "#1a6b3c", "text_color": "#ffffff", "badge_color": "#febd69",
+            "emoji": "📦", "text": "Same-day dispatch on orders before 2 PM",
+            "timer_end": "", "coupon_code": ""
+          }
+        }
+      ]
+    }
+  ]
 }
 {% endschema %}

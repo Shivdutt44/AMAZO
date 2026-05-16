@@ -215,11 +215,70 @@
         <ul class="amz-nav-list">
           {%- if linklists[section.settings.main_menu].links != blank -%}
             {%- for link in linklists[section.settings.main_menu].links limit: 12 -%}
-              <li>
+              {%- assign has_dropdown = false -%}
+              {%- if link.links != blank -%}
+                {%- assign has_dropdown = true -%}
+              {%- endif -%}
+
+              {%- assign is_mega = false -%}
+              {%- for block in section.blocks -%}
+                {%- if block.type == 'mega_menu' and block.settings.menu_item == link.title -%}
+                  {%- assign is_mega = true -%}
+                  {%- assign mega_block = block -%}
+                {%- endif -%}
+              {%- endfor -%}
+
+              <li class="amz-nav-item{% if has_dropdown %} has-dropdown{% endif %}{% if is_mega and section.settings.enable_mega_menu %} is-mega-menu{% endif %}">
                 <a href="{{ link.url }}" class="amz-nav-link{% if link.active %} amz-nav-link--active{% endif %}{% if forloop.first %} amz-nav-link--bold{% endif %}"
                    {% if link.active %}aria-current="page"{% endif %}>
                   {{ link.title }}
+                  {% if has_dropdown %}<span class="amz-nav-arrow">&#9660;</span>{% endif %}
                 </a>
+
+                {%- if is_mega and section.settings.enable_mega_menu -%}
+                  <!-- MEGA MENU CONTENT -->
+                  <div class="amz-mega-menu">
+                    <div class="amz-mega-menu__inner page-width">
+                      <div class="amz-mega-grid">
+                        {%- assign mega_menu_to_use = link.links -%}
+                        {%- if mega_block.settings.menu != blank -%}
+                          {%- assign mega_menu_to_use = linklists[mega_block.settings.menu].links -%}
+                        {%- endif -%}
+
+                        {%- for childlink in mega_menu_to_use -%}
+                          <div class="amz-mega-col">
+                            <a href="{{ childlink.url }}" class="amz-mega-title">{{ childlink.title }}</a>
+                            {%- if childlink.links != blank -%}
+                              <ul class="amz-mega-list">
+                                {%- for grandchildlink in childlink.links -%}
+                                  <li><a href="{{ grandchildlink.url }}">{{ grandchildlink.title }}</a></li>
+                                {%- endfor -%}
+                              </ul>
+                            {%- endif -%}
+                          </div>
+                        {%- endfor -%}
+
+                        {%- if mega_block.settings.image != blank -%}
+                          <div class="amz-mega-promo">
+                            <a href="{{ mega_block.settings.image_link }}">
+                              <img src="{{ mega_block.settings.image | image_url: width: 400 }}" alt="{{ mega_block.settings.image_alt }}" class="amz-mega-promo-img">
+                              {% if mega_block.settings.image_title != blank %}
+                                <div class="amz-mega-promo-text">{{ mega_block.settings.image_title }}</div>
+                              {% endif %}
+                            </a>
+                          </div>
+                        {%- endif -%}
+                      </div>
+                    </div>
+                  </div>
+                {%- elsif has_dropdown -%}
+                  <!-- STANDARD DROPDOWN -->
+                  <ul class="amz-dropdown-menu">
+                    {%- for childlink in link.links -%}
+                      <li><a href="{{ childlink.url }}">{{ childlink.title }}</a></li>
+                    {%- endfor -%}
+                  </ul>
+                {%- endif -%}
               </li>
             {%- endfor -%}
           {%- else -%}
@@ -227,18 +286,14 @@
             <li><a href="/pages/customer-service" class="amz-nav-link">Customer Service</a></li>
             <li><a href="/collections" class="amz-nav-link">Shop All</a></li>
             <li><a href="/pages/about" class="amz-nav-link">About</a></li>
-            {%- if section.settings.nav_item_1 != blank -%}
-              <li><a href="{{ section.settings.nav_url_1 | default: '#' }}" class="amz-nav-link">{{ section.settings.nav_item_1 }}</a></li>
-            {%- endif -%}
-            {%- if section.settings.nav_item_2 != blank -%}
-              <li><a href="{{ section.settings.nav_url_2 | default: '#' }}" class="amz-nav-link">{{ section.settings.nav_item_2 }}</a></li>
-            {%- endif -%}
-            {%- if section.settings.nav_item_3 != blank -%}
-              <li><a href="{{ section.settings.nav_url_3 | default: '#' }}" class="amz-nav-link">{{ section.settings.nav_item_3 }}</a></li>
-            {%- endif -%}
           {%- endif -%}
         </ul>
       </nav>
+
+      <!-- CURRENCY & LANGUAGE (desktop nav bar) -->
+      <div class="amz-nav__locale amz-hide-mobile">
+        {% render 'currency-language-switcher', context: 'header' %}
+      </div>
 
     </div>
   </div>
@@ -292,6 +347,13 @@
     </div>
 
     <div class="amz-side-section">
+      <h3 class="amz-side-section__title">Currency & Language</h3>
+      <div style="padding: 4px 20px 12px;">
+        {% render 'currency-language-switcher', context: 'mobile' %}
+      </div>
+    </div>
+
+    <div class="amz-side-section">
       <h3 class="amz-side-section__title">Help & Settings</h3>
       <ul class="amz-side-list">
         <li><a href="{{ routes.account_url }}">Your Account</a></li>
@@ -332,15 +394,153 @@
   font-weight: 700;
 }
 
-/* Mobile overrides */
+/* ──────────────────────────────────────────────────
+   NAV ITEMS — base
+────────────────────────────────────────────────── */
+.amz-nav-item {
+  position: static;
+}
+.amz-nav-arrow {
+  font-size: 8px;
+  margin-left: 3px;
+  vertical-align: middle;
+  opacity: 0.7;
+  display: inline-block;
+  transition: transform 0.2s;
+}
+.amz-nav-item:hover .amz-nav-arrow { transform: rotate(180deg); }
+
+/* White underline on hover (Amazon style) */
+.amz-nav-link { position: relative; }
+.amz-nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px; left: 0; right: 0;
+  height: 2px;
+  background: #fff;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.2s ease;
+}
+.amz-nav-item:hover > .amz-nav-link::after,
+.amz-nav-link--active::after { transform: scaleX(1); }
+
+/* ──────────────────────────────────────────────────
+   STANDARD DROPDOWN
+────────────────────────────────────────────────── */
+.amz-nav-item.has-dropdown { position: relative; }
+.amz-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 2px);
+  left: 0;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-top: 3px solid #ff9900;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.14);
+  min-width: 220px;
+  border-radius: 0 0 6px 6px;
+  z-index: 1001;
+  padding: 6px 0;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(8px);
+  transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s;
+  pointer-events: none;
+}
+.amz-nav-item.has-dropdown:hover .amz-dropdown-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+.amz-dropdown-menu li a {
+  display: block;
+  padding: 9px 18px;
+  color: #0f1111;
+  font-size: 13px;
+  white-space: nowrap;
+  transition: background 0.12s, color 0.12s;
+}
+.amz-dropdown-menu li a:hover { background: #fff8f0; color: #ff9900; padding-left: 22px; }
+
+/* ──────────────────────────────────────────────────
+   MEGA MENU — full-width panel anchored to nav bar
+────────────────────────────────────────────────── */
+.amz-header__nav { position: relative; }
+
+.amz-mega-menu {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  width: 100vw;
+  background: #fff;
+  border-top: 3px solid #ff9900;
+  border-bottom: 1px solid #e7e7e7;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.16);
+  z-index: 1000;
+  padding: 28px 0;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.22s ease, transform 0.22s ease, visibility 0.22s;
+  pointer-events: none;
+}
+.amz-nav-item.is-mega-menu:hover .amz-mega-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+  pointer-events: auto;
+}
+.amz-mega-menu__inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+.amz-mega-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 24px 32px;
+}
+.amz-mega-title {
+  font-weight: 700;
+  color: #0f1111;
+  font-size: 14px;
+  margin-bottom: 10px;
+  display: block;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #e7e7e7;
+  transition: color 0.15s;
+}
+.amz-mega-title:hover { color: #ff9900; }
+.amz-mega-list { list-style: none; padding: 0; margin: 0; }
+.amz-mega-list li { margin-bottom: 5px; }
+.amz-mega-list li a {
+  color: #555;
+  font-size: 13px;
+  display: block;
+  padding: 2px 0;
+  transition: color 0.12s, padding-left 0.12s;
+}
+.amz-mega-list li a:hover { color: #ff9900; padding-left: 4px; }
+.amz-mega-promo {
+  grid-column: span 2;
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  min-height: 160px;
+}
+.amz-mega-promo-img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.3s; }
+.amz-mega-promo:hover .amz-mega-promo-img { transform: scale(1.03); }
+.amz-mega-promo-text { position: absolute; bottom: 16px; left: 16px; color: #fff; font-weight: 700; font-size: 17px; text-shadow: 0 2px 6px rgba(0,0,0,0.6); pointer-events: none; }
+
+/* Mobile — hide mega & dropdown */
 @media (max-width: 768px) {
   .amz-hide-mobile { display: none !important; }
   .amz-mobile-menu-btn { display: flex; }
   .amz-nav__all { display: none; }
+  .amz-mega-menu, .amz-dropdown-menu { display: none !important; }
 }
-@media (max-width: 900px) {
-  .amz-hide-tablet { display: none !important; }
-}
+@media (max-width: 900px) { .amz-hide-tablet { display: none !important; } }
 @media (max-width: 480px) {
   .amz-hide-small .amz-search__category,
   .amz-hide-small { display: none !important; }
@@ -369,6 +569,7 @@
       "type": "header",
       "content": "Navigation"
     },
+    { "type": "checkbox", "id": "enable_mega_menu", "label": "Enable Mega Menu", "default": true },
     { "type": "text", "id": "delivery_location", "label": "Delivery Location", "default": "United States" },
     { "type": "text", "id": "search_placeholder", "label": "Search Placeholder", "default": "Search products..." },
     { "type": "link_list", "id": "main_menu", "label": "Main Menu", "default": "main-menu" },
@@ -378,6 +579,41 @@
     { "type": "url", "id": "nav_url_2", "label": "Extra Nav URL 2" },
     { "type": "text", "id": "nav_item_3", "label": "Extra Nav Item 3" },
     { "type": "url", "id": "nav_url_3", "label": "Extra Nav URL 3" }
+  ],
+  "blocks": [
+    {
+      "type": "mega_menu",
+      "name": "Mega Menu",
+      "settings": [
+        {
+          "type": "text",
+          "id": "menu_item",
+          "label": "Menu Item Name",
+          "info": "The title of the menu item that should trigger the mega menu (e.g., 'Electronics')"
+        },
+        {
+          "type": "link_list",
+          "id": "menu",
+          "label": "Select Menu",
+          "info": "Choose a specific menu to display as Mega Menu columns. If empty, it will use the sub-links of the trigger item."
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Promo Image"
+        },
+        {
+          "type": "text",
+          "id": "image_title",
+          "label": "Promo Title"
+        },
+        {
+          "type": "url",
+          "id": "image_link",
+          "label": "Promo Link"
+        }
+      ]
+    }
   ]
 }
 {% endschema %}

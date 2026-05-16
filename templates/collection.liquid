@@ -37,20 +37,56 @@
         </div>
       </div>
 
-      <!-- Price -->
-      <div class="filter-group">
+      <!-- Price - Fully Dynamic -->
+      {%- assign _pmin = collection.price_min | divided_by: 100 -%}
+      {%- assign _pmax = collection.price_max | divided_by: 100 -%}
+      {%- assign _prange = _pmax | minus: _pmin -%}
+      {%- assign _raw_step = _prange | divided_by: 5 -%}
+      {%- if _raw_step <= 5 -%}{%- assign _step = 5 -%}
+      {%- elsif _raw_step <= 15 -%}{%- assign _step = 10 -%}
+      {%- elsif _raw_step <= 30 -%}{%- assign _step = 25 -%}
+      {%- elsif _raw_step <= 75 -%}{%- assign _step = 50 -%}
+      {%- elsif _raw_step <= 150 -%}{%- assign _step = 100 -%}
+      {%- elsif _raw_step <= 300 -%}{%- assign _step = 250 -%}
+      {%- elsif _raw_step <= 750 -%}{%- assign _step = 500 -%}
+      {%- else -%}{%- assign _step = 1000 -%}{%- endif -%}
+      {%- assign _pb1 = _pmin | plus: _step -%}
+      {%- assign _pb2 = _pb1 | plus: _step -%}
+      {%- assign _pb3 = _pb2 | plus: _step -%}
+      {%- assign _pb4 = _pb3 | plus: _step -%}
+      {%- assign _m1 = _pb1 | times: 100 | money_without_trailing_zeros -%}
+      {%- assign _m2 = _pb2 | times: 100 | money_without_trailing_zeros -%}
+      {%- assign _m3 = _pb3 | times: 100 | money_without_trailing_zeros -%}
+      {%- assign _m4 = _pb4 | times: 100 | money_without_trailing_zeros -%}
+      <div class="filter-group" id="price-filter-group">
         <div class="filter-group__title">
           Price
           <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 10l5 5 5-5z"/></svg>
         </div>
-        {%- assign price_ranges = "Under $25,0-25|$25 to $50,25-50|$50 to $100,50-100|$100 to $200,100-200|$200 & Above,200-9999" | split: "|" -%}
-        {%- for range in price_ranges -%}
-          {%- assign parts = range | split: "," -%}
+        {%- if _prange > 0 -%}
           <div class="filter-option">
-            <input type="checkbox" id="price-{{ forloop.index }}" name="price" value="{{ parts[1] }}">
-            <label for="price-{{ forloop.index }}">{{ parts[0] }}</label>
+            <input type="checkbox" id="price-r1" name="price_range" value="{{ _pmin }}-{{ _pb1 }}" data-gte="{{ _pmin }}" data-lte="{{ _pb1 }}">
+            <label for="price-r1">Under {{ _m1 }}</label>
           </div>
-        {%- endfor -%}
+          <div class="filter-option">
+            <input type="checkbox" id="price-r2" name="price_range" value="{{ _pb1 }}-{{ _pb2 }}" data-gte="{{ _pb1 }}" data-lte="{{ _pb2 }}">
+            <label for="price-r2">{{ _m1 }} to {{ _m2 }}</label>
+          </div>
+          <div class="filter-option">
+            <input type="checkbox" id="price-r3" name="price_range" value="{{ _pb2 }}-{{ _pb3 }}" data-gte="{{ _pb2 }}" data-lte="{{ _pb3 }}">
+            <label for="price-r3">{{ _m2 }} to {{ _m3 }}</label>
+          </div>
+          <div class="filter-option">
+            <input type="checkbox" id="price-r4" name="price_range" value="{{ _pb3 }}-{{ _pb4 }}" data-gte="{{ _pb3 }}" data-lte="{{ _pb4 }}">
+            <label for="price-r4">{{ _m3 }} to {{ _m4 }}</label>
+          </div>
+          <div class="filter-option">
+            <input type="checkbox" id="price-r5" name="price_range" value="{{ _pb4 }}-" data-gte="{{ _pb4 }}" data-lte="">
+            <label for="price-r5">{{ _m4 }} &amp; Above</label>
+          </div>
+        {%- else -%}
+          <p style="font-size:12px;color:var(--amz-gray);padding:4px 0;">{{ _pmin | times: 100 | money_without_trailing_zeros }}</p>
+        {%- endif -%}
       </div>
 
       <!-- Rating -->
@@ -84,8 +120,7 @@
         </div>
         {%- for vendor in vendors limit: 8 -%}
           <div class="filter-option">
-            <input type="checkbox" id="vendor-{{ forloop.index }}" name="vendor" value="{{ vendor | handleize }}"
-              {%- if current_vendor == vendor %} checked{%- endif -%}>
+            <input type="checkbox" id="vendor-{{ forloop.index }}" name="vendor" value="{{ vendor | handleize }}">
             <label for="vendor-{{ forloop.index }}">{{ vendor }}</label>
           </div>
         {%- endfor -%}
@@ -152,16 +187,25 @@
         </div>
       </div>
 
-      <!-- Active Tags -->
-      {%- if current_tags.size > 0 -%}
-      <div class="active-filters" role="list" aria-label="Active filters">
+      <!-- Active Filters Bar (tags via Liquid, price/availability/vendor injected by JS) -->
+      <div class="active-filters" id="ActiveFiltersBar" role="list" aria-label="Active filters"{% unless current_tags.size > 0 %} style="display:none"{% endunless %}>
         {%- for tag in current_tags -%}
-          <a href="{{ collection.url }}" class="active-filter-tag" role="listitem" aria-label="Remove {{ tag }} filter">
-            {{ tag }} <span aria-hidden="true">×</span>
+          {%- assign _rem = "" -%}
+          {%- for _t in current_tags -%}
+            {%- unless _t == tag -%}
+              {%- if _rem == "" -%}{%- assign _rem = _t | handleize -%}
+              {%- else -%}{%- assign _rem = _rem | append: '+' | append: _t | handleize -%}
+              {%- endif -%}
+            {%- endunless -%}
+          {%- endfor -%}
+          {%- if _rem == "" -%}{%- assign _tag_remove_url = collection.url -%}
+          {%- else -%}{%- assign _tag_remove_url = collection.url | append: '/' | append: _rem -%}
+          {%- endif -%}
+          <a href="{{ _tag_remove_url }}{{ request.page_url | split: '?' | last | prepend: '?' | replace: '?/', '' }}" class="active-filter-tag" role="listitem" aria-label="Remove {{ tag }} filter">
+            {{ tag | replace: '-', ' ' }} <span aria-hidden="true">×</span>
           </a>
         {%- endfor -%}
       </div>
-      {%- endif -%}
 
       <!-- Products Grid -->
       {%- paginate collection.products by 24 -%}
@@ -253,43 +297,180 @@
 </style>
 
 <script>
-// Sort
-document.getElementById('SortBy')?.addEventListener('change', function() {
-  const url = new URL(window.location.href);
-  url.searchParams.set('sort_by', this.value);
-  window.location.href = url.toString();
-});
+(function () {
+  'use strict';
 
-// Column switcher
-function setColumns(num) {
-  const grid = document.getElementById('ProductsGrid');
-  if (grid) grid.style.setProperty('--products-per-row', num);
-  localStorage.setItem('amazo_cols', num);
-  document.querySelectorAll('.amz-col-btn').forEach((btn,i) => {
-    btn.classList.toggle('active', [4,3][i] === num);
+  var BASE_URL = '{{ collection.url }}';
+  var params   = new URLSearchParams(window.location.search);
+
+  /* ── navigate ─────────────────────────────── */
+  function go(url) { window.location.href = url.toString(); }
+
+  /* ── active-filter bar helper ─────────────── */
+  function addFilterTag(label, removeHref) {
+    var bar = document.getElementById('ActiveFiltersBar');
+    if (!bar) return;
+    bar.style.display = '';
+    var a = document.createElement('a');
+    a.href = removeHref;
+    a.className = 'active-filter-tag';
+    a.setAttribute('role', 'listitem');
+    a.setAttribute('aria-label', 'Remove ' + label + ' filter');
+    a.innerHTML = label + ' <span aria-hidden="true">\u00d7</span>';
+    bar.appendChild(a);
+  }
+
+  /* ══════════════════════════════════════════
+     SORT
+  ══════════════════════════════════════════ */
+  document.getElementById('SortBy')?.addEventListener('change', function () {
+    var url = new URL(window.location.href);
+    url.searchParams.set('sort_by', this.value);
+    go(url);
   });
-}
 
-// Restore saved columns
-const savedCols = localStorage.getItem('amazo_cols');
-if (savedCols) setColumns(parseInt(savedCols));
+  /* ══════════════════════════════════════════
+     COLUMN TOGGLE
+  ══════════════════════════════════════════ */
+  function setColumns(num) {
+    var grid = document.getElementById('ProductsGrid');
+    if (grid) grid.style.setProperty('--products-per-row', num);
+    localStorage.setItem('amazo_cols', num);
+    document.querySelectorAll('.amz-col-btn').forEach(function (btn, i) {
+      btn.classList.toggle('active', [4, 3][i] === num);
+    });
+  }
+  window.setColumns = setColumns;
+  var savedCols = localStorage.getItem('amazo_cols');
+  if (savedCols) setColumns(parseInt(savedCols));
 
-// Mobile filter toggle
-const filterToggle = document.getElementById('FilterToggle');
-const filtersSidebar = document.getElementById('FiltersSidebar');
-if (filterToggle && filtersSidebar) {
-  filterToggle.addEventListener('click', () => {
-    const isOpen = filtersSidebar.classList.toggle('mobile-open');
-    filterToggle.setAttribute('aria-expanded', isOpen);
+  /* ══════════════════════════════════════════
+     MOBILE FILTER TOGGLE
+  ══════════════════════════════════════════ */
+  var filterToggle   = document.getElementById('FilterToggle');
+  var filtersSidebar = document.getElementById('FiltersSidebar');
+  if (filterToggle && filtersSidebar) {
+    filterToggle.addEventListener('click', function () {
+      var isOpen = filtersSidebar.classList.toggle('mobile-open');
+      filterToggle.setAttribute('aria-expanded', isOpen);
+    });
+  }
+
+  /* ══════════════════════════════════════════
+     AVAILABILITY FILTER
+  ══════════════════════════════════════════ */
+  var availCb       = document.getElementById('filter-available');
+  var availIsActive = params.get('filter.v.availability') === '1';
+
+  if (availCb) {
+    if (availIsActive) availCb.checked = true;
+
+    availCb.addEventListener('change', function () {
+      var url = new URL(window.location.href);
+      url.searchParams.delete('page');
+      if (this.checked) {
+        url.searchParams.set('filter.v.availability', '1');
+      } else {
+        url.searchParams.delete('filter.v.availability');
+      }
+      go(url);
+    });
+
+    if (availIsActive) {
+      var avUrl = new URL(window.location.href);
+      avUrl.searchParams.delete('filter.v.availability');
+      avUrl.searchParams.delete('page');
+      addFilterTag('In Stock', avUrl.toString());
+    }
+  }
+
+  /* ══════════════════════════════════════════
+     PRICE FILTER  (single-select, dynamic ranges)
+  ══════════════════════════════════════════ */
+  var priceGte = params.get('filter.v.price.gte');
+  var priceLte = params.get('filter.v.price.lte');
+
+  document.querySelectorAll('[name="price_range"]').forEach(function (cb) {
+    /* Restore checked state from URL */
+    if (priceGte !== null && cb.dataset.gte === priceGte) {
+      var ltOk = cb.dataset.lte === '' ? (priceLte === null) : (cb.dataset.lte === priceLte);
+      if (ltOk) cb.checked = true;
+    }
+
+    cb.addEventListener('change', function () {
+      var url = new URL(window.location.href);
+      url.searchParams.delete('filter.v.price.gte');
+      url.searchParams.delete('filter.v.price.lte');
+      url.searchParams.delete('page');
+      /* Single-select — uncheck siblings */
+      document.querySelectorAll('[name="price_range"]').forEach(function (o) {
+        if (o !== cb) o.checked = false;
+      });
+      if (cb.checked) {
+        url.searchParams.set('filter.v.price.gte', cb.dataset.gte);
+        if (cb.dataset.lte !== '') url.searchParams.set('filter.v.price.lte', cb.dataset.lte);
+      }
+      go(url);
+    });
   });
-}
 
-// Tag filter URL builder
-document.querySelectorAll('[name="tag"]').forEach(checkbox => {
-  checkbox.addEventListener('change', function() {
-    const checked = [...document.querySelectorAll('[name="tag"]:checked')].map(c => c.value);
-    const baseUrl = '{{ collection.url }}';
-    window.location.href = checked.length > 0 ? baseUrl + '/' + checked.join('+') : baseUrl;
+  if (priceGte !== null) {
+    var activePriceCb = document.querySelector('[name="price_range"]:checked');
+    var priceLabel    = activePriceCb
+      ? activePriceCb.nextElementSibling.textContent.trim()
+      : 'Price';
+    var priceRemUrl = new URL(window.location.href);
+    priceRemUrl.searchParams.delete('filter.v.price.gte');
+    priceRemUrl.searchParams.delete('filter.v.price.lte');
+    priceRemUrl.searchParams.delete('page');
+    addFilterTag(priceLabel, priceRemUrl.toString());
+  }
+
+  /* ══════════════════════════════════════════
+     VENDOR / BRAND FILTER  (multi-select)
+  ══════════════════════════════════════════ */
+  var activeVendors = params.getAll('filter.p.vendor');
+
+  document.querySelectorAll('[name="vendor"]').forEach(function (cb) {
+    /* Restore checked state */
+    if (activeVendors.indexOf(cb.value) !== -1) cb.checked = true;
+
+    cb.addEventListener('change', function () {
+      var url = new URL(window.location.href);
+      url.searchParams.delete('filter.p.vendor');
+      url.searchParams.delete('page');
+      document.querySelectorAll('[name="vendor"]:checked').forEach(function (c) {
+        url.searchParams.append('filter.p.vendor', c.value);
+      });
+      go(url);
+    });
   });
-});
+
+  activeVendors.forEach(function (vendor) {
+    var vRemUrl = new URL(window.location.href);
+    vRemUrl.searchParams.delete('filter.p.vendor');
+    vRemUrl.searchParams.delete('page');
+    activeVendors
+      .filter(function (v) { return v !== vendor; })
+      .forEach(function (v) { vRemUrl.searchParams.append('filter.p.vendor', v); });
+    addFilterTag(vendor.replace(/-/g, ' '), vRemUrl.toString());
+  });
+
+  /* ══════════════════════════════════════════
+     TAG FILTER  (multi-select, path-based)
+     Preserves existing query params (price, avail, vendor)
+  ══════════════════════════════════════════ */
+  document.querySelectorAll('[name="tag"]').forEach(function (cb) {
+    cb.addEventListener('change', function () {
+      var checked = Array.from(document.querySelectorAll('[name="tag"]:checked'))
+        .map(function (c) { return c.value; });
+      var qs = window.location.search; /* keep price / vendor / avail params */
+      var path = checked.length > 0
+        ? BASE_URL + '/' + checked.join('+')
+        : BASE_URL;
+      go(path + qs);
+    });
+  });
+
+})();
 </script>

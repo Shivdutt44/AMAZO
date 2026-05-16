@@ -298,19 +298,8 @@
     isOpen: false,
 
     init() {
-      if (!Cfg.enableQuickView) return;
-      this.modal = document.getElementById('QuickViewModal');
-      this.overlay = document.getElementById('QuickViewOverlay');
-      if (!this.modal) return;
-
-      // Open triggers
-      document.addEventListener('click', (e) => {
-        const btn = e.target.closest('.amz-quickview-btn');
-        if (!btn) return;
-        e.preventDefault();
-        const handle = btn.dataset.productHandle;
-        if (handle) this.open(handle, btn.dataset.productId);
-      });
+      // Delegated to window.AmazQV in amazo-main.js — do not register duplicate listeners here
+      return;
 
       // Close
       document.getElementById('QuickViewClose')?.addEventListener('click', () => this.close());

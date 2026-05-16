@@ -1,0 +1,106 @@
+{% comment %}
+  Currency & Language Switcher — fully automated via Shopify localization API
+  Usage: {% render 'currency-language-switcher', context: 'header' %}
+         {% render 'currency-language-switcher', context: 'footer' %}
+         {% render 'currency-language-switcher', context: 'mobile' %}
+{% endcomment %}
+
+{%- liquid
+  assign show_currency = settings.enable_currency_converter | default: true
+  assign show_language = settings.enable_language_selector  | default: false
+  assign has_multi_currency = localization.available_currencies.size | is_nil | default: false
+  assign currency_count  = localization.available_currencies.size
+  assign language_count  = localization.available_languages.size
+-%}
+
+{%- if show_currency or show_language -%}
+
+{%- assign uid = context | default: 'global' -%}
+
+<div class="amz-locale amz-locale--{{ uid }}" data-context="{{ uid }}">
+  {%- form 'localization', id: 'LocaleForm-{{ uid }}', class: 'amz-locale__form' -%}
+
+    {%- comment %} ── CURRENCY SWITCHER ── {%- endcomment -%}
+    {%- if show_currency and currency_count > 0 -%}
+      <div class="amz-locale__group" data-type="currency">
+        <button type="button"
+          class="amz-locale__trigger"
+          aria-haspopup="listbox"
+          aria-expanded="false"
+          aria-label="Select currency: {{ localization.currency.iso_code }}">
+          <span class="amz-locale__icon" aria-hidden="true">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/>
+            </svg>
+          </span>
+          <span class="amz-locale__current">
+            {{ localization.currency.iso_code }}
+            <span class="amz-locale__symbol">({{ localization.currency.symbol }})</span>
+          </span>
+          <span class="amz-locale__caret" aria-hidden="true">&#9660;</span>
+        </button>
+
+        <ul class="amz-locale__dropdown" role="listbox" aria-label="Currency">
+          {%- for currency in localization.available_currencies -%}
+            <li role="option"
+              aria-selected="{% if currency.iso_code == localization.currency.iso_code %}true{% else %}false{% endif %}"
+              class="amz-locale__option{% if currency.iso_code == localization.currency.iso_code %} is-active{% endif %}"
+              data-value="{{ currency.iso_code }}"
+              data-input="currency_code">
+              <span class="amz-locale__opt-symbol">{{ currency.symbol }}</span>
+              <span class="amz-locale__opt-code">{{ currency.iso_code }}</span>
+              <span class="amz-locale__opt-name">{{ currency.name }}</span>
+              {%- if currency.iso_code == localization.currency.iso_code -%}
+                <span class="amz-locale__check" aria-hidden="true">✓</span>
+              {%- endif -%}
+            </li>
+          {%- endfor -%}
+        </ul>
+
+        <input type="hidden" name="currency_code" value="{{ localization.currency.iso_code }}">
+      </div>
+    {%- endif -%}
+
+    {%- comment %} ── LANGUAGE SWITCHER ── {%- endcomment -%}
+    {%- if show_language and language_count > 1 -%}
+      <div class="amz-locale__group" data-type="language">
+        <button type="button"
+          class="amz-locale__trigger"
+          aria-haspopup="listbox"
+          aria-expanded="false"
+          aria-label="Select language: {{ localization.language.endonym_name }}">
+          <span class="amz-locale__icon" aria-hidden="true">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm6.93 6h-2.95c-.32-1.25-.78-2.45-1.38-3.56 1.84.63 3.37 1.9 4.33 3.56zM12 4.04c.83 1.2 1.48 2.53 1.91 3.96h-3.82c.43-1.43 1.08-2.76 1.91-3.96zM4.26 14C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2s.06 1.34.14 2H4.26zm.82 2h2.95c.32 1.25.78 2.45 1.38 3.56-1.84-.63-3.37-1.9-4.33-3.56zm2.95-8H5.08c.96-1.66 2.49-2.93 4.33-3.56C8.81 5.55 8.35 6.75 8.03 8zM12 19.96c-.83-1.2-1.48-2.53-1.91-3.96h3.82c-.43 1.43-1.08 2.76-1.91 3.96zM14.34 14H9.66c-.09-.66-.16-1.32-.16-2s.07-1.35.16-2h4.68c.09.65.16 1.32.16 2s-.07 1.34-.16 2zm.25 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95c-.96 1.66-2.49 2.93-4.33 3.56zM16.36 14c.08-.66.14-1.32.14-2s-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2h-3.38z"/>
+            </svg>
+          </span>
+          <span class="amz-locale__current">
+            {{ localization.language.endonym_name | capitalize | truncate: 14, '' }}
+          </span>
+          <span class="amz-locale__caret" aria-hidden="true">&#9660;</span>
+        </button>
+
+        <ul class="amz-locale__dropdown" role="listbox" aria-label="Language">
+          {%- for language in localization.available_languages -%}
+            <li role="option"
+              aria-selected="{% if language.iso_code == localization.language.iso_code %}true{% else %}false{% endif %}"
+              class="amz-locale__option{% if language.iso_code == localization.language.iso_code %} is-active{% endif %}"
+              data-value="{{ language.iso_code }}"
+              data-input="locale_code">
+              <span class="amz-locale__opt-name">{{ language.endonym_name | capitalize }}</span>
+              <span class="amz-locale__opt-code">{{ language.iso_code | upcase }}</span>
+              {%- if language.iso_code == localization.language.iso_code -%}
+                <span class="amz-locale__check" aria-hidden="true">✓</span>
+              {%- endif -%}
+            </li>
+          {%- endfor -%}
+        </ul>
+
+        <input type="hidden" name="locale_code" value="{{ localization.language.iso_code }}">
+      </div>
+    {%- endif -%}
+
+  {%- endform -%}
+</div>
+
+{%- endif -%}

@@ -225,6 +225,7 @@
       "header": {
         "type": "header",
         "settings": {
+          "logo": "shopify://shop_images/74d97a469873774f841633779c982d.webp",
           "delivery_location": "India",
           "search_placeholder": "Search products...",
           "main_menu": "main-menu",
@@ -276,9 +277,56 @@
       },
       "announcement-bar": {
         "type": "announcement-bar",
+        "blocks": {
+          "announce_1": {
+            "type": "announcement",
+            "settings": {
+              "bg_color": "#232f3e",
+              "text_color": "#ffffff",
+              "badge_color": "#ff9900",
+              "emoji": "🎉",
+              "text": "Free Shipping on orders over $35! Shop now →",
+              "link": "",
+              "timer_end": "2026-05-31T23:59:00",
+              "timer_label": "ends in",
+              "coupon_code": "FREESHIP35"
+            }
+          },
+          "announce_2": {
+            "type": "announcement",
+            "settings": {
+              "bg_color": "#b12704",
+              "text_color": "#ffffff",
+              "badge_color": "#ffd814",
+              "emoji": "🔥",
+              "text": "Today only — Up to 50% off top brands!",
+              "link": "/collections/all",
+              "timer_end": "2026-05-17T23:59:00",
+              "timer_label": "deal ends in",
+              "coupon_code": "DEAL50"
+            }
+          },
+          "announce_3": {
+            "type": "announcement",
+            "settings": {
+              "bg_color": "#1a6b3c",
+              "text_color": "#ffffff",
+              "badge_color": "#febd69",
+              "emoji": "📦",
+              "text": "Same-day dispatch on orders before 2 PM",
+              "link": "",
+              "timer_end": "",
+              "timer_label": "",
+              "coupon_code": ""
+            }
+          }
+        },
+        "block_order": ["announce_1", "announce_2", "announce_3"],
         "settings": {
-          "text": "🎉 Free Shipping on orders over $35! Shop now and save big →",
-          "link": ""
+          "rotation_speed": 4000,
+          "animation": "fade",
+          "show_arrows": false,
+          "show_dots": false
         }
       }
     },

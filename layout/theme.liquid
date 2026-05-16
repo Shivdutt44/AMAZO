@@ -285,5 +285,10 @@
   })();
   </script>
 
+  <!-- Quick View Modal -->
+  {%- if settings.enable_quick_view -%}
+    {% render 'quick-view-modal' %}
+  {%- endif -%}
+
 </body>
 </html>

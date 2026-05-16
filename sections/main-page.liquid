@@ -1,0 +1,25 @@
+<div class="page-width" style="padding: 40px 0;">
+  {%- render 'breadcrumb' -%}
+  <div class="amz-page-content">
+    {%- if section.settings.show_title -%}
+      <h1 class="page-content__title">{{ page.title }}</h1>
+    {%- endif -%}
+    <div class="rich-text-section">{{ page.content }}</div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Page Content",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_title",
+      "label": "Show page title",
+      "default": true
+    }
+  ],
+  "presets": [{ "name": "Page Content" }]
+}
+{% endschema %}

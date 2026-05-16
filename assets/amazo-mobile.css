@@ -1,0 +1,692 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   AMAZO — COMPREHENSIVE MOBILE RESPONSIVE OVERRIDES
+   Breakpoints: 1024px | 768px | 640px | 480px | 375px
+   All rules here are mobile-specific fixes on top of base CSS files.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── 0. GLOBAL TOUCH & SCROLL ─────────────────────────────────────────── */
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+* { -webkit-tap-highlight-color: rgba(0,0,0,0); }
+img { max-width: 100%; height: auto; }
+
+/* Touch-friendly minimum tap targets */
+@media (max-width: 768px) {
+  button, a, [role="button"], input[type="submit"],
+  .amz-btn, .amz-btn-yellow, .amz-btn-orange {
+    min-height: 44px;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   1. ANNOUNCEMENT BAR
+   ══════════════════════════════════════════════════════════════════════ */
+/* Announcement bar — mobile: keep single row, timer always visible */
+@media (max-width: 768px) {
+  .amz-ann__content { gap: 7px; flex-wrap: nowrap; }
+  .amz-ann__msg { font-size: 12px; }
+  .amz-ann__coupon { font-size: 11px; padding: 2px 6px; }
+  .amz-ann__coupon-code { font-size: 11px; }
+}
+@media (max-width: 480px) {
+  .amz-ann__slide { padding: 5px 8px; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   2. HEADER
+   ══════════════════════════════════════════════════════════════════════ */
+@media (max-width: 1024px) {
+  .amz-header__inner { flex-wrap: wrap; height: auto; min-height: 60px; padding: 0 12px; gap: 6px; }
+  .amz-header__search { order: 10; flex: 0 0 100%; padding: 0 0 8px; }
+  .amz-header__deliver { display: none; }
+  .amz-header__orders { display: none; }
+}
+
+@media (max-width: 768px) {
+  .amz-mobile-menu-btn { display: flex !important; }
+  .amz-header__logo { flex: 1; }
+  .amz-logo-img { width: 90px !important; height: auto !important; }
+  .amz-logo-svg { width: 85px !important; }
+  .amz-header__account .amz-account-top { font-size: 11px; }
+  .amz-header__account .amz-account-bottom { font-size: 12px; }
+  .amz-search-wrap { border-radius: 6px; }
+  .amz-search__input { font-size: 14px; padding: 0 10px; }
+  .amz-search__btn { width: 44px; min-width: 44px; padding: 0; }
+  .amz-cart-count { font-size: 11px; min-width: 17px; height: 17px; }
+  /* Hide locale in header on mobile — visible in side menu */
+  .amz-nav__locale { display: none !important; }
+}
+
+@media (max-width: 480px) {
+  .amz-header__main { padding: 4px 0; }
+  .amz-header__inner { padding: 0 10px; gap: 4px; }
+  .amz-logo-img { width: 76px !important; }
+  .amz-logo-svg { width: 76px !important; }
+  .amz-search__category { display: none !important; }
+  .amz-cart-label { display: none; }
+}
+
+/* ── Navigation bar (secondary nav) ───────────────────────────────────── */
+@media (max-width: 768px) {
+  .amz-header__nav { display: none; } /* hidden — side menu handles it */
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   3. HERO BANNER
+   ══════════════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .amz-hero__prev, .amz-hero__next { width: 32px; font-size: 14px; }
+  .amz-hero__slide-content { padding: 12px 16px !important; }
+  .amz-hero__heading,
+  .amz-hero__heading-white { font-size: 20px !important; line-height: 1.3; }
+  .amz-hero__subheading,
+  .amz-hero__sub-white { font-size: 13px; margin-top: 4px; }
+  .amz-hero__badge { font-size: 11px; padding: 2px 8px; margin-bottom: 6px; }
+  .amz-hero__btn,
+  .amz-hero__cta-btn { font-size: 13px; padding: 9px 18px; min-height: 40px; }
+  /* Fix text overlay positioning on mobile */
+  .amz-hero__slide-content--left,
+  .amz-hero__slide-content--right,
+  .amz-hero__slide-content--center {
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%) !important;
+    text-align: center !important;
+    min-width: 260px !important;
+    max-width: 90vw !important;
+    bottom: 12% !important;
+  }
+  .amz-hero__fade-left,
+  .amz-hero__fade-right { display: none; }
+  .amz-hero__dots { bottom: 6px; gap: 6px; }
+}
+
+@media (max-width: 480px) {
+  .amz-hero__heading,
+  .amz-hero__heading-white { font-size: 17px !important; }
+  .amz-hero__subheading,
+  .amz-hero__sub-white { display: none; }
+  .amz-hero__prev, .amz-hero__next { display: none; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   4. CATEGORY GRID
+   ══════════════════════════════════════════════════════════════════════ */
+@media (max-width: 1024px) {
+  .amz-cats__grid { grid-template-columns: repeat(3, 1fr) !important; gap: 12px; }
+}
+@media (max-width: 768px) {
+  .amz-cats { padding: 12px 10px; }
+  .amz-cats__grid { grid-template-columns: repeat(2, 1fr) !important; gap: 10px; }
+  .amz-cats__card-inner { padding: 12px; }
+  .amz-cats__title { font-size: 14px; margin-bottom: 8px; }
+  .amz-cats__img-wrap { margin: 4px 0; }
+  .amz-cats__img { height: 140px; object-fit: cover; }
+  .amz-cats__img-placeholder { height: 120px !important; }
+  .amz-cats__link { font-size: 12px; margin-top: 8px; display: block; }
+  /* 4-sub-grid inside each card */
+  .amz-cats__4grid { grid-template-columns: repeat(2, 1fr) !important; gap: 6px; }
+  .amz-cats__4grid-item img { width: 100% !important; height: 70px; object-fit: cover; }
+  .amz-cats__4grid-item p { font-size: 10px; margin-top: 2px; }
+}
+@media (max-width: 480px) {
+  .amz-cats__grid { grid-template-columns: repeat(2, 1fr) !important; gap: 8px; }
+  .amz-cats__card-inner { padding: 10px; }
+  .amz-cats__title { font-size: 13px; }
+  .amz-cats__img { height: 110px; }
+}
+@media (max-width: 375px) {
+  .amz-cats__grid { grid-template-columns: 1fr 1fr !important; gap: 6px; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   5. FEATURED PRODUCTS SECTION (was completely broken on mobile)
+   ══════════════════════════════════════════════════════════════════════ */
+.amz-fc { background: #fff; border-radius: 4px; overflow: hidden; }
+.amz-fc__inner { padding: 16px; }
+.amz-fc__title { font-size: 20px; font-weight: 700; margin-bottom: 12px; color: #0f1111; }
+.amz-fc__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+.amz-fc__grid-item { text-align: center; }
+.amz-fc__grid-img {
+  width: 100%; aspect-ratio: 1/1;
+  object-fit: contain; border-radius: 2px;
+}
+.amz-fc__link {
+  display: inline-block; margin-top: 14px;
+  color: #007185; font-size: 13px;
+}
+.amz-fc__link:hover { text-decoration: underline; color: #c45500; }
+
+@media (max-width: 900px) {
+  .amz-fc__grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .amz-fc__title { font-size: 17px; }
+}
+@media (max-width: 480px) {
+  .amz-fc__inner { padding: 12px; }
+  .amz-fc__grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .amz-fc__title { font-size: 15px; margin-bottom: 10px; }
+  .amz-fc__grid-item p { font-size: 11px !important; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   6. FEATURED COLLECTIONS (fc-2, fc-3, amazon-product-slider)
+   ══════════════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  /* Section headers */
+  .amz-featured__header,
+  .amz-fc2__header,
+  .amz-fc3__header { flex-wrap: wrap; gap: 6px; }
+  .amz-featured__title,
+  .amz-fc2__title,
+  .amz-fc3__title { font-size: 17px !important; }
+  /* Horizontal scroll track on mobile for sliders */
+  .amz-slider__track,
+  .amz-fc2__track,
+  .amz-fc3__track,
+  .amz-ps__track {
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 4px;
+  }
+  .amz-slider__track::-webkit-scrollbar,
+  .amz-fc2__track::-webkit-scrollbar,
+  .amz-fc3__track::-webkit-scrollbar,
+  .amz-ps__track::-webkit-scrollbar { display: none; }
+  /* Product cards inside sliders */
+  .amz-slider__item,
+  .amz-fc2__item,
+  .amz-fc3__item,
+  .amz-ps__item { scroll-snap-align: start; min-width: 160px; flex-shrink: 0; }
+  /* Hide arrows on mobile — use swipe instead */
+  .amz-slider__prev, .amz-slider__next,
+  .amz-fc2__prev, .amz-fc2__next,
+  .amz-fc3__prev, .amz-fc3__next,
+  .amz-ps__prev, .amz-ps__next { display: none !important; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   7. DEALS OF THE DAY
+   ══════════════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .amz-deals__header {
+    flex-wrap: wrap; gap: 8px; align-items: flex-start;
+    padding: 12px 14px 8px;
+  }
+  .amz-deals__title { font-size: 18px; width: 100%; }
+  .amz-deals__timer-wrap { order: 3; }
+  .amz-deals__viewall { order: 2; font-size: 13px; white-space: nowrap; }
+  .amz-deals__track-outer { padding: 0; }
+  .amz-deals__track {
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding: 8px 12px 12px;
+    gap: 10px;
+  }
+  .amz-deals__track::-webkit-scrollbar { display: none; }
+  .amz-deals__item { scroll-snap-align: start; min-width: 150px; flex-shrink: 0; }
+  .amz-deals__prev, .amz-deals__next { display: none !important; }
+  .amz-deals__slider-wrap { position: relative; padding: 0; }
+  .amz-deals__card-img-wrap img,
+  .amz-deals__img-placeholder { width: 100% !important; height: 140px; object-fit: contain; }
+  .amz-timer__num { font-size: 18px; }
+}
+@media (max-width: 480px) {
+  .amz-deals__item { min-width: 140px; }
+  .amz-deals__name { font-size: 11px; }
+  .amz-deals__price { font-size: 14px; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   8. PROMO BANNERS
+   ══════════════════════════════════════════════════════════════════════ */
+.amz-promos { padding: 0 12px; }
+.amz-promos__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+.amz-promo-card { background: #fff; border-radius: 4px; overflow: hidden; }
+.amz-promo-card__body { padding: 12px; }
+.amz-promo-card__title { font-size: 15px; font-weight: 700; color: #0f1111; margin-bottom: 4px; }
+.amz-promo-card__desc { font-size: 13px; color: #565959; margin-bottom: 8px; }
+.amz-promo-card__link { color: #007185; font-size: 13px; }
+.amz-promo-card__link:hover { text-decoration: underline; }
+
+@media (max-width: 900px) {
+  .amz-promos__grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+}
+@media (max-width: 640px) {
+  .amz-promos { padding: 0 10px; }
+  .amz-promos__grid {
+    grid-template-columns: 1fr !important;
+    gap: 10px;
+    /* Horizontal scroll for promos on small mobile */
+    display: flex; flex-direction: row;
+    overflow-x: auto; scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch; scrollbar-width: none;
+    padding-bottom: 4px;
+  }
+  .amz-promos__grid::-webkit-scrollbar { display: none; }
+  .amz-promo-card { min-width: 78vw; scroll-snap-align: start; flex-shrink: 0; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   9. NEWSLETTER
+   ══════════════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .amz-newsletter { padding: 24px 16px; }
+  .amz-newsletter__title { font-size: 20px; }
+  .amz-newsletter__sub { font-size: 13px; margin: 6px 0 14px; }
+  .amz-newsletter__form {
+    flex-direction: column !important;
+    gap: 10px !important;
+    max-width: 100%;
+  }
+  .amz-newsletter__input {
+    width: 100% !important; font-size: 15px;
+    padding: 12px 14px; border-radius: 4px;
+    min-height: 48px;
+  }
+  .amz-newsletter__btn {
+    width: 100%; font-size: 15px;
+    padding: 12px; border-radius: 4px;
+    min-height: 48px;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   10. PRODUCT CARDS (grid / collection)
+   ══════════════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .product-card__quickview { display: none !important; }
+  .amz-product-card__actions { opacity: 1 !important; }
+  /* ATC / Buy Now buttons on card */
+  .amz-card-atc-btn,
+  .amz-card-buy-btn {
+    font-size: 12px !important; padding: 8px 6px !important;
+    min-height: 36px !important;
+  }
+  /* Wishlist button */
+  .amz-wishlist-btn { width: 36px !important; height: 36px !important; }
+  /* Prime badge */
+  .amz-prime-badge svg { width: 30px; height: 11px; }
+  /* Urgency / social proof text */
+  .amz-urgency-text,
+  .amz-social-proof { font-size: 11px; }
+}
+
+@media (max-width: 480px) {
+  /* 2-col product grid */
+  .amz-collection__grid,
+  .amz-products-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
+  }
+  .amz-product-card { border-radius: 4px; }
+  .amz-product-card__img-wrap { aspect-ratio: 1/1; }
+  .amz-product-card__title { font-size: 12px !important; -webkit-line-clamp: 2; }
+  .amz-product-card__price { font-size: 14px !important; }
+  .amz-product-card__compare { font-size: 11px !important; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   11. COLLECTION PAGE HEADER
+   ══════════════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .amz-collection__banner { height: 120px; }
+  .amz-collection__banner-title { font-size: 22px; }
+  .amz-collection__toolbar {
+    flex-wrap: wrap; gap: 8px; padding: 8px 12px;
+  }
+  .amz-collection__count { width: 100%; font-size: 12px; }
+  .amz-collection__sort,
+  .amz-collection__filter-btn { flex: 1; min-height: 40px; font-size: 13px; }
+  /* Sidebar filters → full-width drawer on mobile */
+  .amz-collection__sidebar {
+    position: fixed; inset: 0; z-index: 9999;
+    transform: translateX(-100%); transition: transform 0.3s ease;
+    background: #fff; overflow-y: auto; padding: 20px 16px;
+    width: 85vw; max-width: 320px;
+  }
+  .amz-collection__sidebar.is-open { transform: translateX(0); }
+  .amz-collection__main { width: 100% !important; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   12. PRODUCT PAGE
+   ══════════════════════════════════════════════════════════════════════ */
+@media (max-width: 1024px) {
+  .amz-product-layout {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 16px;
+  }
+  .amz-buybox { grid-column: 1 / -1; }
+}
+@media (max-width: 768px) {
+  .amz-product-layout { grid-template-columns: 1fr !important; gap: 12px; }
+  .amz-product-gallery { position: relative !important; top: auto !important; }
+  /* Thumbnail strip → horizontal scroll */
+  .amz-gallery__thumbs {
+    flex-direction: row !important; overflow-x: auto;
+    scrollbar-width: none; -webkit-overflow-scrolling: touch;
+  }
+  .amz-gallery__thumbs::-webkit-scrollbar { display: none; }
+  .amz-gallery__thumb { min-width: 56px; }
+  /* Buybox full width */
+  .amz-buybox { position: static !important; width: 100% !important; box-shadow: none; border: 1px solid #ddd; border-radius: 4px; padding: 16px; }
+  .amz-product-title { font-size: 18px !important; }
+  .amz-price-main { font-size: 22px !important; }
+  /* ATC / Buy now buttons */
+  .amz-btn-atc,
+  .amz-btn-buy { width: 100%; font-size: 15px; min-height: 44px; border-radius: 22px; }
+  /* Tabs */
+  .amz-product-tabs { overflow-x: auto; scrollbar-width: none; }
+  .amz-product-tabs::-webkit-scrollbar { display: none; }
+  .amz-tab-label { font-size: 13px; white-space: nowrap; padding: 10px 12px; }
+}
+@media (max-width: 480px) {
+  .amz-product-title { font-size: 16px !important; }
+  .amz-price-main { font-size: 20px !important; }
+  .amz-product-layout { gap: 8px; }
+  /* Sticky buy bar */
+  .amz-sticky-buy { padding: 8px 12px; gap: 8px; }
+  .amz-sticky-buy__product { display: none; }
+  .amz-sticky-buy .amz-btn { flex: 1; font-size: 13px; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   13. CART DRAWER
+   ══════════════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .cart-drawer { width: 100vw !important; right: -100vw !important; }
+  .cart-drawer.is-open { right: 0 !important; }
+  .cart-drawer__header { padding: 14px 16px; }
+  .cart-drawer__title { font-size: 18px; }
+  .cart-drawer__item { gap: 10px; padding: 12px 14px; }
+  .cart-drawer__item-img { width: 64px !important; height: 64px !important; }
+  .cart-drawer__item-title { font-size: 13px; }
+  .cart-drawer__item-price { font-size: 14px; }
+  /* Quantity buttons — bigger touch target */
+  .cart-drawer__qty-btn {
+    width: 36px !important; height: 36px !important;
+    font-size: 18px !important;
+  }
+  .cart-drawer__qty-num { font-size: 15px; min-width: 28px; }
+  .cart-drawer__footer { padding: 14px 16px; }
+  .cart-drawer__checkout { min-height: 48px; font-size: 15px; border-radius: 24px; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   14. QUICK VIEW MODAL
+   ══════════════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .amz-quickview { max-width: 100% !important; width: 100% !important; margin: 0; border-radius: 0; align-self: flex-end; }
+  .amz-quickview__inner { grid-template-columns: 1fr !important; gap: 12px; }
+  .amz-quickview__img-wrap { max-height: 260px; }
+  .amz-quickview__close { top: 10px; right: 12px; width: 40px; height: 40px; }
+  .amz-modal-overlay { align-items: flex-end; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   15. NAVIGATION BAR (secondary)
+   ══════════════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .amz-header__nav-inner { padding: 0 10px; overflow-x: auto; scrollbar-width: none; }
+  .amz-header__nav-inner::-webkit-scrollbar { display: none; }
+  .amz-nav-list { flex-wrap: nowrap; gap: 0; }
+  .amz-nav-link { white-space: nowrap; padding: 0 10px; font-size: 12px; }
+  .amz-nav-arrow { display: none; }
+  /* Hide mega/dropdown on mobile — side menu handles it */
+  .amz-mega-menu, .amz-dropdown-menu { display: none !important; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   16. SIDE MENU
+   ══════════════════════════════════════════════════════════════════════ */
+.amz-side-menu {
+  transform: translateX(-100%);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+}
+.amz-side-menu.is-open { transform: translateX(0); }
+
+.amz-side-overlay {
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.amz-side-overlay.is-active { opacity: 1; pointer-events: auto; }
+
+@media (max-width: 480px) {
+  .amz-side-menu { width: 88vw; }
+  .amz-side-section__title { font-size: 13px; }
+  .amz-side-list li a { font-size: 14px; padding: 11px 0; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   17. FOOTER
+   ══════════════════════════════════════════════════════════════════════ */
+@media (max-width: 900px) {
+  .amz-footer__inner { grid-template-columns: repeat(2, 1fr) !important; gap: 24px 16px; }
+}
+@media (max-width: 768px) {
+  /* Back to top button */
+  .amz-back-top button { min-height: 44px; font-size: 13px; }
+  /* Main footer links */
+  .amz-footer__col-title { font-size: 14px; }
+  .amz-footer__col ul li a { font-size: 13px; line-height: 2; min-height: 36px; display: block; }
+  /* Social icons */
+  .amz-footer__social a { width: 44px !important; height: 44px !important; }
+  /* Footer bottom (locale area) */
+  .amz-footer__bottom-inner { flex-wrap: wrap; gap: 14px; justify-content: center; padding: 16px; }
+  .amz-locale--footer { flex-direction: row; flex-wrap: wrap; gap: 8px; justify-content: center; }
+  .amz-locale--footer .amz-locale__form { flex-wrap: wrap; justify-content: center; gap: 8px; }
+  .amz-locale--footer .amz-locale__trigger { font-size: 12px; min-height: 40px; }
+  /* Sub links */
+  .amz-footer__sub-links {
+    display: grid; grid-template-columns: repeat(2, 1fr);
+    gap: 4px 12px; text-align: left;
+  }
+  .amz-footer__sub-links a { font-size: 11px; padding: 3px 0; }
+  /* Copyright */
+  .amz-footer__copyright-inner { flex-direction: column; gap: 8px; text-align: center; }
+  .amz-footer__legal-links { flex-wrap: wrap; justify-content: center; gap: 6px; }
+  .amz-footer__legal-links a { font-size: 11px; min-height: 36px; display: inline-flex; align-items: center; }
+  .amz-footer__copyright-text { font-size: 11px; }
+}
+@media (max-width: 480px) {
+  .amz-footer__inner { grid-template-columns: 1fr !important; }
+  /* Collapse footer sections like Amazon does */
+  .amz-footer__col { border-top: 1px solid rgba(255,255,255,0.1); }
+  .amz-footer__col-title {
+    cursor: pointer; padding: 14px 0;
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 0 !important;
+  }
+  .amz-footer__col-title::after { content: '+'; font-size: 18px; font-weight: 300; }
+  .amz-footer__col.is-open .amz-footer__col-title::after { content: '−'; }
+  .amz-footer__col ul { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+  .amz-footer__col.is-open ul { max-height: 500px; }
+  .amz-footer__sub-links { grid-template-columns: 1fr; }
+  .amz-footer__payments { gap: 6px; }
+  .amz-footer__payments .amz-payment-icon { height: 20px; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   18. TRUST BADGES
+   ══════════════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .amz-trust { padding: 12px; }
+  .amz-trust__inner {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px;
+  }
+  .amz-trust__item { flex-direction: column; text-align: center; gap: 4px; }
+  .amz-trust__label { font-size: 11px; }
+}
+@media (max-width: 480px) {
+  .amz-trust__inner { grid-template-columns: repeat(2, 1fr) !important; }
+  .amz-trust__item svg { width: 22px; height: 22px; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   19. SEARCH PAGE
+   ══════════════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .amz-search-results__header { flex-wrap: wrap; gap: 8px; }
+  .amz-search-results__count { width: 100%; font-size: 13px; }
+  .amz-search-hero { padding: 16px; }
+  .amz-search-hero input { font-size: 15px; min-height: 48px; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   20. CART PAGE
+   ══════════════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .amz-cart__inner { grid-template-columns: 1fr !important; gap: 12px; }
+  .amz-cart__summary { position: static !important; width: 100% !important; }
+  .amz-cart__item { flex-direction: column; gap: 10px; }
+  .amz-cart__item-img { width: 100px !important; align-self: center; }
+  .amz-cart__item-qty { flex-wrap: wrap; gap: 8px; }
+  .amz-cart__checkout-btn { min-height: 48px; font-size: 15px; width: 100%; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   21. BREADCRUMB
+   ══════════════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .amz-breadcrumb { overflow-x: auto; scrollbar-width: none; white-space: nowrap; }
+  .amz-breadcrumb::-webkit-scrollbar { display: none; }
+  .amz-breadcrumb__item { font-size: 12px; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   22. PREDICTIVE SEARCH RESULTS
+   ══════════════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .amz-predictions {
+    position: fixed !important; top: auto !important;
+    left: 0 !important; right: 0 !important;
+    width: 100% !important; max-height: 55vh;
+    border-radius: 0 0 8px 8px;
+    overflow-y: auto; -webkit-overflow-scrolling: touch;
+    z-index: 10000;
+  }
+  .amz-predictions__item { padding: 12px 14px; }
+  .amz-predictions__item img { width: 40px; height: 40px; }
+  .amz-predictions__title { font-size: 13px; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   23. TOAST NOTIFICATIONS
+   ══════════════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .amz-toast {
+    left: 12px !important; right: 12px !important;
+    bottom: 12px !important; max-width: 100% !important;
+    font-size: 13px;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   24. SALE NOTIFICATION POPUP (CRO)
+   ══════════════════════════════════════════════════════════════════════ */
+@media (max-width: 480px) {
+  .amz-sales-popup {
+    bottom: 60px !important; left: 10px !important;
+    right: 10px !important; max-width: 100% !important;
+    font-size: 12px;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   25. NEWSLETTER POPUP
+   ══════════════════════════════════════════════════════════════════════ */
+@media (max-width: 640px) {
+  .amz-newsletter-popup {
+    width: calc(100vw - 24px) !important; max-width: 100% !important;
+    margin: 12px; border-radius: 8px; padding: 24px 16px !important;
+  }
+  .amz-newsletter-popup__heading { font-size: 20px; }
+  .amz-newsletter-popup__sub { font-size: 13px; }
+  .amz-newsletter-popup input { font-size: 15px; min-height: 48px; }
+  .amz-newsletter-popup__btn { width: 100%; min-height: 48px; font-size: 15px; }
+  .amz-newsletter-popup__close { width: 40px; height: 40px; font-size: 20px; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   26. SCROLL-TO-TOP BUTTON
+   ══════════════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .scroll-top-btn,
+  .amz-scroll-top { right: 12px !important; bottom: 16px !important; width: 44px !important; height: 44px !important; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   27. CURRENCY / LANGUAGE SWITCHER (footer context on mobile)
+   ══════════════════════════════════════════════════════════════════════ */
+@media (max-width: 480px) {
+  .amz-locale--footer .amz-locale__dropdown {
+    bottom: auto; top: calc(100% + 4px); /* open downward in footer on small screens */
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   28. PAGE SECTIONS — General spacing on mobile
+   ══════════════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .page-width { padding: 0 12px; }
+  section,
+  .amz-section { margin-bottom: 10px; }
+  /* Consistent section padding */
+  .amz-fc, .amz-deals, .amz-promos,
+  .amz-newsletter, .amz-cats,
+  .amz-featured, .amz-trust { margin: 0 0 10px; }
+}
+@media (max-width: 480px) {
+  .page-width { padding: 0 10px; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   29. MOBILE FOOTER ACCORDION (JS-driven, styles here)
+   ══════════════════════════════════════════════════════════════════════ */
+/* Collapse animation already set above in footer section */
+
+/* ══════════════════════════════════════════════════════════════════════
+   30. WISHLIST PAGE
+   ══════════════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .amz-wishlist__grid { grid-template-columns: repeat(2, 1fr) !important; gap: 10px; }
+}
+@media (max-width: 480px) {
+  .amz-wishlist__grid { grid-template-columns: repeat(2, 1fr) !important; gap: 8px; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   31. GIFT CARD / MISC PAGES
+   ══════════════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .gift-card { padding: 16px; }
+  .gift-card__price { font-size: 32px; }
+  .amz-page-content { padding: 16px 12px; }
+  .amz-page-content h1 { font-size: 22px; }
+  .amz-page-content h2 { font-size: 18px; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   32. PRINT MEDIA (cleanup)
+   ══════════════════════════════════════════════════════════════════════ */
+@media print {
+  .amz-header, .amz-footer,
+  .amz-side-menu, .amz-side-overlay,
+  .cart-drawer, .amz-toast,
+  .amz-sales-popup, .amz-newsletter-popup,
+  .amz-sticky-buy, .scroll-top-btn { display: none !important; }
+}

@@ -244,7 +244,13 @@ window.AmazoDrw = (function () {
         return; 
       }
 
-      /* Close overlay or close btn */
+      /* QUICK VIEW CLOSE */
+      if (e.target.closest('#QuickViewOverlay') || e.target.closest('#QuickViewClose')) {
+        if (window.AmazQV) window.AmazQV.close();
+        return;
+      }
+
+      /* Close overlay or close btn (Cart Drawer) */
       if (e.target.closest('#cartDrawerOverlay') || e.target.closest('#cartDrawerClose')) {
         closeDrawer(); return;
       }
@@ -349,14 +355,37 @@ window.AmazoDrw = (function () {
       /* ── PROCEED TO CHECKOUT (cart drawer footer button) ─
          Ensure the "Proceed to Buy" link in cart drawer goes to /checkout
       ──────────────────────────────────────────────────── */
-      var checkoutBtn = e.target.closest('.cart-drawer__checkout, [data-checkout-btn]');
-      if (checkoutBtn && checkoutBtn.tagName === 'A') {
-        /* Already an <a href="/checkout"> — just let it navigate */
-        return;
-      }
-      if (checkoutBtn && checkoutBtn.tagName === 'BUTTON') {
+      var checkoutBtn = e.target.closest('.amz-checkout-btn, [data-checkout], .cart-drawer__checkout');
+      if (checkoutBtn) {
         e.preventDefault();
         window.location.href = '/checkout';
+        return;
+      }
+
+      /* ── QUICK VIEW TRIGGER ── */
+      var qvBtn = e.target.closest('.amz-quickview-btn, [data-quickview-trigger]');
+      if (qvBtn) {
+        e.preventDefault();
+        e.stopPropagation();
+        var handle = qvBtn.dataset.productHandle;
+        if (handle && window.AmazQV) window.AmazQV.open(handle);
+        return;
+      }
+
+      /* ── QTY STEPPER (Global) ── */
+      var qtyBtn = e.target.closest('.amz-qty-btn');
+      if (qtyBtn && qtyBtn.dataset.target) {
+        var input = document.getElementById(qtyBtn.dataset.target);
+        if (input) {
+          var val = parseInt(input.value, 10) || 1;
+          if (qtyBtn.classList.contains('amz-qty-plus')) {
+            input.value = val + 1;
+          } else {
+            input.value = Math.max(1, val - 1);
+          }
+          /* Trigger change event for any listeners */
+          input.dispatchEvent(new Event('change', { bubbles: true }));
+        }
         return;
       }
     });
@@ -382,9 +411,12 @@ window.AmazoDrw = (function () {
       addToCart(variantId, qty, btn);
     });
 
-    /* ESC closes drawer */
+    /* ESC closes drawer or Quick View */
     document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape') closeDrawer();
+      if (e.key === 'Escape') {
+        closeDrawer();
+        if (window.AmazQV) window.AmazQV.close();
+      }
     });
   }
 
@@ -418,7 +450,7 @@ window.AmazQV = (function () {
   function closeBtn() { return document.getElementById('QuickViewClose'); }
 
   /* ── Open modal ── */
-  function open(productHandle) {
+  function openQuickView(productHandle) {
     if (!productHandle) return;
     var m = modal();
     if (!m) return;
@@ -441,7 +473,7 @@ window.AmazQV = (function () {
   }
 
   /* ── Close modal ── */
-  function close() {
+  function closeQuickView() {
     if (!_isOpen) return;
     var m = modal();
     if (!m) return;
@@ -497,15 +529,17 @@ window.AmazQV = (function () {
 
     /* --- Build images gallery --- */
     var images = product.images || [];
-    var mainImgSrc = (images.length > 0 ? images[0].src : '') || '';
+    var getSrc = function(i) { return typeof i === 'string' ? i : (i && i.src ? i.src : ''); };
+    var mainImgSrc = images.length > 0 ? getSrc(images[0]) : '';
     /* Use 600px width if possible */
     if (mainImgSrc) mainImgSrc = mainImgSrc.replace(/(\.\w+)(\?|$)/, '_600x600$1$2');
 
     var thumbsHTML = '';
     if (images.length > 1) {
       thumbsHTML = images.slice(0, 6).map(function (img, idx) {
-        var thumbSrc = img.src.replace(/(\.\w+)(\?|$)/, '_100x100$1$2');
-        return '<div class="amz-qv-thumb ' + (idx === 0 ? 'is-active' : '') + '" data-src="' + img.src.replace(/(\.\w+)(\?|$)/, '_600x600$1$2') + '" data-idx="' + idx + '">' +
+        var s = getSrc(img);
+        var thumbSrc = s.replace(/(\.\w+)(\?|$)/, '_100x100$1$2');
+        return '<div class="amz-qv-thumb ' + (idx === 0 ? 'is-active' : '') + '" data-src="' + s.replace(/(\.\w+)(\?|$)/, '_600x600$1$2') + '" data-idx="' + idx + '">' +
           '<img src="' + thumbSrc + '" alt="" loading="lazy" width="60" height="60">' +
           '</div>';
       }).join('');
@@ -517,13 +551,14 @@ window.AmazQV = (function () {
       var options = product.options_with_values || [];
       /* Fallback: derive from variants */
       if (!options.length && product.options) {
-        product.options.forEach(function (optName, i) {
+        product.options.forEach(function (optItem, i) {
+          var oName = typeof optItem === 'string' ? optItem : (optItem.name || 'Option ' + (i + 1));
           var vals = [];
           product.variants.forEach(function (v) {
             var val = v['option' + (i + 1)];
             if (val && vals.indexOf(val) === -1) vals.push(val);
           });
-          options.push({ name: optName, values: vals, position: i + 1 });
+          options.push({ name: oName, values: vals, position: i + 1 });
         });
       }
 
@@ -714,32 +749,10 @@ window.AmazQV = (function () {
 
   /* ── Init event listeners for Quick View ── */
   function init() {
-    /* Open Quick View on .amz-quickview-btn click */
-    document.addEventListener('click', function (e) {
-      /* Quick View trigger button */
-      var triggerBtn = e.target.closest('.amz-quickview-btn, [data-quickview-trigger]');
-      if (triggerBtn) {
-        e.preventDefault();
-        e.stopPropagation();
-        var handle = triggerBtn.dataset.productHandle;
-        if (handle) open(handle);
-        return;
-      }
-
-      /* Close: overlay or close button */
-      if (e.target.closest('#QuickViewOverlay') || e.target.closest('#QuickViewClose')) {
-        close();
-        return;
-      }
-    });
-
-    /* ESC closes Quick View */
-    document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && _isOpen) close();
-    });
+    /* No longer needed as handled by global listener in AmazoDrw */
   }
 
-  return { open: open, close: close, init: init };
+  return { open: openQuickView, close: closeQuickView, init: init };
 })();
 
 
