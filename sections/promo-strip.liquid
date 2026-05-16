@@ -1,0 +1,13 @@
+{% comment %} Promo Strip - Top slim bar {% endcomment %}
+<div class="amz-promo-strip">
+  {{ section.settings.text | default: '🌟 Deal of the Day: Up to 70% off | <a href="/collections/sale">Shop Now</a>' }}
+</div>
+{% schema %}
+{
+  "name": "Amazon Promo Strip",
+  "settings": [
+    { "type": "richtext", "id": "text", "label": "Strip Text" }
+  ],
+  "presets": [{ "name": "Amazon Promo Strip" }]
+}
+{% endschema %}

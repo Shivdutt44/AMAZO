@@ -1,0 +1,81 @@
+{% comment %}
+  Amazo Theme - Product Card Placeholder v3.0
+  Uses Shopify's built-in placeholder SVGs
+  Usage: {% render 'product-card-placeholder', index: i %}
+{% endcomment %}
+
+{%- assign placeholder_titles = "Premium Wireless Headphones,Smart Watch Series 5,Running Shoes Pro,4K Action Camera,Organic Coffee Blend,Laptop Stand Adjustable,Portable Bluetooth Speaker,Designer Sunglasses" | split: "," -%}
+{%- assign placeholder_prices = "4,999,19,999,7,999,14,999,2,499,3,999,5,999,8,999" | split: "," -%}
+{%- assign placeholder_compares = "8,999,29,999,11,999,24,999,3,999,5,999,8,999,14,999" | split: "," -%}
+{%- assign placeholder_ratings = "4.5,4.3,4.7,4.2,4.8,4.4,4.6,4.1" | split: "," -%}
+{%- assign placeholder_reviews = "1,247,3,891,892,2,156,5,643,734,2,891,1,428" | split: "," -%}
+{%- assign placeholder_discounts = "44,33,33,40,38,33,25,40" | split: "," -%}
+{%- assign placeholder_svgs = "product-1,product-2,product-3,product-4,product-5,product-6,product-1,product-2" | split: "," -%}
+
+{%- assign idx = index | default: 1 | minus: 1 | modulo: 8 -%}
+{%- assign title = placeholder_titles[idx] -%}
+{%- assign rating = placeholder_ratings[idx] -%}
+{%- assign discount = placeholder_discounts[idx] -%}
+{%- assign svg_type = placeholder_svgs[idx] -%}
+
+{%- assign full_stars = rating | split: '.' | first | plus: 0 -%}
+{%- assign has_half = false -%}
+{%- assign decimal = rating | split: '.' | last | plus: 0 -%}
+{%- if decimal >= 3 and decimal <= 7 -%}
+  {%- assign has_half = true -%}
+{%- elsif decimal > 7 -%}
+  {%- assign full_stars = full_stars | plus: 1 -%}
+{%- endif -%}
+
+<article class="product-card" aria-label="{{ title }}">
+  <div class="product-card__media">
+    <a href="{{ routes.collections_url }}" tabindex="-1" aria-hidden="true">
+      <div style="aspect-ratio:1/1; background:#f8f8f8; overflow:hidden; display:flex; align-items:center; justify-content:center;">
+        {{ svg_type | placeholder_svg_tag: 'product-card__image' }}
+      </div>
+    </a>
+    <div class="product-card__badges">
+      <span class="badge badge--sale">-{{ discount }}%</span>
+      {%- if idx == 0 or idx == 4 -%}
+        <span class="badge badge--bestseller">Best Seller</span>
+      {%- endif -%}
+    </div>
+    <button class="product-card__wishlist" aria-label="Add to wishlist">
+      <svg viewBox="0 0 24 24" width="14" height="14">
+        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" fill="none" stroke="#555" stroke-width="2"/>
+      </svg>
+    </button>
+  </div>
+
+  <div class="product-card__info">
+    <div class="product-card__brand">Sample Brand</div>
+    <a href="{{ routes.collections_url }}" class="product-card__title">{{ title }}</a>
+
+    <div class="product-card__rating">
+      <span class="rating-stars" aria-label="{{ rating }} out of 5 stars">
+        {%- for s in (1..5) -%}
+          {%- if s <= full_stars -%}★
+          {%- elsif has_half and s == full_stars | plus: 1 -%}½
+          {%- else -%}☆
+          {%- endif -%}
+        {%- endfor -%}
+      </span>
+      <span class="rating-count">({{ placeholder_reviews[idx] }})</span>
+    </div>
+
+    <div class="product-card__price">
+      <span class="price-current">₹{{ placeholder_prices[idx] }}</span>
+      <span class="price-compare">₹{{ placeholder_compares[idx] }}</span>
+      <span class="price-discount">-{{ discount }}%</span>
+    </div>
+
+    <div class="product-card__delivery">
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#007600" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+      FREE delivery
+    </div>
+
+    <button class="product-card__add-btn" onclick="event.preventDefault();" aria-label="Add {{ title }} to cart">
+      Add to cart
+    </button>
+  </div>
+</article>

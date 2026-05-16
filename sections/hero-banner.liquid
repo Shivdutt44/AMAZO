@@ -1,0 +1,129 @@
+{% comment %} Amazon Hero Banner - Exact Carousel Style {% endcomment %}
+
+<div class="amz-hero" id="amz-hero">
+
+  <!-- HERO CAROUSEL -->
+  <div class="amz-hero__carousel" id="amz-hero-carousel">
+    <div class="amz-hero__slides" id="amz-hero-slides">
+
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'slide' -%}
+          <div class="amz-hero__slide" {{ block.shopify_attributes }}>
+            {%- if block.settings.image != blank -%}
+              <img 
+                src="{{ block.settings.image | img_url: '1500x600', crop: 'center' }}" 
+                srcset="{{ block.settings.image | img_url: '750x300', crop: 'center' }} 750w,
+                        {{ block.settings.image | img_url: '1500x600', crop: 'center' }} 1500w"
+                alt="{{ block.settings.heading | escape }}"
+                class="amz-hero__img"
+                loading="lazy"
+              >
+            {%- else -%}
+              <!-- Default Amazon-style gradient slide -->
+              <div class="amz-hero__slide-default" style="background: linear-gradient(135deg, {{ block.settings.bg_color | default: '#003087' }} 0%, {{ block.settings.bg_color_2 | default: '#0066cc' }} 100%);">
+                <div class="amz-hero__slide-content">
+                  {%- if block.settings.badge != blank -%}
+                    <span class="amz-hero__badge">{{ block.settings.badge }}</span>
+                  {%- endif -%}
+                  {%- if block.settings.heading != blank -%}
+                    <h2 class="amz-hero__heading">{{ block.settings.heading }}</h2>
+                  {%- endif -%}
+                  {%- if block.settings.subheading != blank -%}
+                    <p class="amz-hero__subheading">{{ block.settings.subheading }}</p>
+                  {%- endif -%}
+                  {%- if block.settings.button_text != blank -%}
+                    <a href="{{ block.settings.button_link | default: '#' }}" class="amz-hero__btn">
+                      {{ block.settings.button_text }}
+                    </a>
+                  {%- endif -%}
+                </div>
+              </div>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+      {%- else -%}
+
+      <!-- DEFAULT SLIDES - Amazon Style -->
+      <div class="amz-hero__slide amz-hero__slide--1">
+        <div class="amz-hero__slide-default" style="background: linear-gradient(180deg, #b6c4de 0%, #e8ecf0 40%, #eaeded 100%);">
+          <div class="amz-hero__slide-content amz-hero__slide-content--center">
+            <h2 class="amz-hero__heading-white">Shop today's deals</h2>
+            <p class="amz-hero__sub-white">Discover amazing deals across all categories</p>
+            <a href="/collections/all" class="amz-hero__cta-btn">See all deals</a>
+          </div>
+        </div>
+      </div>
+      <div class="amz-hero__slide amz-hero__slide--2">
+        <div class="amz-hero__slide-default" style="background: linear-gradient(180deg, #c8e6c9 0%, #e8f5e9 40%, #eaeded 100%);">
+          <div class="amz-hero__slide-content amz-hero__slide-content--center">
+            <h2 class="amz-hero__heading-white">New Arrivals</h2>
+            <p class="amz-hero__sub-white">Discover what's new and trending</p>
+            <a href="/collections/new" class="amz-hero__cta-btn">Shop now</a>
+          </div>
+        </div>
+      </div>
+      <div class="amz-hero__slide amz-hero__slide--3">
+        <div class="amz-hero__slide-default" style="background: linear-gradient(180deg, #fff9c4 0%, #fffde7 40%, #eaeded 100%);">
+          <div class="amz-hero__slide-content amz-hero__slide-content--center">
+            <h2 class="amz-hero__heading-white">Prime Member Deals</h2>
+            <p class="amz-hero__sub-white">Exclusive savings for Prime members</p>
+            <a href="#" class="amz-hero__cta-btn">Join Prime</a>
+          </div>
+        </div>
+      </div>
+
+      {%- endfor -%}
+    </div>
+
+    <!-- PREV/NEXT ARROWS -->
+    <button class="amz-hero__prev" id="amz-hero-prev" aria-label="Previous slide">&#10094;</button>
+    <button class="amz-hero__next" id="amz-hero-next" aria-label="Next slide">&#10095;</button>
+
+    <!-- GRADIENT OVERLAYS (Amazon left/right fade) -->
+    <div class="amz-hero__fade-left"></div>
+    <div class="amz-hero__fade-right"></div>
+
+    <!-- DOTS -->
+    <div class="amz-hero__dots" id="amz-hero-dots">
+      <span class="amz-hero__dot amz-hero__dot--active" data-slide="0"></span>
+      <span class="amz-hero__dot" data-slide="1"></span>
+      <span class="amz-hero__dot" data-slide="2"></span>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Amazon Hero Banner",
+  "max_blocks": 8,
+  "settings": [
+    { "type": "range", "id": "autoplay_speed", "label": "Autoplay Speed (seconds)", "min": 3, "max": 10, "step": 1, "default": 5 }
+  ],
+  "blocks": [
+    {
+      "type": "slide",
+      "name": "Slide",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Slide Image" },
+        { "type": "color", "id": "bg_color", "label": "Background Color 1", "default": "#003087" },
+        { "type": "color", "id": "bg_color_2", "label": "Background Color 2", "default": "#0066cc" },
+        { "type": "text", "id": "badge", "label": "Badge Text (e.g. New, Hot)" },
+        { "type": "text", "id": "heading", "label": "Heading", "default": "Shop today's deals" },
+        { "type": "text", "id": "subheading", "label": "Subheading" },
+        { "type": "text", "id": "button_text", "label": "Button Text", "default": "Shop now" },
+        { "type": "url", "id": "button_link", "label": "Button Link" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Amazon Hero Banner",
+      "blocks": [
+        { "type": "slide", "settings": { "heading": "Today's Deals", "button_text": "See all deals" } },
+        { "type": "slide", "settings": { "heading": "New Arrivals", "button_text": "Shop now" } },
+        { "type": "slide", "settings": { "heading": "Prime Deals", "button_text": "Join Prime" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

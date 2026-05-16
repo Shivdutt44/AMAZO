@@ -1,0 +1,39 @@
+{% comment %} Amazon Featured Collection 3 {% endcomment %}
+<div class="amz-fc">
+  <div class="amz-fc__inner">
+    <h2 class="amz-fc__title">{{ section.settings.title | default: "Fashion Finds" }}</h2>
+    <div class="amz-fc__grid">
+      {%- assign col = section.settings.collection.products | default: collections.all.products -%}
+      {%- for product in col limit: 4 offset: 8 -%}
+        <div class="amz-fc__grid-item">
+          <a href="{{ product.url }}">
+            <img src="{{ product.featured_image | img_url: '160x160', crop: 'center' }}" alt="{{ product.title | escape }}" loading="lazy">
+            <p style="font-size:12px;color:#0f1111;margin-top:4px;">{{ product.title | truncate: 22 }}</p>
+          </a>
+        </div>
+      {%- else -%}
+        {%- for i in (1..4) -%}
+          <div class="amz-fc__grid-item">
+            <div style="background:#f8bbd0;height:120px;border-radius:2px;"></div>
+            <p style="font-size:12px;margin-top:4px;">Item {{ i }}</p>
+          </div>
+        {%- endfor -%}
+      {%- endfor -%}
+    </div>
+    <a href="{{ section.settings.view_all_url | default: '/collections/all' }}" class="amz-fc__link">
+      {{ section.settings.link_text | default: 'See more' }}
+    </a>
+  </div>
+</div>
+{% schema %}
+{
+  "name": "Featured Collection 3",
+  "settings": [
+    { "type": "text", "id": "title", "label": "Title", "default": "Fashion Finds" },
+    { "type": "collection", "id": "collection", "label": "Collection" },
+    { "type": "text", "id": "link_text", "label": "Link Text", "default": "See more" },
+    { "type": "url", "id": "view_all_url", "label": "View All URL" }
+  ],
+  "presets": [{ "name": "Amazon Featured Collection 3" }]
+}
+{% endschema %}

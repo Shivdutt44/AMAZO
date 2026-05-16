@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="{{ request.locale.iso_code }}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="description" content="{{ page_description | default: shop.description | escape }}">
+  <meta name="theme-color" content="#131921">
+  <title>{{ page_title | default: shop.name }} | {{ shop.name }}</title>
+  <link rel="canonical" href="{{ canonical_url }}">
+
+  {%- if settings.favicon -%}
+  <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32 }}">
+  {%- endif -%}
+
+  <!-- Open Graph / Social -->  
+  <meta property="og:site_name" content="{{ shop.name }}">
+  <meta property="og:title" content="{{ page_title | default: shop.name }}">
+  <meta property="og:description" content="{{ page_description | default: shop.description | escape }}">
+  <meta property="og:url" content="{{ canonical_url }}">
+  <meta property="og:type" content="{% if template.name == 'product' %}product{% else %}website{% endif %}">
+  {%- if product.featured_media -%}
+  <meta property="og:image" content="{{ product.featured_media | image_url: width: 1200 }}">
+  {%- endif -%}
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{{ page_title | default: shop.name }}">
+  <meta name="twitter:description" content="{{ page_description | default: shop.description | escape }}">
+
+  <!-- Fonts: non-render-blocking async load -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap"
+        media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap"></noscript>
+
+  {{ content_for_header }}
+
+  <!-- Amazo Theme CSS: base reset → premium UI → CRO overlays -->
+  {{ 'amazo-base.css' | asset_url | stylesheet_tag }}
+  {{ 'amazo-premium.css' | asset_url | stylesheet_tag }}
+  {{ 'amazo-cro.css' | asset_url | stylesheet_tag }}
+
+  <style>
+    :root {
+      --amz-dark:         #131921;
+      --amz-blue:         #232f3e;
+      --amz-blue-mid:     #37475a;
+      --amz-orange:       {{ settings.color_primary | default: '#ff9900' }};
+      --amz-orange-light: {{ settings.color_accent | default: '#febd69' }};
+      --amz-yellow:       {{ settings.color_add_to_cart_bg | default: '#ffd814' }};
+      --amz-yellow-hover: #ddb347;
+      --amz-red:          #b12704;
+      --amz-green:        #007600;
+      --amz-link:         #007185;
+      --amz-link-hover:   #c45500;
+      --amz-bg:           {{ settings.color_body_bg | default: '#eaeded' }};
+      --amz-white:        #ffffff;
+      --amz-border:       {{ settings.color_border | default: '#dddddd' }};
+      --amz-text:         {{ settings.color_text | default: '#0f1111' }};
+      --amz-gray:         {{ settings.color_text_light | default: '#565959' }};
+      --amz-light-gray:   #f3f3f3;
+      --amz-deal-red:     {{ settings.color_sale | default: '#cc0c39' }};
+      --amz-prime-blue:   #00a8e1;
+      --color-primary:    {{ settings.color_primary | default: '#f0c14b' }};
+      --color-secondary:  {{ settings.color_secondary | default: '#007185' }};
+      --color-sale:       {{ settings.color_sale | default: '#cc0c39' }};
+      --color-nav-bg:     {{ settings.color_nav_bg | default: '#232f3e' }};
+      --color-atc-bg:     {{ settings.color_add_to_cart_bg | default: '#ffd814' }};
+      --color-buy-bg:     {{ settings.color_buy_now_bg | default: '#ffa41c' }};
+      --page-width:       {{ settings.page_width | default: 1500 }}px;
+      --btn-radius:       {{ settings.button_radius | default: 3 }}px;
+      --card-radius:      {{ settings.product_card_radius | default: 4 }}px;
+    }
+
+    html, body {
+      margin: 0; padding: 0;
+      font-family: "Open Sans", "Amazon Ember", Arial, sans-serif;
+      font-size: {{ settings.font_size_base | default: 14 }}px;
+      color: {{ settings.color_text | default: '#0f1111' }};
+      background: {{ settings.color_body_bg | default: '#eaeded' }};
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body.menu-open { overflow: hidden; }
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; height: auto; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    .page-width { max-width: var(--page-width); margin: 0 auto; padding: 0 16px; }
+    #MainContent { min-height: 40vh; }
+
+    @font-face {
+      font-family: 'Amazon Ember';
+      src: local('Amazon Ember'), local('Arial');
+      font-display: swap;
+    }
+  </style>
+</head>
+<body class="amz-body template-{{ template.name }}">
+
+  <!-- Notification Toast -->
+  <div id="AmzToast" class="amz-toast" role="alert" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- Header -->
+  {% section 'header' %}
+
+  <!-- Main Content -->
+  <main role="main" id="MainContent" tabindex="-1">
+    {{ content_for_layout }}
+  </main>
+
+  <!-- Footer -->
+  {% section 'footer' %}
+
+  <!-- Cart Drawer -->
+  {% render 'cart-drawer' %}
+
+  <!-- Quick View Modal -->
+  {%- if settings.enable_quick_view -%}
+    {% render 'quick-view-modal' %}
+  {%- endif -%}
+
+  <!-- Global Feature Flags for JS (must be before defer scripts) -->
+  <script>
+    window.AmezoConfig = {
+      shopUrl:              '{{ shop.url }}',
+      cartType:             '{{ settings.cart_type | default: "drawer" }}',
+      enableWishlist:        {{ settings.enable_wishlist | default: true }},
+      enableQuickView:       {{ settings.enable_quick_view | default: true }},
+      enableAddToCart:       {{ settings.enable_add_to_cart | default: true }},
+      enableBuyNow:          {{ settings.enable_buy_now | default: true }},
+      enableReviews:         {{ settings.enable_reviews | default: true }},
+      enableCroUrgency:      {{ settings.enable_cro_urgency | default: true }},
+      enableCroSocialProof:  {{ settings.enable_cro_social_proof | default: true }},
+      enableTrustBadges:     {{ settings.enable_trust_badges | default: true }},
+      enableRecentlyViewed:  {{ settings.enable_cro_recently_viewed | default: true }},
+      freeShippingThreshold: {{ settings.free_shipping_threshold | default: 499 }},
+      currencySymbol:       '{{ cart.currency.symbol }}',
+      moneyFormat:          '{{ shop.money_format }}'
+    };
+  </script>
+
+  <!-- Main JS (must load first — defines window.AmazoDrw) -->
+  <script src="{{ 'amazo-main.js' | asset_url }}" defer></script>
+  <!-- CRO JS (depends on window.AmazoDrw from amazo-main.js) -->
+  <script src="{{ 'amazo-cro.js' | asset_url }}" defer></script>
+
+</body>
+</html>

@@ -1,0 +1,150 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "current": {
+    "enable_buy_now_card": true,
+    "logo": "shopify://shop_images/74d97a469873774f841633779c982d.webp",
+    "sections": {
+      "hero-banner": {
+        "type": "hero-banner",
+        "blocks": {
+          "slide_FCnVec": {
+            "type": "slide",
+            "settings": {
+              "image": "shopify://shop_images/WhatsApp_Image_2026-01-31_at_11.23.26_AM_1.jpg",
+              "bg_color": "#d4e9e2",
+              "bg_color_2": "#0066cc",
+              "badge": "Today's Deal",
+              "heading": "Big Savings",
+              "subheading": "",
+              "button_text": "Shop now",
+              "button_link": ""
+            }
+          },
+          "slide_V4eBc3": {
+            "type": "slide",
+            "settings": {
+              "bg_color": "#d4e9e2",
+              "bg_color_2": "#0066cc",
+              "badge": "Today's Deal",
+              "heading": "Big Savings",
+              "subheading": "",
+              "button_text": "Shop now",
+              "button_link": ""
+            }
+          }
+        },
+        "block_order": [
+          "slide_FCnVec",
+          "slide_V4eBc3"
+        ],
+        "settings": {
+          "autoplay_speed": 5
+        }
+      },
+      "category-grid": {
+        "type": "category-grid",
+        "settings": {}
+      },
+      "featured-products": {
+        "type": "featured-products",
+        "settings": {
+          "title": "Best Sellers in Electronics",
+          "collection": "activity-r-new",
+          "link_text": "See all recommendations",
+          "view_all_url": ""
+        }
+      },
+      "featured-collection-2": {
+        "type": "featured-collection-2",
+        "settings": {
+          "title": "Best Sellers in Beauty",
+          "collection": "b-1",
+          "link_text": "See more",
+          "view_all_url": ""
+        }
+      },
+      "featured-collection-3": {
+        "type": "featured-collection-3",
+        "settings": {
+          "title": "Best Sellers in Clothing & Accessories",
+          "collection": "",
+          "link_text": "See more",
+          "view_all_url": ""
+        }
+      },
+      "deals-of-the-day": {
+        "type": "deals-of-the-day",
+        "settings": {
+          "title": "Deal of the Day",
+          "deals_collection": "",
+          "view_all_link": ""
+        }
+      },
+      "promo-banners": {
+        "type": "promo-banners",
+        "settings": {}
+      },
+      "newsletter": {
+        "type": "newsletter",
+        "settings": {
+          "title": "Stay Updated",
+          "subtitle": "Get deals, new arrivals, and exclusive offers",
+          "placeholder": "Enter your email address",
+          "button_text": "Subscribe"
+        }
+      },
+      "header": {
+        "type": "header",
+        "settings": {
+          "delivery_location": "India",
+          "search_placeholder": "Search products...",
+          "main_menu": "main-menu",
+          "nav_item_1": "",
+          "nav_url_1": "",
+          "nav_item_2": "",
+          "nav_url_2": "",
+          "nav_item_3": "",
+          "nav_url_3": ""
+        }
+      },
+      "navigation-bar": {
+        "type": "navigation-bar",
+        "settings": {}
+      },
+      "footer": {
+        "type": "footer",
+        "settings": {}
+      },
+      "trust-badges": {
+        "type": "trust-badges",
+        "settings": {}
+      },
+      "amazon-product-slider": {
+        "type": "amazon-product-slider",
+        "settings": {
+          "title": "Inspired by your shopping trends",
+          "collection": "active-shorts",
+          "product_count": 12,
+          "view_all_text": "See all best sellers",
+          "view_all_link": ""
+        }
+      },
+      "announcement-bar": {
+        "type": "announcement-bar",
+        "settings": {
+          "text": "🎉 Free Shipping on orders over $35! Shop now and save big →",
+          "link": ""
+        }
+      }
+    },
+    "content_for_index": []
+  }
+}

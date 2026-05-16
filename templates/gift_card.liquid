@@ -1,0 +1,168 @@
+{% comment %}
+  Gift card template — required by Shopify.
+  This file must exist locally to prevent the CLI from attempting to delete it on the remote theme.
+{% endcomment %}
+<!DOCTYPE html>
+<html lang="{{ request.locale.iso_code }}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Gift Card | {{ shop.name }}</title>
+  {{ content_for_header }}
+  {{ 'amazo-base.css' | asset_url | stylesheet_tag }}
+  <style>
+    body {
+      font-family: 'Open Sans', Arial, sans-serif;
+      background: #eaeded;
+      margin: 0; padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .gift-card-wrap {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 4px 32px rgba(0,0,0,0.12);
+      max-width: 560px;
+      width: 100%;
+      margin: 40px 16px;
+      overflow: hidden;
+    }
+    .gift-card-header {
+      background: linear-gradient(135deg, #131921, #232f3e);
+      color: #fff;
+      padding: 32px;
+      text-align: center;
+    }
+    .gift-card-header h1 {
+      font-size: 26px;
+      font-weight: 800;
+      margin-bottom: 6px;
+      color: #ff9900;
+    }
+    .gift-card-header p { color: #ccc; font-size: 14px; margin: 0; }
+    .gift-card-body { padding: 32px; }
+    .gift-card-balance {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+    .gift-card-balance .label { font-size: 13px; color: #565959; margin-bottom: 6px; }
+    .gift-card-balance .amount { font-size: 48px; font-weight: 800; color: #0f1111; }
+    .gift-card-code-wrap {
+      background: #f8f9fa;
+      border: 2px dashed #ddd;
+      border-radius: 10px;
+      padding: 20px;
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    .gift-card-code {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      color: #131921;
+      font-family: monospace;
+      word-break: break-all;
+    }
+    .gift-card-expiry { font-size: 12px; color: #565959; margin-top: 8px; }
+    .gift-card-qr { text-align: center; margin-bottom: 24px; }
+    .gift-card-actions { display: flex; flex-direction: column; gap: 10px; }
+    .gift-card-btn {
+      display: block;
+      text-align: center;
+      padding: 13px;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      border: none;
+      transition: background 0.15s;
+    }
+    .gift-card-btn--primary { background: #FFD814; border: 1px solid #FCD200; color: #0f1111; }
+    .gift-card-btn--primary:hover { background: #F7CA00; }
+    .gift-card-btn--secondary { background: #f7f8f8; border: 1px solid #ddd; color: #0f1111; }
+    .gift-card-btn--secondary:hover { background: #eee; }
+    .gift-card-footer { padding: 16px 32px; background: #f8f9fa; text-align: center; font-size: 12px; color: #888; border-top: 1px solid #eee; }
+  </style>
+</head>
+<body>
+
+  <div class="gift-card-wrap">
+    <div class="gift-card-header">
+      <h1>🎁 Gift Card</h1>
+      <p>{{ shop.name }}</p>
+    </div>
+
+    <div class="gift-card-body">
+
+      <div class="gift-card-balance">
+        <div class="label">Current Balance</div>
+        <div class="amount">{{ gift_card.balance | money }}</div>
+      </div>
+
+      <div class="gift-card-code-wrap">
+        <div class="gift-card-code" id="GiftCardCode">
+          {{ gift_card.code | format_code }}
+        </div>
+        {% if gift_card.expires_on %}
+        <div class="gift-card-expiry">
+          Expires: {{ gift_card.expires_on | date: '%B %d, %Y' }}
+        </div>
+        {% endif %}
+      </div>
+
+      {% if gift_card.qr_identifier %}
+      <div class="gift-card-qr">
+        <img src="{{ gift_card.qr_identifier | qr_code_url: 200 }}" alt="QR Code" width="140" height="140" style="border:1px solid #eee;border-radius:8px;margin:0 auto;">
+      </div>
+      {% endif %}
+
+      <div class="gift-card-actions">
+        <a href="{{ shop.url }}" class="gift-card-btn gift-card-btn--primary">
+          Shop Now
+        </a>
+        <button
+          class="gift-card-btn gift-card-btn--secondary"
+          onclick="copyCode()"
+          id="CopyBtn">
+          📋 Copy Code
+        </button>
+        <button
+          class="gift-card-btn gift-card-btn--secondary"
+          onclick="window.print()">
+          🖨 Print Gift Card
+        </button>
+      </div>
+
+    </div>
+
+    <div class="gift-card-footer">
+      This gift card is valid only at {{ shop.name }}. It cannot be exchanged for cash.
+    </div>
+  </div>
+
+  <script>
+    function copyCode() {
+      var code = document.getElementById('GiftCardCode').innerText.replace(/\s/g, '');
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(code).then(function() {
+          var btn = document.getElementById('CopyBtn');
+          btn.textContent = '✓ Copied!';
+          setTimeout(function() { btn.textContent = '📋 Copy Code'; }, 2000);
+        });
+      } else {
+        var el = document.createElement('textarea');
+        el.value = code;
+        document.body.appendChild(el);
+        el.select();
+        document.execCommand('copy');
+        document.body.removeChild(el);
+      }
+    }
+  </script>
+
+</body>
+</html>

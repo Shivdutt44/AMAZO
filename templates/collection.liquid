@@ -1,0 +1,295 @@
+{% comment %}
+  Amazo Premium — Collection Page
+  Full responsive, premium Amazon-style product listing
+{% endcomment %}
+
+<!-- Collection Banner -->
+<div class="collection-banner">
+  <div class="collection-banner__inner">
+    {%- render 'breadcrumb' -%}
+    <h1 class="collection-banner__title">{{ collection.title }}</h1>
+    {%- if collection.description != blank -%}
+      <p class="collection-banner__desc">{{ collection.description | strip_html | truncate: 220 }}</p>
+    {%- endif -%}
+  </div>
+</div>
+
+<!-- Collection Body -->
+<div class="collection-page">
+  <div class="collection-page__inner">
+
+    <!-- Filters Sidebar -->
+    <aside class="filters-sidebar" id="FiltersSidebar" role="complementary" aria-label="Product filters">
+      <div class="filters-sidebar__title">
+        <span>Filters</span>
+        <a href="{{ collection.url }}" style="font-size:12px; color:var(--amz-link); font-weight:500; text-decoration:none;">Clear All</a>
+      </div>
+
+      <!-- Availability -->
+      <div class="filter-group">
+        <div class="filter-group__title">
+          Availability
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 10l5 5 5-5z"/></svg>
+        </div>
+        <div class="filter-option">
+          <input type="checkbox" id="filter-available" name="availability" value="available">
+          <label for="filter-available">In Stock <span class="filter-option__count">({{ collection.products_count }})</span></label>
+        </div>
+      </div>
+
+      <!-- Price -->
+      <div class="filter-group">
+        <div class="filter-group__title">
+          Price
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 10l5 5 5-5z"/></svg>
+        </div>
+        {%- assign price_ranges = "Under $25,0-25|$25 to $50,25-50|$50 to $100,50-100|$100 to $200,100-200|$200 & Above,200-9999" | split: "|" -%}
+        {%- for range in price_ranges -%}
+          {%- assign parts = range | split: "," -%}
+          <div class="filter-option">
+            <input type="checkbox" id="price-{{ forloop.index }}" name="price" value="{{ parts[1] }}">
+            <label for="price-{{ forloop.index }}">{{ parts[0] }}</label>
+          </div>
+        {%- endfor -%}
+      </div>
+
+      <!-- Rating -->
+      <div class="filter-group">
+        <div class="filter-group__title">
+          Avg. Customer Review
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 10l5 5 5-5z"/></svg>
+        </div>
+        {%- for rating_val in (4..1) -%}
+          <div class="filter-option filter-rating">
+            <input type="checkbox" id="rating-{{ rating_val }}" name="rating" value="{{ rating_val }}">
+            <label for="rating-{{ rating_val }}" style="display:flex; align-items:center; gap:5px;">
+              <span style="color:var(--amz-orange); font-size:14px;">
+                {%- for s in (1..5) -%}
+                  {%- if s <= rating_val -%}★{%- else -%}☆{%- endif -%}
+                {%- endfor -%}
+              </span>
+              <span style="font-size:12px; color:var(--amz-gray);">& Up</span>
+            </label>
+          </div>
+        {%- endfor -%}
+      </div>
+
+      <!-- Brand/Vendor -->
+      {%- assign vendors = collection.all_vendors -%}
+      {%- if vendors.size > 0 -%}
+      <div class="filter-group">
+        <div class="filter-group__title">
+          Brand
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 10l5 5 5-5z"/></svg>
+        </div>
+        {%- for vendor in vendors limit: 8 -%}
+          <div class="filter-option">
+            <input type="checkbox" id="vendor-{{ forloop.index }}" name="vendor" value="{{ vendor | handleize }}"
+              {%- if current_vendor == vendor %} checked{%- endif -%}>
+            <label for="vendor-{{ forloop.index }}">{{ vendor }}</label>
+          </div>
+        {%- endfor -%}
+      </div>
+      {%- endif -%}
+
+      <!-- Tags -->
+      {%- if collection.all_tags.size > 0 -%}
+      <div class="filter-group">
+        <div class="filter-group__title">
+          Features
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 10l5 5 5-5z"/></svg>
+        </div>
+        {%- for tag in collection.all_tags limit: 12 -%}
+          <div class="filter-option">
+            <input type="checkbox" id="tag-{{ forloop.index }}" name="tag" value="{{ tag | handleize }}"
+              {%- if current_tags contains tag %} checked{%- endif -%}>
+            <label for="tag-{{ forloop.index }}">{{ tag | replace: '-', ' ' | capitalize }}</label>
+          </div>
+        {%- endfor -%}
+      </div>
+      {%- endif -%}
+    </aside>
+
+    <!-- Product Results -->
+    <div class="collection-results">
+
+      <!-- Toolbar -->
+      <div class="collection-toolbar">
+        <div class="collection-toolbar__info">
+          {%- paginate collection.products by 24 -%}
+            Showing <strong>{{ paginate.current_offset | plus: 1 }}&ndash;{{ paginate.current_offset | plus: collection.products.size }}</strong>
+            of <strong>{{ collection.products_count }}</strong> results
+            {%- if current_tags.size > 0 -%} for "<strong>{{ current_tags | join: ', ' }}</strong>"{%- endif -%}
+          {%- endpaginate -%}
+        </div>
+        <div class="collection-toolbar__sort">
+          <!-- Mobile filter toggle -->
+          <button id="FilterToggle" aria-label="Toggle filters" aria-expanded="false" aria-controls="FiltersSidebar">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z"/></svg>
+            Filters
+          </button>
+
+          <label for="SortBy" style="white-space:nowrap; font-size:13px;">Sort by:</label>
+          <select class="sort-select" id="SortBy" aria-label="Sort products">
+            <option value="featured"{% if collection.sort_by == 'featured' %} selected{% endif %}>Featured</option>
+            <option value="best-selling"{% if collection.sort_by == 'best-selling' %} selected{% endif %}>Best Sellers</option>
+            <option value="title-ascending"{% if collection.sort_by == 'title-ascending' %} selected{% endif %}>Name: A-Z</option>
+            <option value="title-descending"{% if collection.sort_by == 'title-descending' %} selected{% endif %}>Name: Z-A</option>
+            <option value="price-ascending"{% if collection.sort_by == 'price-ascending' %} selected{% endif %}>Price: Low to High</option>
+            <option value="price-descending"{% if collection.sort_by == 'price-descending' %} selected{% endif %}>Price: High to Low</option>
+            <option value="created-descending"{% if collection.sort_by == 'created-descending' %} selected{% endif %}>Newest First</option>
+          </select>
+
+          <!-- Column toggle (desktop) -->
+          <div class="amz-col-toggle" aria-label="Products per row" role="group">
+            <button title="4 columns" onclick="setColumns(4)" class="amz-col-btn" aria-label="4 column view">
+              <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><rect x="1" y="1" width="4" height="4"/><rect x="8" y="1" width="4" height="4"/><rect x="15" y="1" width="4" height="4"/><rect x="1" y="8" width="4" height="4"/><rect x="8" y="8" width="4" height="4"/><rect x="15" y="8" width="4" height="4"/></svg>
+            </button>
+            <button title="3 columns" onclick="setColumns(3)" class="amz-col-btn" aria-label="3 column view">
+              <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><rect x="1" y="1" width="5" height="5"/><rect x="8" y="1" width="5" height="5"/><rect x="1" y="9" width="5" height="5"/><rect x="8" y="9" width="5" height="5"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Active Tags -->
+      {%- if current_tags.size > 0 -%}
+      <div class="active-filters" role="list" aria-label="Active filters">
+        {%- for tag in current_tags -%}
+          <a href="{{ collection.url }}" class="active-filter-tag" role="listitem" aria-label="Remove {{ tag }} filter">
+            {{ tag }} <span aria-hidden="true">×</span>
+          </a>
+        {%- endfor -%}
+      </div>
+      {%- endif -%}
+
+      <!-- Products Grid -->
+      {%- paginate collection.products by 24 -%}
+        <div class="products-grid" id="ProductsGrid" style="--products-per-row: 4;">
+          {%- for product in collection.products -%}
+            {%- render 'product-card', product: product -%}
+          {%- else -%}
+            <div class="collection-empty">
+              <div class="collection-empty__icon">🔍</div>
+              <h2 class="collection-empty__title">No products found</h2>
+              <p class="collection-empty__text">Try adjusting or removing your filters.</p>
+              <a href="{{ collection.url }}" class="btn btn--add-cart" style="width:auto; display:inline-block; padding:10px 28px;">Browse All</a>
+            </div>
+          {%- endfor -%}
+        </div>
+
+        <!-- Pagination -->
+        {%- if paginate.pages > 1 -%}
+        <nav class="pagination" role="navigation" aria-label="Pagination">
+          {%- if paginate.previous -%}
+            <a href="{{ paginate.previous.url }}" class="pagination__item" aria-label="Previous page">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+            </a>
+          {%- endif -%}
+          {%- for part in paginate.parts -%}
+            {%- if part.is_link -%}
+              <a href="{{ part.url }}" class="pagination__item" aria-label="Page {{ part.title }}">{{ part.title }}</a>
+            {%- elsif part.title == paginate.current_page -%}
+              <span class="pagination__item active" aria-current="page">{{ part.title }}</span>
+            {%- else -%}
+              <span class="pagination__item" aria-hidden="true">{{ part.title }}</span>
+            {%- endif -%}
+          {%- endfor -%}
+          {%- if paginate.next -%}
+            <a href="{{ paginate.next.url }}" class="pagination__item" aria-label="Next page">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+            </a>
+          {%- endif -%}
+        </nav>
+        {%- endif -%}
+
+      {%- endpaginate -%}
+    </div><!-- /.collection-results -->
+
+  </div>
+</div>
+
+<style>
+.collection-empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 60px 20px;
+}
+.collection-empty__icon { font-size: 54px; margin-bottom: 16px; }
+.collection-empty__title { font-size: 24px; font-weight: 700; margin-bottom: 8px; }
+.collection-empty__text { font-size: 14px; color: var(--amz-gray); margin-bottom: 20px; }
+.active-filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+.active-filter-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #e8f4fd;
+  border: 1px solid #b3d4e8;
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 12px;
+  color: #0f1111;
+  text-decoration: none;
+  transition: all 0.15s;
+}
+.active-filter-tag:hover { background: #ffd8d8; border-color: #e99; text-decoration: none; }
+.amz-col-toggle { display: flex; gap: 4px; }
+.amz-col-btn {
+  width: 30px;
+  height: 30px;
+  border: 1px solid var(--amz-border);
+  border-radius: 3px;
+  background: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+.amz-col-btn:hover, .amz-col-btn.active { background: #e6e6e6; border-color: #999; }
+@media (max-width: 768px) {
+  .amz-col-toggle { display: none; }
+}
+</style>
+
+<script>
+// Sort
+document.getElementById('SortBy')?.addEventListener('change', function() {
+  const url = new URL(window.location.href);
+  url.searchParams.set('sort_by', this.value);
+  window.location.href = url.toString();
+});
+
+// Column switcher
+function setColumns(num) {
+  const grid = document.getElementById('ProductsGrid');
+  if (grid) grid.style.setProperty('--products-per-row', num);
+  localStorage.setItem('amazo_cols', num);
+  document.querySelectorAll('.amz-col-btn').forEach((btn,i) => {
+    btn.classList.toggle('active', [4,3][i] === num);
+  });
+}
+
+// Restore saved columns
+const savedCols = localStorage.getItem('amazo_cols');
+if (savedCols) setColumns(parseInt(savedCols));
+
+// Mobile filter toggle
+const filterToggle = document.getElementById('FilterToggle');
+const filtersSidebar = document.getElementById('FiltersSidebar');
+if (filterToggle && filtersSidebar) {
+  filterToggle.addEventListener('click', () => {
+    const isOpen = filtersSidebar.classList.toggle('mobile-open');
+    filterToggle.setAttribute('aria-expanded', isOpen);
+  });
+}
+
+// Tag filter URL builder
+document.querySelectorAll('[name="tag"]').forEach(checkbox => {
+  checkbox.addEventListener('change', function() {
+    const checked = [...document.querySelectorAll('[name="tag"]:checked')].map(c => c.value);
+    const baseUrl = '{{ collection.url }}';
+    window.location.href = checked.length > 0 ? baseUrl + '/' + checked.join('+') : baseUrl;
+  });
+});
+</script>

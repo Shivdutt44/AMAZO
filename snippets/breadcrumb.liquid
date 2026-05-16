@@ -1,0 +1,65 @@
+{% comment %}
+  Amazo Premium - Breadcrumb Snippet
+  Always renders (no settings gate), SEO-friendly
+{% endcomment %}
+
+<nav class="breadcrumb" aria-label="Breadcrumb">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "{{ shop.url }}" }
+      {%- if template.name == 'collection' -%}
+      ,{ "@type": "ListItem", "position": 2, "name": {{ collection.title | json }}, "item": "{{ shop.url }}{{ collection.url }}" }
+      {%- elsif template.name == 'product' -%}
+        {%- if collection -%}
+      ,{ "@type": "ListItem", "position": 2, "name": {{ collection.title | json }}, "item": "{{ shop.url }}{{ collection.url }}" }
+      ,{ "@type": "ListItem", "position": 3, "name": {{ product.title | json }}, "item": "{{ shop.url }}{{ product.url }}" }
+        {%- else -%}
+      ,{ "@type": "ListItem", "position": 2, "name": {{ product.title | json }}, "item": "{{ shop.url }}{{ product.url }}" }
+        {%- endif -%}
+      {%- elsif template.name == 'page' -%}
+      ,{ "@type": "ListItem", "position": 2, "name": {{ page.title | json }}, "item": "{{ shop.url }}{{ page.url }}" }
+      {%- endif -%}
+    ]
+  }
+  </script>
+
+  <a href="{{ routes.root_url }}" class="breadcrumb__item">Home</a>
+
+  {%- if template.name == 'collection' -%}
+    <span class="breadcrumb__sep" aria-hidden="true">›</span>
+    {%- if current_tags -%}
+      <a href="{{ collection.url }}" class="breadcrumb__item">{{ collection.title }}</a>
+      <span class="breadcrumb__sep" aria-hidden="true">›</span>
+      <span class="breadcrumb__current" aria-current="page">{{ current_tags | join: ', ' }}</span>
+    {%- else -%}
+      <span class="breadcrumb__current" aria-current="page">{{ collection.title }}</span>
+    {%- endif -%}
+
+  {%- elsif template.name == 'product' -%}
+    <span class="breadcrumb__sep" aria-hidden="true">›</span>
+    {%- if collection -%}
+      <a href="{{ collection.url }}" class="breadcrumb__item">{{ collection.title }}</a>
+      <span class="breadcrumb__sep" aria-hidden="true">›</span>
+    {%- endif -%}
+    <span class="breadcrumb__current" aria-current="page">{{ product.title | truncate: 50 }}</span>
+
+  {%- elsif template.name == 'cart' -%}
+    <span class="breadcrumb__sep" aria-hidden="true">›</span>
+    <span class="breadcrumb__current" aria-current="page">Shopping Cart</span>
+
+  {%- elsif template.name == 'page' -%}
+    <span class="breadcrumb__sep" aria-hidden="true">›</span>
+    <span class="breadcrumb__current" aria-current="page">{{ page.title }}</span>
+
+  {%- elsif template.name == 'search' -%}
+    <span class="breadcrumb__sep" aria-hidden="true">›</span>
+    <span class="breadcrumb__current" aria-current="page">Search Results</span>
+
+  {%- elsif template.name == '404' -%}
+    <span class="breadcrumb__sep" aria-hidden="true">›</span>
+    <span class="breadcrumb__current" aria-current="page">Page Not Found</span>
+  {%- endif -%}
+</nav>

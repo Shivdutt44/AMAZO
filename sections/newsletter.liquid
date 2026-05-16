@@ -1,0 +1,36 @@
+{% comment %} Amazon Newsletter Section {% endcomment %}
+<div class="amz-newsletter">
+  <div class="amz-newsletter__inner">
+    <h2 class="amz-newsletter__title">{{ section.settings.title | default: 'Stay Updated' }}</h2>
+    <p class="amz-newsletter__sub">{{ section.settings.subtitle | default: 'Get deals, new arrivals, and exclusive offers' }}</p>
+    {%- form 'customer', id: 'amz-newsletter-form' -%}
+      <input type="hidden" name="contact[tags]" value="newsletter">
+      <div class="amz-newsletter__form">
+        <input 
+          type="email" 
+          name="contact[email]" 
+          class="amz-newsletter__input" 
+          placeholder="{{ section.settings.placeholder | default: 'Enter your email address' }}"
+          required
+          aria-label="Email address"
+        >
+        <button type="submit" class="amz-newsletter__btn">{{ section.settings.button_text | default: 'Subscribe' }}</button>
+      </div>
+      {%- if form.posted_successfully? -%}
+        <p style="color:#90ee90;margin-top:8px;font-size:14px;">✓ Thank you for subscribing!</p>
+      {%- endif -%}
+    {%- endform -%}
+  </div>
+</div>
+{% schema %}
+{
+  "name": "Amazon Newsletter",
+  "settings": [
+    { "type": "text", "id": "title", "label": "Title", "default": "Stay Updated" },
+    { "type": "text", "id": "subtitle", "label": "Subtitle", "default": "Get deals, new arrivals, and exclusive offers" },
+    { "type": "text", "id": "placeholder", "label": "Input Placeholder", "default": "Enter your email address" },
+    { "type": "text", "id": "button_text", "label": "Button Text", "default": "Subscribe" }
+  ],
+  "presets": [{ "name": "Amazon Newsletter" }]
+}
+{% endschema %}

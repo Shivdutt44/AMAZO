@@ -1,0 +1,13 @@
+{% assign rating = product.metafields.reviews.rating.value | default: 4 %}
+{% assign review_count = product.metafields.reviews.rating_count.value | default: 1247 %}
+<div class="star-rating">
+  {% assign full_stars = rating | floor %}
+  {% for i in (1..5) %}
+    {% if forloop.index <= full_stars %}
+      <span style="color:#e47911;">★</span>
+    {% else %}
+      <span style="color:#ccc;">★</span>
+    {% endif %}
+  {% endfor %}
+  <span style="color:#007185;font-size:11px;margin-left:3px;">({{ review_count }})</span>
+</div>

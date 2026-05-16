@@ -1,0 +1,430 @@
+{% comment %} Amazo Theme - Amazon Header v3.0 - Fully Responsive {% endcomment %}
+
+<header class="amazo-header" role="banner" id="amazo-header">
+  <!-- Top Bar -->
+  <div class="header-top-bar">
+    <div class="page-width">
+      <div class="header-inner">
+
+        <!-- Mobile Menu Toggle -->
+        <button class="mobile-menu-toggle show-mobile" id="mobileMenuToggle" aria-label="Open menu" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+
+        <!-- Logo -->
+        <div class="header-logo">
+          {% if section.settings.logo != blank %}
+            <a href="{{ routes.root_url }}" aria-label="{{ shop.name }}">
+              <img src="{{ section.settings.logo | image_url: width: 200 }}"
+                   alt="{{ shop.name }}"
+                   style="max-width: {{ section.settings.logo_width }}px; height: auto;"
+                   class="logo-img"
+                   width="{{ section.settings.logo_width }}"
+                   height="auto">
+            </a>
+          {% else %}
+            <a href="{{ routes.root_url }}" aria-label="{{ shop.name }}">
+              <div class="logo-text">
+                <span class="logo-main">{{ shop.name }}</span>
+                <span class="logo-dot">.in</span>
+              </div>
+            </a>
+          {% endif %}
+        </div>
+
+        <!-- Delivery Location (Desktop Only) -->
+        <div class="header-deliver hide-mobile" aria-label="Deliver to location">
+          <div class="deliver-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+            </svg>
+          </div>
+          <div class="deliver-text">
+            <span class="deliver-to">{{ section.settings.deliver_label | default: 'Deliver to' }}</span>
+            <span class="deliver-location">{{ section.settings.deliver_location | default: 'India' }}</span>
+          </div>
+        </div>
+
+        <!-- Search Bar (Desktop) -->
+        <div class="header-search hide-mobile">
+          <form action="{{ routes.search_url }}" method="get" role="search" class="search-form">
+            <input type="hidden" name="type" value="product">
+            <div class="search-inner">
+              <select class="search-category" name="category" aria-label="Search category">
+                <option value="">All</option>
+                {% for block in section.blocks %}
+                  {% if block.type == 'search_category' %}
+                    <option value="{{ block.settings.title | handleize }}">{{ block.settings.title }}</option>
+                  {% endif %}
+                {% endfor %}
+              </select>
+              <input
+                type="search"
+                name="q"
+                placeholder="{{ section.settings.search_placeholder | default: 'Search products...' }}"
+                value="{{ search.terms | escape }}"
+                class="search-input"
+                aria-label="Search products"
+                autocomplete="off">
+              <button type="submit" class="search-btn" aria-label="Search">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                </svg>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Header Right Actions -->
+        <div class="header-right">
+
+          <!-- Language (Desktop) -->
+          <div class="header-flag hide-mobile" aria-label="Language selector">
+            <svg width="20" height="14" viewBox="0 0 20 14" fill="none">
+              <rect width="20" height="14" rx="2" fill="#FF9933"/>
+              <rect y="4.67" width="20" height="4.67" fill="white"/>
+              <rect y="9.33" width="20" height="4.67" fill="#138808"/>
+              <circle cx="10" cy="7" r="2" fill="#000080" fill-opacity="0.2"/>
+            </svg>
+            <span class="flag-en" style="color:white;">EN</span>
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="white"><path d="M7 10l5 5 5-5z"/></svg>
+          </div>
+
+          <!-- Account -->
+          <div class="header-account" tabindex="0" role="button" aria-label="Account and lists" aria-haspopup="true">
+            <span class="account-top">
+              <span class="hello-text">Hello, {{ customer.first_name | default: section.settings.greeting | default: 'Sign in' }}</span>
+            </span>
+            <span class="account-bottom">
+              <span class="account-bold">Account &amp; Lists</span>
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="white"><path d="M7 10l5 5 5-5z"/></svg>
+            </span>
+
+            <!-- Dropdown -->
+            <div class="account-dropdown" role="dialog" aria-label="Account options">
+              <div class="dropdown-arrow"></div>
+              {% if customer %}
+                <p class="dropdown-greeting">Hello, {{ customer.first_name }}!</p>
+                <div class="dropdown-signin-row">
+                  <a href="{{ routes.account_url }}" class="dropdown-signin-btn">Go to Account</a>
+                </div>
+                <hr class="dropdown-divider">
+                <div class="dropdown-two-col">
+                  <div>
+                    <strong>Your Account</strong>
+                    <a href="{{ routes.account_url }}">Your Profile</a>
+                    <a href="{{ routes.account_url }}/orders">Your Orders</a>
+                    <a href="{{ routes.account_url }}">Your Addresses</a>
+                  </div>
+                  <div>
+                    <strong>More</strong>
+                    <a href="{{ routes.collections_url }}">Shop</a>
+                    <a href="{{ routes.cart_url }}">Your Cart</a>
+                    <a href="{{ routes.account_logout_url }}">Sign Out</a>
+                  </div>
+                </div>
+              {% else %}
+                <p class="dropdown-greeting">New customer?</p>
+                <div class="dropdown-signin-row">
+                  <a href="{{ routes.account_login_url }}" class="dropdown-signin-btn">Sign in</a>
+                </div>
+                <p class="dropdown-new-customer">
+                  <a href="{{ routes.account_register_url }}">Start here</a>
+                </p>
+                <hr class="dropdown-divider">
+                <div class="dropdown-two-col">
+                  <div>
+                    <strong>Your Account</strong>
+                    <a href="{{ routes.account_url }}">Your Profile</a>
+                    <a href="{{ routes.account_url }}/orders">Your Orders</a>
+                    <a href="{{ routes.account_url }}">Your Addresses</a>
+                  </div>
+                  <div>
+                    <strong>Your Lists</strong>
+                    <a href="{{ routes.collections_url }}">Shop</a>
+                    <a href="{{ routes.cart_url }}">Your Cart</a>
+                    <a href="{{ routes.account_login_url }}">Sign In</a>
+                  </div>
+                </div>
+              {% endif %}
+            </div>
+          </div>
+
+          <!-- Returns & Orders (Desktop) -->
+          <a href="{{ routes.account_url }}/orders" class="header-returns hide-mobile" aria-label="Returns and orders">
+            <span class="returns-top">Returns</span>
+            <span class="returns-bottom">&amp; Orders</span>
+          </a>
+
+          <!-- Cart -->
+          <a href="{{ routes.cart_url }}" class="header-cart" aria-label="Cart, {{ cart.item_count }} items">
+            <div class="cart-icon-wrap">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="white">
+                <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" fill="none" stroke="white" stroke-width="1.5"/>
+                <line x1="3" y1="6" x2="21" y2="6" stroke="white" stroke-width="1.5"/>
+                <path d="M16 10a4 4 0 0 1-8 0" stroke="white" stroke-width="1.5" fill="none"/>
+              </svg>
+              <span class="cart-count" id="cart-count-badge">{{ cart.item_count }}</span>
+            </div>
+            <span class="cart-text">Cart</span>
+          </a>
+
+        </div><!-- end header-right -->
+      </div><!-- end header-inner -->
+    </div>
+  </div>
+
+  <!-- Mobile Search Bar -->
+  <div class="mobile-search-bar" id="mobileSearchBar">
+    <form action="{{ routes.search_url }}" method="get" role="search">
+      <input type="hidden" name="type" value="product">
+      <div class="search-inner">
+        <input
+          type="search"
+          name="q"
+          placeholder="{{ section.settings.search_placeholder | default: 'Search products...' }}"
+          value="{{ search.terms | escape }}"
+          class="search-input"
+          aria-label="Search">
+        <button type="submit" class="search-btn" aria-label="Search">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+        </button>
+      </div>
+    </form>
+  </div>
+</header>
+
+<!-- Mobile Slide Menu -->
+<div class="mobile-nav-overlay" id="mobileNavOverlay"></div>
+<nav class="mobile-nav-menu" id="mobileNavMenu" aria-label="Mobile navigation" role="navigation">
+  <div class="mobile-nav-header">
+    <div class="mobile-nav-user">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+        <circle cx="12" cy="7" r="4"/>
+      </svg>
+      <span>{{ customer.first_name | default: 'Hello, Sign in' }}</span>
+    </div>
+    <button class="mobile-nav-close" id="mobileNavClose" aria-label="Close menu">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+  </div>
+  <div class="mobile-nav-body">
+    {% if section.settings.menu != blank %}
+      {% assign nav_menu = linklists[section.settings.menu] %}
+      {% for link in nav_menu.links %}
+        {% if link.links.size > 0 %}
+          <details class="mobile-nav-accordion">
+            <summary class="mobile-nav-item mobile-nav-item--has-children">
+              {{ link.title }}
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </summary>
+            <div class="mobile-nav-sub">
+              <a href="{{ link.url }}" class="mobile-nav-sub-item">All {{ link.title }}</a>
+              {% for sublink in link.links %}
+                <a href="{{ sublink.url }}" class="mobile-nav-sub-item">{{ sublink.title }}</a>
+              {% endfor %}
+            </div>
+          </details>
+        {% else %}
+          <a href="{{ link.url }}" class="mobile-nav-item">{{ link.title }}</a>
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+    <div class="mobile-nav-divider"></div>
+    {% if customer %}
+      <a href="{{ routes.account_url }}" class="mobile-nav-item">Your Account</a>
+      <a href="{{ routes.account_url }}/orders" class="mobile-nav-item">Your Orders</a>
+      <a href="{{ routes.account_logout_url }}" class="mobile-nav-item">Sign Out</a>
+    {% else %}
+      <a href="{{ routes.account_login_url }}" class="mobile-nav-item">Sign In</a>
+      <a href="{{ routes.account_register_url }}" class="mobile-nav-item">Create Account</a>
+    {% endif %}
+  </div>
+</nav>
+
+<style>
+/* Mobile Navigation */
+.mobile-nav-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 2000;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.mobile-nav-overlay.open { display: block; opacity: 1; }
+.mobile-nav-menu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 280px;
+  max-width: 80vw;
+  background: white;
+  z-index: 2001;
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.mobile-nav-menu.open { transform: translateX(0); }
+.mobile-nav-header {
+  background: #232f3e;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.mobile-nav-user { display: flex; align-items: center; gap: 8px; color: white; font-size: 15px; font-weight: 700; }
+.mobile-nav-user svg { stroke: white; }
+.mobile-nav-close { background: none; border: none; cursor: pointer; padding: 4px; color: white; }
+.mobile-nav-close svg { stroke: white; }
+.mobile-nav-body { flex: 1; overflow-y: auto; }
+.mobile-nav-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  font-size: 15px;
+  font-weight: 500;
+  color: #0f1111;
+  border-bottom: 1px solid #f0f0f0;
+  cursor: pointer;
+}
+.mobile-nav-item:hover { background: #f7f7f7; text-decoration: none; }
+.mobile-nav-accordion { border-bottom: 1px solid #f0f0f0; }
+.mobile-nav-accordion summary { list-style: none; }
+.mobile-nav-accordion summary::-webkit-details-marker { display: none; }
+.mobile-nav-accordion[open] summary svg { transform: rotate(180deg); }
+.mobile-nav-item--has-children { font-weight: 600; }
+.mobile-nav-sub { background: #f9f9f9; }
+.mobile-nav-sub-item { display: block; padding: 10px 28px; font-size: 14px; color: #0066c0; border-bottom: 1px solid #f0f0f0; }
+.mobile-nav-sub-item:hover { background: #f0f0f0; text-decoration: none; }
+.mobile-nav-divider { height: 8px; background: #f0f0f0; }
+
+/* Show mobile search bar always on mobile */
+@media (min-width: 768px) {
+  .mobile-search-bar { display: none !important; }
+  .mobile-nav-menu { display: none !important; }
+  .mobile-nav-overlay { display: none !important; }
+}
+@media (max-width: 767px) {
+  .mobile-search-bar { display: block; }
+}
+</style>
+
+<script>
+(function() {
+  var toggle = document.getElementById('mobileMenuToggle');
+  var menu = document.getElementById('mobileNavMenu');
+  var overlay = document.getElementById('mobileNavOverlay');
+  var closeBtn = document.getElementById('mobileNavClose');
+
+  function openMenu() {
+    menu.classList.add('open');
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    if (toggle) toggle.setAttribute('aria-expanded', 'true');
+  }
+  function closeMenu() {
+    menu.classList.remove('open');
+    overlay.classList.remove('open');
+    document.body.style.overflow = '';
+    if (toggle) toggle.setAttribute('aria-expanded', 'false');
+  }
+  if (toggle) toggle.addEventListener('click', openMenu);
+  if (closeBtn) closeBtn.addEventListener('click', closeMenu);
+  if (overlay) overlay.addEventListener('click', closeMenu);
+  document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeMenu(); });
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Amazon Header",
+  "tag": "div",
+  "class": "amazo-header-section",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo Image"
+    },
+    {
+      "type": "range",
+      "id": "logo_width",
+      "min": 50,
+      "max": 250,
+      "step": 5,
+      "unit": "px",
+      "label": "Logo Width",
+      "default": 120
+    },
+    {
+      "type": "text",
+      "id": "search_placeholder",
+      "label": "Search Placeholder",
+      "default": "Search products..."
+    },
+    {
+      "type": "text",
+      "id": "deliver_label",
+      "label": "Delivery Label",
+      "default": "Deliver to"
+    },
+    {
+      "type": "text",
+      "id": "deliver_location",
+      "label": "Delivery Location",
+      "default": "India"
+    },
+    {
+      "type": "text",
+      "id": "greeting",
+      "label": "Greeting Text (logged out)",
+      "default": "Sign in"
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Mobile Menu",
+      "default": "main-menu"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "search_category",
+      "name": "Search Category",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Category Name",
+          "default": "Electronics"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Amazon Header",
+      "blocks": [
+        {"type": "search_category", "settings": {"title": "Electronics"}},
+        {"type": "search_category", "settings": {"title": "Mobiles"}},
+        {"type": "search_category", "settings": {"title": "Fashion"}},
+        {"type": "search_category", "settings": {"title": "Home & Kitchen"}},
+        {"type": "search_category", "settings": {"title": "Books"}},
+        {"type": "search_category", "settings": {"title": "Sports"}},
+        {"type": "search_category", "settings": {"title": "Grocery"}}
+      ]
+    }
+  ]
+}
+{% endschema %}

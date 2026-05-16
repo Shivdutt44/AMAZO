@@ -1,0 +1,52 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin language editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "general": {
+    "field_required": "Required",
+    "submit": "Submit"
+  },
+  "accessibility": {
+    "skip_to_content": "Skip to content",
+    "close": "Close",
+    "next": "Next",
+    "previous": "Previous"
+  },
+  "cart": {
+    "title": "Shopping Cart",
+    "empty": "Your cart is empty",
+    "item_count": {
+      "one": "{{ count }} item",
+      "other": "{{ count }} items"
+    },
+    "subtotal": "Subtotal",
+    "checkout": "Proceed to Checkout",
+    "continue_shopping": "Continue Shopping"
+  },
+  "products": {
+    "add_to_cart": "Add to Cart",
+    "sold_out": "Sold Out",
+    "unavailable": "Currently Unavailable",
+    "vendor": "Visit the {{ vendor }} Store",
+    "reviews": "{{ count }} ratings",
+    "sale_badge": "{{ discount }}% off",
+    "free_shipping": "FREE Delivery"
+  },
+  "navigation": {
+    "home": "Home",
+    "all": "All",
+    "hamburger_menu": "All"
+  },
+  "search": {
+    "placeholder": "Search Amazo",
+    "submit": "Search",
+    "no_results": "No results for",
+    "results_for": "results for"
+  }
+}

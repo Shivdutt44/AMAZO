@@ -1,0 +1,42 @@
+{% comment %}
+  Amazo Theme – Wishlist Page v4.0
+  localStorage-based wishlist with remove, ATC, share
+{% endcomment %}
+
+<div class="amz-wishlist-page page-width" id="WishlistPage">
+  <div class="amz-wishlist-header">
+    <h1 class="amz-wishlist-title">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="#cc0c39" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+      Your Wishlist
+    </h1>
+    <div class="amz-wishlist-actions">
+      <span class="amz-wishlist-count" id="WishlistCount">0 items</span>
+      <button class="amz-btn amz-btn--share-wishlist" id="ShareWishlistBtn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        Share
+      </button>
+      <button class="amz-btn amz-btn--clear-wishlist" id="ClearWishlistBtn">
+        Clear All
+      </button>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div class="amz-wishlist-empty" id="WishlistEmpty" style="display:none;">
+    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#ddd" stroke-width="1.5" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+    <h2>Your wishlist is empty</h2>
+    <p>Save items you love by clicking the heart icon on any product.</p>
+    <a href="/" class="amz-btn amz-btn--atc">Continue Shopping</a>
+  </div>
+
+  <!-- Wishlist Grid (populated by JS) -->
+  <div class="amz-wishlist-grid" id="WishlistGrid"></div>
+
+  <!-- Add All to Cart -->
+  <div class="amz-wishlist-footer" id="WishlistFooter" style="display:none;">
+    <button class="amz-btn amz-btn--atc amz-wishlist-atc-all" id="AddAllToCartBtn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+      Add All to Cart
+    </button>
+  </div>
+</div>

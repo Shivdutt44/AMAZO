@@ -1,0 +1,101 @@
+{% comment %} Amazon Deals of the Day Section {% endcomment %}
+
+<div class="amz-deals" id="amz-deals">
+  <div class="amz-deals__inner page-width">
+
+    <div class="amz-deals__header">
+      <h2 class="amz-deals__title">{{ section.settings.title | default: "Deals of the Day" }}</h2>
+      <div class="amz-deals__timer-wrap">
+        <span class="amz-deals__timer-label">Ends in:</span>
+        <div class="amz-deals__timer" id="amz-deals-timer">
+          <div class="amz-timer__unit"><span class="amz-timer__num" id="amz-timer-h">--</span><span class="amz-timer__label">h</span></div>
+          <span class="amz-timer__sep">:</span>
+          <div class="amz-timer__unit"><span class="amz-timer__num" id="amz-timer-m">--</span><span class="amz-timer__label">m</span></div>
+          <span class="amz-timer__sep">:</span>
+          <div class="amz-timer__unit"><span class="amz-timer__num" id="amz-timer-s">--</span><span class="amz-timer__label">s</span></div>
+        </div>
+      </div>
+      <a href="{{ section.settings.view_all_link | default: '/collections/sale' }}" class="amz-deals__viewall">
+        See all deals ›
+      </a>
+    </div>
+
+    <div class="amz-deals__slider-wrap">
+      <button class="amz-deals__prev" aria-label="Previous deals">&#10094;</button>
+
+      <div class="amz-deals__track-outer">
+        <div class="amz-deals__track" id="amz-deals-track">
+
+          {%- assign deals_collection = section.settings.deals_collection | default: collections.all -%}
+          {%- for product in deals_collection.products limit: 8 -%}
+            {%- if product.compare_at_price > product.price -%}
+              {%- assign deal_pct = product.compare_at_price | minus: product.price | times: 100 | divided_by: product.compare_at_price | round -%}
+            {%- else -%}
+              {%- assign deal_pct = 20 -%}
+            {%- endif -%}
+            <div class="amz-deals__item">
+              <a href="{{ product.url }}" class="amz-deals__card">
+                <div class="amz-deals__card-img-wrap">
+                  <span class="amz-deals__badge">-{{ deal_pct }}%</span>
+                  <img 
+                    src="{{ product.featured_image | img_url: '220x220', crop: 'center' }}" 
+                    alt="{{ product.title | escape }}"
+                    loading="lazy"
+                  >
+                </div>
+                <div class="amz-deals__progress-bar">
+                  <div class="amz-deals__progress-fill" style="width: {{ deal_pct | plus: 20 | at_most: 90 }}%;"></div>
+                </div>
+                <p class="amz-deals__claimed">{{ deal_pct | plus: 15 }}% claimed</p>
+                <div class="amz-deals__price-row">
+                  <span class="amz-deals__price">{{ product.price | money }}</span>
+                  {%- if product.compare_at_price > product.price -%}
+                    <span class="amz-deals__was">{{ product.compare_at_price | money }}</span>
+                  {%- endif -%}
+                </div>
+                <p class="amz-deals__name">{{ product.title | truncate: 45 }}</p>
+                <div class="amz-deals__prime">
+                  <svg viewBox="0 0 50 18" xmlns="http://www.w3.org/2000/svg" width="36" height="13"><text x="0" y="13" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#00A8E1">prime</text></svg>
+                </div>
+              </a>
+            </div>
+          {%- else -%}
+            {%- assign deal_items = "Deal 1,Deal 2,Deal 3,Deal 4,Deal 5,Deal 6" | split: "," -%}
+            {%- assign deal_colors = "#ff6b35,#4a90d9,#7ed321,#f5a623,#d0021b,#9013fe" | split: "," -%}
+            {%- assign deal_discounts = "40,35,28,55,30,45" | split: "," -%}
+            {%- for item in deal_items -%}
+              {%- assign di = forloop.index0 -%}
+              <div class="amz-deals__item">
+                <div class="amz-deals__card">
+                  <div class="amz-deals__card-img-wrap">
+                    <span class="amz-deals__badge">-{{ deal_discounts[di] }}%</span>
+                    <div class="amz-deals__img-placeholder" style="background: {{ deal_colors[di] }}; width:220px; height:220px; display:flex; align-items:center; justify-content:center;"></div>
+                  </div>
+                  <div class="amz-deals__progress-bar"><div class="amz-deals__progress-fill" style="width: {{ deal_discounts[di] | plus: 20 }}%;"></div></div>
+                  <p class="amz-deals__claimed">{{ deal_discounts[di] | plus: 15 }}% claimed</p>
+                  <p class="amz-deals__name">Sample Product {{ forloop.index }}</p>
+                </div>
+              </div>
+            {%- endfor -%}
+          {%- endfor -%}
+
+        </div>
+      </div>
+
+      <button class="amz-deals__next" aria-label="Next deals">&#10095;</button>
+    </div>
+
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Amazon Deals of the Day",
+  "settings": [
+    { "type": "text", "id": "title", "label": "Section Title", "default": "Deals of the Day" },
+    { "type": "collection", "id": "deals_collection", "label": "Deals Collection" },
+    { "type": "url", "id": "view_all_link", "label": "View All Link" }
+  ],
+  "presets": [{ "name": "Amazon Deals of the Day" }]
+}
+{% endschema %}

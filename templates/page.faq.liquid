@@ -1,0 +1,95 @@
+{% comment %} FAQ Page Template - Fully Dynamic {% endcomment %}
+
+<div style="background:linear-gradient(135deg,#131921,#232f3e);padding:50px 20px;text-align:center;color:#fff;">
+  <div class="page-width">
+    <h1 style="font-size:34px;font-weight:800;color:#ff9900;margin-bottom:12px;">Frequently Asked Questions</h1>
+    <p style="font-size:16px;color:#ccc;">Find answers to your most common questions</p>
+  </div>
+</div>
+
+<div class="page-width" style="padding:60px 16px;max-width:860px;">
+
+  <!-- Search FAQ -->
+  <div style="margin-bottom:40px;">
+    <div style="position:relative;max-width:500px;margin:0 auto;">
+      <input type="text" id="FaqSearch" placeholder="Search your question…" oninput="filterFaqs(this.value)"
+        style="width:100%;padding:14px 48px 14px 18px;border:2px solid #ddd;border-radius:10px;font-size:15px;outline:none;transition:border-color 0.2s;box-sizing:border-box;"
+        onfocus="this.style.borderColor='#ff9900'" onblur="this.style.borderColor='#ddd'">
+      <svg style="position:absolute;right:16px;top:50%;transform:translateY(-50%);pointer-events:none;" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    </div>
+  </div>
+
+  <!-- Category Nav -->
+  <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:36px;justify-content:center;">
+    {% assign categories = "Orders & Shipping,Returns & Refunds,Payments,Account,Products,Other" | split: "," %}
+    {% for cat in categories %}
+    <button onclick="filterCat('{{ cat }}')" data-cat="{{ cat }}"
+      style="padding:8px 18px;border:1px solid #ddd;border-radius:30px;background:#fff;font-size:13px;cursor:pointer;transition:all 0.15s;font-family:inherit;"
+      onmouseover="this.style.background='#131921';this.style.color='#fff';this.style.borderColor='#131921'"
+      onmouseout="if(!this.classList.contains('active')){this.style.background='#fff';this.style.color='#0f1111';this.style.borderColor='#ddd';}">{{ cat }}</button>
+    {% endfor %}
+    <button onclick="filterCat('all')" style="padding:8px 18px;border:1px solid #131921;border-radius:30px;background:#131921;color:#fff;font-size:13px;cursor:pointer;font-family:inherit;">All</button>
+  </div>
+
+  <!-- FAQ Items -->
+  <div id="FaqList">
+
+    {% assign faq_data = "Orders & Shipping|How long does delivery take?|Standard delivery takes 3–5 business days. Express delivery (1–2 days) is available for an extra charge. Same-day delivery is available in select cities for orders placed before 12 PM.||Orders & Shipping|Can I track my order in real time?|Yes! Once your order ships, you'll receive an SMS and email with a tracking link. You can also track from your account under 'My Orders'.||Orders & Shipping|Do you offer free shipping?|Yes! Orders above ₹499 qualify for FREE standard shipping. Below that, a flat fee of ₹49 applies.||Orders & Shipping|Can I change my delivery address after placing an order?|You can change the delivery address within 2 hours of placing the order by contacting our support team. After that, the order may have already been dispatched.||Returns & Refunds|What is your return policy?|We offer a 30-day hassle-free return policy on most items. Products must be in original condition, unused, and in original packaging. Some categories have different return windows.||Returns & Refunds|How long does a refund take?|Once we receive and inspect the returned item, refunds are processed within 3–5 business days to your original payment method. UPI and wallet refunds are usually instant.||Returns & Refunds|Can I exchange a product?|Yes, exchanges are available for size, color, or defective items. Request an exchange from your account page or contact support.||Payments|What payment methods do you accept?|We accept UPI, net banking, credit cards (Visa, Mastercard, Amex), debit cards, EMI, and COD (selective pin codes).||Payments|Is COD (Cash on Delivery) available?|COD is available for most pin codes across India. A nominal handling fee of ₹25 may apply for COD orders.||Payments|Is it safe to pay on your website?|Absolutely. Our website uses SSL encryption and complies with PCI-DSS security standards. Your payment data is never stored on our servers.||Payments|Can I pay in installments (EMI)?|Yes! EMI is available on credit cards (3, 6, 9, 12 months) and via no-cost EMI partners like ZestMoney and Bajaj Finserv on eligible products.||Account|How do I create an account?|Click 'Sign In' on the top right, then select 'Create Account'. You can register with your email or use social login.||Account|I forgot my password. How do I reset it?|Click 'Sign In' → 'Forgot Password?' and enter your email. You'll receive a reset link within 2 minutes.||Account|Can I have multiple delivery addresses saved?|Yes! You can save up to 10 addresses in your account under 'Manage Addresses'.||Products|Are all products genuine?|Yes, 100%. We source directly from authorized manufacturers and distributors. All products come with manufacturer warranty where applicable.||Products|How do I find the right size?|Each product page has a size guide. We recommend measuring yourself and comparing with our size chart before ordering.||Products|What if a product is out of stock?|Click 'Notify Me' on the product page to get an email alert when it's back in stock.||Other|What is your customer support timing?|Our support team is available Monday–Saturday, 9 AM – 6 PM IST via chat, email, and phone.||Other|Do you have a physical store?|Currently we are online only. This allows us to keep prices low and pass savings to you." | split: "||" %}
+
+    {% for item in faq_data %}
+      {% assign parts = item | split: "|" %}
+      {% assign faq_cat  = parts[0] %}
+      {% assign faq_q    = parts[1] %}
+      {% assign faq_a    = parts[2] %}
+      <div class="faq-item" data-cat="{{ faq_cat }}" data-q="{{ faq_q | downcase }}">
+        <details style="margin-bottom:10px;border:1px solid #e8e8e8;border-radius:10px;overflow:hidden;transition:box-shadow 0.2s;">
+          <summary style="display:flex;justify-content:space-between;align-items:center;padding:16px 20px;font-size:14px;font-weight:600;color:#0f1111;cursor:pointer;background:#fff;user-select:none;list-style:none;">
+            <span>{{ faq_q }}</span>
+            <span style="font-size:20px;color:#ff9900;flex-shrink:0;margin-left:10px;transition:transform 0.2s;">▾</span>
+          </summary>
+          <div style="padding:14px 20px 18px;font-size:14px;color:#333;line-height:1.75;background:#fafafa;border-top:1px solid #f0f0f0;">{{ faq_a }}</div>
+        </details>
+      </div>
+    {% endfor %}
+
+    <div id="NoFaqResult" style="display:none;text-align:center;padding:40px;color:#565959;">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5" aria-hidden="true" style="margin-bottom:12px;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <p style="font-size:16px;">No results found. Try different words or <a href="/pages/contact" style="color:#007185;">contact us</a>.</p>
+    </div>
+
+  </div>
+
+  <!-- Support CTA -->
+  <div style="margin-top:50px;background:linear-gradient(135deg,#131921,#232f3e);border-radius:16px;padding:40px;text-align:center;color:#fff;">
+    <h2 style="font-size:24px;font-weight:700;margin-bottom:10px;">Still need help?</h2>
+    <p style="font-size:14px;color:#ccc;margin-bottom:24px;">Our friendly support team is ready to assist you.</p>
+    <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;">
+      <a href="/pages/contact" style="display:inline-block;background:#FFD814;color:#0f1111;font-weight:700;font-size:14px;padding:12px 28px;border-radius:8px;text-decoration:none;">Contact Support</a>
+      <a href="tel:+911800000000" style="display:inline-block;background:transparent;border:1px solid rgba(255,255,255,0.4);color:#fff;font-weight:600;font-size:14px;padding:12px 28px;border-radius:8px;text-decoration:none;">📞 Call Us</a>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function filterFaqs(query) {
+  var q = query.toLowerCase().trim();
+  var items = document.querySelectorAll('.faq-item');
+  var visible = 0;
+  items.forEach(function(item) {
+    var text = item.dataset.q || '';
+    var show = !q || text.includes(q);
+    item.style.display = show ? '' : 'none';
+    if (show) visible++;
+  });
+  document.getElementById('NoFaqResult').style.display = visible === 0 ? 'block' : 'none';
+}
+
+function filterCat(cat) {
+  var items = document.querySelectorAll('.faq-item');
+  items.forEach(function(item) {
+    item.style.display = (cat === 'all' || item.dataset.cat === cat) ? '' : 'none';
+  });
+  document.getElementById('NoFaqResult').style.display = 'none';
+}
+</script>

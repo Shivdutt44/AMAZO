@@ -1,0 +1,51 @@
+{% comment %} Amazon Homepage - 100% Amazon.com Layout Replica {% endcomment %}
+
+<!-- ANNOUNCEMENT BAR -->
+{% section 'announcement-bar' %}
+
+<!-- HERO BANNER CAROUSEL -->
+{% section 'hero-banner' %}
+
+<!-- HOMEPAGE 4-COLUMN FEATURE CARDS (Below hero - Amazon style) -->
+<div class="amz-homepage-cards">
+  <div class="amz-homepage-cards__grid">
+    
+    <!-- Card 1: Featured Products -->
+    <div class="amz-homepage-cards__card">
+      {% section 'featured-products' %}
+    </div>
+    
+    <!-- Card 2: Featured Collection 2 -->
+    <div class="amz-homepage-cards__card">
+      {% section 'featured-collection-2' %}
+    </div>
+    
+    <!-- Card 3: Featured Collection 3 -->
+    <div class="amz-homepage-cards__card">
+      {% section 'featured-collection-3' %}
+    </div>
+    
+    <!-- Card 4: Deals of the Day -->
+    <div class="amz-homepage-cards__card">
+      {% section 'deals-of-the-day' %}
+    </div>
+
+  </div>
+</div>
+
+<!-- FULL-WIDTH PRODUCT SLIDER - Best Sellers -->
+{% section 'amazon-product-slider' %}
+
+<!-- TRUST BADGES -->
+{% section 'trust-badges' %}
+
+<!-- CATEGORY GRID - 4x2 -->
+{% section 'category-grid' %}
+
+<!-- PROMO BANNERS - 3 Column -->
+<div class="page-width" style="padding: 8px 10px;">
+  {% section 'promo-banners' %}
+</div>
+
+<!-- NEWSLETTER -->
+{% section 'newsletter' %}

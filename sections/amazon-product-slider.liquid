@@ -1,0 +1,131 @@
+{% comment %} Amazon Product Slider - "Customers who bought this also bought" style {% endcomment %}
+
+<div class="amz-slider-section">
+  <div class="amz-slider-section__inner page-width">
+
+    <div class="amz-slider-section__header">
+      <h2 class="amz-slider-section__title">
+        {{ section.settings.title | default: "Best Sellers" }}
+      </h2>
+      {%- if section.settings.view_all_text != blank -%}
+        <a href="{{ section.settings.view_all_link | default: '/collections/all' }}" class="amz-slider-section__viewall">
+          {{ section.settings.view_all_text }}
+          <span class="amz-viewall-arrow">›</span>
+        </a>
+      {%- endif -%}
+    </div>
+
+    <div class="amz-slider-wrap" id="amz-slider-{{ section.id }}">
+      <button class="amz-slider__prev" aria-label="Previous products">&#10094;</button>
+
+      <div class="amz-slider__track-outer">
+        <div class="amz-slider__track" id="amz-slider-track-{{ section.id }}">
+
+          {%- assign products_to_show = section.settings.collection | default: collections.all -%}
+          {%- assign product_list = products_to_show.products -%}
+          {%- assign product_limit = section.settings.product_count | default: 20 -%}
+
+          {%- for product in product_list limit: product_limit -%}
+            <div class="amz-slider__item">
+              <a href="{{ product.url }}" class="amz-prod-card">
+                <div class="amz-prod-card__img-wrap">
+                  <img 
+                    src="{{ product.featured_image | img_url: '200x200', crop: 'center' }}" 
+                    alt="{{ product.title | escape }}"
+                    class="amz-prod-card__img"
+                    loading="lazy"
+                  >
+                </div>
+                <div class="amz-prod-card__info">
+                  <p class="amz-prod-card__title">{{ product.title | truncate: 60 }}</p>
+
+                  <!-- Star Rating -->
+                  <div class="amz-prod-card__stars">
+                    {%- assign rating = product.metafields.reviews.rating.value | default: 4.2 -%}
+                    <div class="amz-stars" title="{{ rating }} out of 5 stars">
+                      {%- assign full_stars = rating | floor -%}
+                      {%- for i in (1..5) -%}
+                        {%- if i <= full_stars -%}
+                          <span class="amz-star amz-star--full">★</span>
+                        {%- else -%}
+                          <span class="amz-star amz-star--empty">★</span>
+                        {%- endif -%}
+                      {%- endfor -%}
+                    </div>
+                    <span class="amz-prod-card__review-count">({{ product.metafields.reviews.rating_count | default: '1,234' }})</span>
+                  </div>
+
+                  <!-- Price -->
+                  <div class="amz-prod-card__price-wrap">
+                    {%- if product.compare_at_price > product.price -%}
+                      <div class="amz-prod-card__badge-limited">Limited time deal</div>
+                    {%- endif -%}
+                    <div class="amz-prod-card__price-row">
+                      {%- if product.compare_at_price > product.price -%}
+                        <span class="amz-prod-card__discount">
+                          -{%- assign discount = product.compare_at_price | minus: product.price | times: 100 | divided_by: product.compare_at_price | round -%}
+                          {{ discount }}%
+                        </span>
+                      {%- endif -%}
+                      <span class="amz-prod-card__price-small">$</span>
+                      <span class="amz-prod-card__price-main">{{ product.price | money_without_currency | split: '.' | first }}</span>
+                      <span class="amz-prod-card__price-cents">.{{ product.price | money_without_currency | split: '.' | last }}</span>
+                    </div>
+                    {%- if product.compare_at_price > product.price -%}
+                      <div class="amz-prod-card__was">
+                        List price: <s>{{ product.compare_at_price | money }}</s>
+                      </div>
+                    {%- endif -%}
+                  </div>
+
+                  <!-- Prime / Free Delivery -->
+                  {%- if product.price >= 2500 -%}
+                    <div class="amz-prod-card__prime">
+                      <svg viewBox="0 0 60 22" xmlns="http://www.w3.org/2000/svg" width="40" height="14">
+                        <text x="0" y="13" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#00A8E1">prime</text>
+                      </svg>
+                      <span class="amz-prod-card__free-del">FREE Delivery</span>
+                    </div>
+                  {%- endif -%}
+                </div>
+              </a>
+            </div>
+          {%- else -%}
+            {%- for i in (1..10) -%}
+              <div class="amz-slider__item">
+                <div class="amz-prod-card amz-prod-card--placeholder">
+                  <div class="amz-prod-card__img-wrap">
+                    <div class="amz-prod-card__img amz-skeleton"></div>
+                  </div>
+                  <div class="amz-prod-card__info">
+                    <div class="amz-skeleton amz-skeleton--text"></div>
+                    <div class="amz-skeleton amz-skeleton--text amz-skeleton--short"></div>
+                    <div class="amz-skeleton amz-skeleton--price"></div>
+                  </div>
+                </div>
+              </div>
+            {%- endfor -%}
+          {%- endfor -%}
+
+        </div>
+      </div>
+
+      <button class="amz-slider__next" aria-label="Next products">&#10095;</button>
+    </div>
+
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Amazon Product Slider",
+  "settings": [
+    { "type": "text", "id": "title", "label": "Section Title", "default": "Best Sellers" },
+    { "type": "collection", "id": "collection", "label": "Collection" },
+    { "type": "range", "id": "product_count", "label": "Number of Products", "min": 4, "max": 24, "step": 1, "default": 12 },
+    { "type": "text", "id": "view_all_text", "label": "View All Text", "default": "See all best sellers" },
+    { "type": "url", "id": "view_all_link", "label": "View All Link" }
+  ],
+  "presets": [{ "name": "Amazon Product Slider", "settings": { "title": "Best Sellers" } }]
+}
+{% endschema %}

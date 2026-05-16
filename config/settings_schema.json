@@ -1,0 +1,706 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "Amazo",
+    "theme_version": "4.0.0",
+    "theme_author": "Amazo Theme",
+    "theme_documentation_url": "https://amazo-theme.com",
+    "theme_support_url": "https://amazo-theme.com/support"
+  },
+  {
+    "name": "🛒 Wishlist & Quick View",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Wishlist Settings"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_wishlist",
+        "label": "Enable Wishlist Button",
+        "default": true,
+        "info": "Shows heart/save button on all product cards and product pages"
+      },
+      {
+        "type": "header",
+        "content": "Quick View Settings"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_quick_view",
+        "label": "Enable Quick View",
+        "default": true,
+        "info": "Shows Quick View popup on product card hover"
+      }
+    ]
+  },
+  {
+    "name": "🛍 Cart & Checkout Buttons",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Add to Cart Button"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_add_to_cart",
+        "label": "Enable Add to Cart (Product Page)",
+        "default": true,
+        "info": "Shows Add to Cart button on product detail page"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_add_to_cart_card",
+        "label": "Enable Add to Cart (Product Cards)",
+        "default": true,
+        "info": "Shows Add to Cart button on collection grid cards"
+      },
+      {
+        "type": "header",
+        "content": "Buy Now Button"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_buy_now",
+        "label": "Enable Buy Now (Product Page)",
+        "default": true,
+        "info": "Shows Buy Now button on product detail page — goes directly to checkout"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_buy_now_card",
+        "label": "Enable Buy Now (Product Cards)",
+        "default": false,
+        "info": "Shows Buy Now button on collection grid cards"
+      }
+    ]
+  },
+  {
+    "name": "⭐ Product Reviews",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "enable_reviews",
+        "label": "Enable Customer Reviews",
+        "default": true,
+        "info": "Shows review section on product pages with write-review form"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_rating",
+        "label": "Show Star Ratings on Products",
+        "default": true,
+        "info": "Shows star rating on product cards and product pages"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_review_count",
+        "label": "Show Review Count",
+        "default": true,
+        "info": "Shows number of reviews next to star rating"
+      }
+    ]
+  },
+  {
+    "name": "📈 CRO & Conversion Boosters",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Social Proof"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_cro_social_proof",
+        "label": "Enable Social Proof (Live Viewer Count)",
+        "default": true,
+        "info": "Shows '12 people viewing this' on product cards and pages"
+      },
+      {
+        "type": "header",
+        "content": "Urgency / Scarcity"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_cro_urgency",
+        "label": "Enable Urgency (Low Stock Warning)",
+        "default": true,
+        "info": "Shows 'Only 3 left in stock' when inventory is low"
+      },
+      {
+        "type": "header",
+        "content": "Trust Badges"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_trust_badges",
+        "label": "Enable Trust Badges in Buy Box",
+        "default": true,
+        "info": "Shows Secure, Free Returns, and Delivery badges"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_secure_transaction",
+        "label": "Show Secure Transaction Badge",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_return_policy",
+        "label": "Show Free Returns Badge",
+        "default": true
+      },
+      {
+        "type": "header",
+        "content": "Recently Viewed"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_cro_recently_viewed",
+        "label": "Enable Recently Viewed Products",
+        "default": true,
+        "info": "Shows recently viewed products section on product pages"
+      }
+    ]
+  },
+  {
+    "name": "Colors",
+    "settings": [
+      {
+        "type": "color",
+        "id": "color_primary",
+        "label": "Primary Color",
+        "default": "#ff9900",
+        "info": "Amazon's signature orange color"
+      },
+      {
+        "type": "color",
+        "id": "color_primary_dark",
+        "label": "Primary Dark",
+        "default": "#e47911"
+      },
+      {
+        "type": "color",
+        "id": "color_secondary",
+        "label": "Secondary Color",
+        "default": "#146eb4"
+      },
+      {
+        "type": "color",
+        "id": "color_accent",
+        "label": "Accent Color",
+        "default": "#febd69"
+      },
+      {
+        "type": "color",
+        "id": "color_header_bg",
+        "label": "Header Background",
+        "default": "#131921"
+      },
+      {
+        "type": "color",
+        "id": "color_nav_bg",
+        "label": "Navigation Bar Background",
+        "default": "#232f3e"
+      },
+      {
+        "type": "color",
+        "id": "color_footer_bg",
+        "label": "Footer Background",
+        "default": "#232f3e"
+      },
+      {
+        "type": "color",
+        "id": "color_footer_bottom_bg",
+        "label": "Footer Bottom Bar Background",
+        "default": "#131921"
+      },
+      {
+        "type": "color",
+        "id": "color_body_bg",
+        "label": "Body Background",
+        "default": "#eaeded"
+      },
+      {
+        "type": "color",
+        "id": "color_text",
+        "label": "Body Text",
+        "default": "#0f1111"
+      },
+      {
+        "type": "color",
+        "id": "color_text_light",
+        "label": "Light Text",
+        "default": "#565959"
+      },
+      {
+        "type": "color",
+        "id": "color_border",
+        "label": "Border Color",
+        "default": "#ddd"
+      },
+      {
+        "type": "color",
+        "id": "color_sale",
+        "label": "Sale / Discount Color",
+        "default": "#cc0000"
+      },
+      {
+        "type": "color",
+        "id": "color_rating",
+        "label": "Star Rating Color",
+        "default": "#ff9900"
+      },
+      {
+        "type": "color",
+        "id": "color_button_bg",
+        "label": "Button Background",
+        "default": "#ffd814"
+      },
+      {
+        "type": "color",
+        "id": "color_button_text",
+        "label": "Button Text",
+        "default": "#0f1111"
+      },
+      {
+        "type": "color",
+        "id": "color_add_to_cart_bg",
+        "label": "Add to Cart Button Color",
+        "default": "#ffd814"
+      },
+      {
+        "type": "color",
+        "id": "color_buy_now_bg",
+        "label": "Buy Now Button Color",
+        "default": "#ffa41c"
+      }
+    ]
+  },
+  {
+    "name": "Typography",
+    "settings": [
+      {
+        "type": "font_picker",
+        "id": "type_body_font",
+        "label": "Body Font",
+        "default": "assistant_n4"
+      },
+      {
+        "type": "font_picker",
+        "id": "type_header_font",
+        "label": "Heading Font",
+        "default": "assistant_n7"
+      },
+      {
+        "type": "range",
+        "id": "font_size_base",
+        "label": "Base Font Size",
+        "min": 12,
+        "max": 20,
+        "step": 1,
+        "unit": "px",
+        "default": 14
+      },
+      {
+        "type": "range",
+        "id": "heading_scale",
+        "label": "Heading Scale",
+        "min": 100,
+        "max": 150,
+        "step": 5,
+        "unit": "%",
+        "default": 120
+      }
+    ]
+  },
+  {
+    "name": "Layout",
+    "settings": [
+      {
+        "type": "range",
+        "id": "page_width",
+        "label": "Page Width",
+        "min": 1000,
+        "max": 1600,
+        "step": 20,
+        "unit": "px",
+        "default": 1500
+      },
+      {
+        "type": "range",
+        "id": "border_radius",
+        "label": "Base Border Radius",
+        "min": 0,
+        "max": 12,
+        "step": 1,
+        "unit": "px",
+        "default": 4
+      },
+      {
+        "type": "range",
+        "id": "product_card_radius",
+        "label": "Product Card Radius",
+        "min": 0,
+        "max": 16,
+        "step": 1,
+        "unit": "px",
+        "default": 4
+      },
+      {
+        "type": "range",
+        "id": "button_radius",
+        "label": "Button Radius",
+        "min": 0,
+        "max": 50,
+        "step": 1,
+        "unit": "px",
+        "default": 3
+      }
+    ]
+  },
+  {
+    "name": "Favicon",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "favicon",
+        "label": "Favicon Image",
+        "info": "32x32px .ico, .gif, or .png"
+      }
+    ]
+  },
+  {
+    "name": "Header",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "logo",
+        "label": "Logo Image"
+      },
+      {
+        "type": "range",
+        "id": "logo_width",
+        "label": "Logo Width",
+        "min": 80,
+        "max": 300,
+        "step": 10,
+        "unit": "px",
+        "default": 130
+      },
+      {
+        "type": "text",
+        "id": "logo_text",
+        "label": "Logo Text (if no image)",
+        "default": "amazo"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_delivery_location",
+        "label": "Show Delivery Location",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "delivery_location_text",
+        "label": "Delivery Location Text",
+        "default": "New York 10001"
+      },
+      {
+        "type": "checkbox",
+        "id": "sticky_header",
+        "label": "Sticky Header",
+        "default": true
+      }
+    ]
+  },
+  {
+    "name": "Search",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "enable_predictive_search",
+        "label": "Enable Predictive Search",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_search_categories",
+        "label": "Show Category Dropdown in Search",
+        "default": true
+      },
+      {
+        "type": "range",
+        "id": "predictive_search_results",
+        "label": "Number of Predictive Results",
+        "min": 4,
+        "max": 12,
+        "step": 2,
+        "default": 8
+      }
+    ]
+  },
+  {
+    "name": "Cart",
+    "settings": [
+      {
+        "type": "select",
+        "id": "cart_type",
+        "label": "Cart Type",
+        "options": [
+          { "value": "drawer", "label": "Drawer (Slide-in)" },
+          { "value": "page",   "label": "Cart Page" },
+          { "value": "popup",  "label": "Popup" }
+        ],
+        "default": "drawer"
+      },
+      {
+        "type": "checkbox",
+        "id": "cart_show_free_shipping",
+        "label": "Show Free Shipping Progress Bar",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "free_shipping_threshold",
+        "label": "Free Shipping Threshold",
+        "default": "35",
+        "info": "Amount in store currency"
+      }
+    ]
+  },
+  {
+    "name": "Product Cards",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "show_vendor",
+        "label": "Show Vendor/Brand",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_compare_price",
+        "label": "Show Compare At Price",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_savings_amount",
+        "label": "Show Savings Amount",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_prime_badge",
+        "label": "Show Prime-style Badge",
+        "default": true
+      },
+      {
+        "type": "select",
+        "id": "product_image_ratio",
+        "label": "Product Image Ratio",
+        "options": [
+          { "value": "1/1", "label": "Square" },
+          { "value": "4/3", "label": "Landscape" },
+          { "value": "3/4", "label": "Portrait" }
+        ],
+        "default": "1/1"
+      },
+      {
+        "type": "select",
+        "id": "product_image_fit",
+        "label": "Product Image Fit",
+        "options": [
+          { "value": "contain", "label": "Contain (show full image)" },
+          { "value": "cover",   "label": "Cover (fill space)" }
+        ],
+        "default": "contain"
+      }
+    ]
+  },
+  {
+    "name": "Product Page",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "show_product_breadcrumb",
+        "label": "Show Breadcrumb",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_zoom",
+        "label": "Enable Image Zoom on Hover",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_quantity_selector",
+        "label": "Show Quantity Selector",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_delivery_date",
+        "label": "Show Estimated Delivery Date",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_product_tabs",
+        "label": "Show Product Detail Tabs (Description, Specs, Reviews, Q&A)",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_related_products",
+        "label": "Show Related Products",
+        "default": true
+      }
+    ]
+  },
+  {
+    "name": "Collection Page",
+    "settings": [
+      {
+        "type": "range",
+        "id": "products_per_page",
+        "label": "Products Per Page",
+        "min": 12,
+        "max": 48,
+        "step": 4,
+        "default": 24
+      },
+      {
+        "type": "select",
+        "id": "default_products_per_row_desktop",
+        "label": "Products Per Row (Desktop)",
+        "options": [
+          { "value": "3", "label": "3 columns" },
+          { "value": "4", "label": "4 columns" },
+          { "value": "5", "label": "5 columns" }
+        ],
+        "default": "4"
+      },
+      {
+        "type": "select",
+        "id": "default_products_per_row_mobile",
+        "label": "Products Per Row (Mobile)",
+        "options": [
+          { "value": "1", "label": "1 column" },
+          { "value": "2", "label": "2 columns" }
+        ],
+        "default": "2"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_filtering",
+        "label": "Enable Filtering",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_sorting",
+        "label": "Enable Sorting",
+        "default": true
+      }
+    ]
+  },
+  {
+    "name": "Social Media",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Social Media Links"
+      },
+      {
+        "type": "text",
+        "id": "social_facebook_link",
+        "label": "Facebook URL"
+      },
+      {
+        "type": "text",
+        "id": "social_twitter_link",
+        "label": "Twitter/X URL"
+      },
+      {
+        "type": "text",
+        "id": "social_instagram_link",
+        "label": "Instagram URL"
+      },
+      {
+        "type": "text",
+        "id": "social_youtube_link",
+        "label": "YouTube URL"
+      },
+      {
+        "type": "text",
+        "id": "social_pinterest_link",
+        "label": "Pinterest URL"
+      }
+    ]
+  },
+  {
+    "name": "SEO",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "seo_enable_structured_data",
+        "label": "Enable Structured Data (Schema.org)",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "seo_enable_breadcrumbs",
+        "label": "Enable Breadcrumb Schema",
+        "default": true
+      }
+    ]
+  },
+  {
+    "name": "Performance",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "enable_lazy_loading",
+        "label": "Enable Lazy Loading Images",
+        "default": true,
+        "info": "Improves page speed"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_image_srcset",
+        "label": "Enable Responsive Images (srcset)",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "critical_css_inline",
+        "label": "Inline Critical CSS",
+        "default": true
+      }
+    ]
+  },
+  {
+    "name": "Animations",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "enable_animations",
+        "label": "Enable Animations",
+        "default": true
+      },
+      {
+        "type": "select",
+        "id": "animation_speed",
+        "label": "Animation Speed",
+        "options": [
+          { "value": "fast",   "label": "Fast (150ms)" },
+          { "value": "normal", "label": "Normal (300ms)" },
+          { "value": "slow",   "label": "Slow (500ms)" }
+        ],
+        "default": "normal"
+      }
+    ]
+  }
+]

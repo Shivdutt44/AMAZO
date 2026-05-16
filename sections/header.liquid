@@ -1,0 +1,335 @@
+{% comment %} Amazo Premium Header — Fully Responsive, All UI Bugs Fixed {% endcomment %}
+
+<header class="amz-header" id="amz-header" role="banner">
+
+  <!-- TOP HEADER: Logo | Deliver | Search | Account | Orders | Cart -->
+  <div class="amz-header__main">
+    <div class="amz-header__inner">
+
+      <!-- MOBILE HAMBURGER (visible only on mobile) -->
+      <button class="amz-mobile-menu-btn" id="amz-mobile-menu-btn" aria-label="Open menu" aria-expanded="false" aria-controls="amz-side-menu">
+        <span class="amz-hamburger" aria-hidden="true">
+          <span></span>
+          <span></span>
+          <span></span>
+        </span>
+      </button>
+
+      <!-- LOGO -->
+      <a href="{{ routes.root_url }}" class="amz-header__logo" aria-label="{{ shop.name }} - Home">
+        <div class="amz-logo-wrap">
+          {%- if section.settings.logo != blank -%}
+            <img src="{{ section.settings.logo | image_url: width: 140 }}" alt="{{ shop.name }}" class="amz-logo-img" width="140" height="40" loading="eager">
+          {%- else -%}
+            <svg viewBox="0 0 130 42" xmlns="http://www.w3.org/2000/svg" class="amz-logo-svg" aria-hidden="true" focusable="false">
+              <text x="0" y="28" font-family="Arial Black, sans-serif" font-size="24" font-weight="900" fill="#ffffff" letter-spacing="-1">{{ shop.name | downcase | truncate: 8, '' }}</text>
+              <path d="M5 36 Q40 46 75 38 Q90 34 108 38" stroke="#FF9900" stroke-width="2.8" fill="none" stroke-linecap="round"/>
+            </svg>
+          {%- endif -%}
+        </div>
+      </a>
+
+      <!-- DELIVER TO (desktop only) -->
+      <div class="amz-header__deliver amz-hide-mobile">
+        <a href="#" class="amz-header__deliver-link">
+          <div class="amz-deliver-icon" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="#ccc"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+          </div>
+          <div class="amz-deliver-text">
+            <span class="amz-deliver-top">Deliver to</span>
+            <span class="amz-deliver-bottom">{{ section.settings.delivery_location | default: 'United States' }}</span>
+          </div>
+        </a>
+      </div>
+
+      <!-- SEARCH BAR -->
+      <div class="amz-header__search">
+        <form action="{{ routes.search_url }}" method="get" class="amz-search-form" role="search" aria-label="Search products">
+          <input type="hidden" name="type" value="product">
+          <div class="amz-search-wrap">
+            <!-- Department Selector (hide on very small screens) -->
+            <div class="amz-search__category amz-hide-small">
+              <select name="product_type" class="amz-category-select" aria-label="Search category">
+                <option value="">All</option>
+                <option value="Electronics">Electronics</option>
+                <option value="Clothing">Clothing</option>
+                <option value="Home">Home & Kitchen</option>
+                <option value="Beauty">Beauty</option>
+                <option value="Books">Books</option>
+                <option value="Toys">Toys & Games</option>
+                <option value="Sports">Sports</option>
+                <option value="Automotive">Automotive</option>
+                <option value="Health">Health</option>
+                <option value="Grocery">Grocery</option>
+              </select>
+              <span class="amz-category-arrow" aria-hidden="true">&#9660;</span>
+            </div>
+            <!-- Input -->
+            <input
+              type="text"
+              name="q"
+              class="amz-search__input"
+              placeholder="{{ section.settings.search_placeholder | default: 'Search products...' }}"
+              aria-label="Search"
+              autocomplete="off"
+              value="{{ search.terms | escape }}"
+            >
+            <!-- Submit button -->
+            <button type="submit" class="amz-search__btn" aria-label="Search">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="#0F1111" aria-hidden="true">
+                <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+              </svg>
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- SIGN IN / ACCOUNT (desktop) -->
+      <div class="amz-header__account amz-hide-mobile">
+        <a href="{{ routes.account_url }}" class="amz-header__account-link" aria-haspopup="true">
+          <div class="amz-account-text">
+            <span class="amz-account-top">
+              Hello, {%- if customer -%}{{ customer.first_name }}{%- else -%}sign in{%- endif -%}
+            </span>
+            <span class="amz-account-bottom">Account &amp; Lists &#9660;</span>
+          </div>
+        </a>
+        <!-- Dropdown -->
+        <div class="amz-account-dropdown" role="dialog" aria-label="Account menu">
+          <div class="amz-account-dropdown__inner">
+            <div class="amz-account-dropdown__cta">
+              {%- if customer -%}
+                <a href="{{ routes.account_url }}" class="amz-btn-yellow">Your Account</a>
+                <p class="amz-account-new"><a href="{{ routes.account_logout_url }}">Sign Out</a></p>
+              {%- else -%}
+                <a href="{{ routes.account_login_url }}" class="amz-btn-yellow">Sign In</a>
+                <p class="amz-account-new">New customer? <a href="{{ routes.account_register_url }}">Start here.</a></p>
+              {%- endif -%}
+            </div>
+            <div class="amz-account-dropdown__lists">
+              <div class="amz-account-col">
+                <h4>Your Lists</h4>
+                <ul>
+                  <li><a href="#">Create a Wish List</a></li>
+                  <li><a href="#">Baby Registry</a></li>
+                  <li><a href="#">Gift Ideas</a></li>
+                </ul>
+              </div>
+              <div class="amz-account-col">
+                <h4>Your Account</h4>
+                <ul>
+                  <li><a href="{{ routes.account_url }}">Account</a></li>
+                  <li><a href="{{ routes.account_url }}/orders">Orders</a></li>
+                  {%- if customer -%}
+                    <li><a href="{{ routes.account_logout_url }}">Sign Out</a></li>
+                  {%- else -%}
+                    <li><a href="{{ routes.account_login_url }}">Sign In</a></li>
+                  {%- endif -%}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RETURNS & ORDERS (desktop) -->
+      <div class="amz-header__orders amz-hide-tablet">
+        <a href="{{ routes.account_url }}/orders" class="amz-header__orders-link">
+          <span class="amz-orders-top">Returns</span>
+          <span class="amz-orders-bottom">&amp; Orders</span>
+        </a>
+      </div>
+
+      <!-- CART -->
+      <div class="amz-header__cart">
+        <a href="{{ routes.cart_url }}" class="amz-header__cart-link" aria-label="Cart with {{ cart.item_count }} items">
+          <div class="amz-cart-wrap">
+            <div class="amz-cart-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 47" width="40" height="40" aria-hidden="true">
+                <path d="M5,14H31l-3,20H8L5,14z" fill="none" stroke="#ffffff" stroke-width="2"/>
+                <circle cx="13" cy="38" r="2.5" fill="#ffffff"/>
+                <circle cx="26" cy="38" r="2.5" fill="#ffffff"/>
+                <path d="M2,8h4l1,6" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+                <path d="M0,5h5" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              <span class="amz-cart-count" id="amz-cart-count" aria-live="polite">{{ cart.item_count }}</span>
+            </div>
+            <span class="amz-cart-label">Cart</span>
+          </div>
+        </a>
+      </div>
+
+    </div><!-- /.amz-header__inner -->
+  </div>
+
+  <!-- SECONDARY NAV BAR -->
+  <div class="amz-header__nav" id="amz-nav-bar" role="navigation" aria-label="Secondary navigation">
+    <div class="amz-header__nav-inner">
+
+      <!-- ALL DEPARTMENTS (desktop click / mobile already handled by hamburger) -->
+      <div class="amz-nav__all amz-hide-mobile" id="amz-all-btn">
+        <button class="amz-all-btn" aria-expanded="false" aria-controls="amz-side-menu" aria-label="All departments">
+          <span class="amz-hamburger" aria-hidden="true">
+            <span></span>
+            <span></span>
+            <span></span>
+          </span>
+          <span>All</span>
+        </button>
+      </div>
+
+      <!-- NAV LINKS -->
+      <nav class="amz-nav__links" aria-label="Main navigation">
+        <ul class="amz-nav-list">
+          {%- if linklists[section.settings.main_menu].links != blank -%}
+            {%- for link in linklists[section.settings.main_menu].links limit: 12 -%}
+              <li>
+                <a href="{{ link.url }}" class="amz-nav-link{% if link.active %} amz-nav-link--active{% endif %}{% if forloop.first %} amz-nav-link--bold{% endif %}"
+                   {% if link.active %}aria-current="page"{% endif %}>
+                  {{ link.title }}
+                </a>
+              </li>
+            {%- endfor -%}
+          {%- else -%}
+            <li><a href="/collections/all" class="amz-nav-link amz-nav-link--bold">Today's Deals</a></li>
+            <li><a href="/pages/customer-service" class="amz-nav-link">Customer Service</a></li>
+            <li><a href="/collections" class="amz-nav-link">Shop All</a></li>
+            <li><a href="/pages/about" class="amz-nav-link">About</a></li>
+            {%- if section.settings.nav_item_1 != blank -%}
+              <li><a href="{{ section.settings.nav_url_1 | default: '#' }}" class="amz-nav-link">{{ section.settings.nav_item_1 }}</a></li>
+            {%- endif -%}
+            {%- if section.settings.nav_item_2 != blank -%}
+              <li><a href="{{ section.settings.nav_url_2 | default: '#' }}" class="amz-nav-link">{{ section.settings.nav_item_2 }}</a></li>
+            {%- endif -%}
+            {%- if section.settings.nav_item_3 != blank -%}
+              <li><a href="{{ section.settings.nav_url_3 | default: '#' }}" class="amz-nav-link">{{ section.settings.nav_item_3 }}</a></li>
+            {%- endif -%}
+          {%- endif -%}
+        </ul>
+      </nav>
+
+    </div>
+  </div>
+
+</header>
+
+<!-- SIDE MENU OVERLAY -->
+<div class="amz-side-overlay" id="amz-side-overlay" role="presentation"></div>
+
+<!-- SIDE MENU -->
+<div class="amz-side-menu" id="amz-side-menu" role="dialog" aria-modal="true" aria-label="Navigation menu" aria-hidden="true">
+  <div class="amz-side-menu__header">
+    <div class="amz-side-menu__profile">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="26" height="26" fill="#fff" aria-hidden="true"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+      <span>
+        Hello,
+        {%- if customer -%}{{ customer.first_name }}{%- else -%}sign in{%- endif -%}
+      </span>
+    </div>
+    <button class="amz-side-menu__close" id="amz-side-close" aria-label="Close menu">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+    </button>
+  </div>
+
+  <div class="amz-side-menu__body">
+    <!-- Account section -->
+    {%- unless customer -%}
+    <div style="padding: 12px 20px; background: #f7f8f8; border-bottom: 1px solid #eee;">
+      <a href="{{ routes.account_login_url }}" style="display:inline-block; background:linear-gradient(to bottom,#f7dfa5,#f0c14b); border:1px solid #a88734; border-radius:3px; padding:8px 24px; font-size:14px; font-weight:600; color:#0f1111; text-decoration:none;">Sign In</a>
+      <span style="font-size:13px; color:#555; margin-left:12px;">New? <a href="{{ routes.account_register_url }}" style="color:#007185;">Start here</a></span>
+    </div>
+    {%- endunless -%}
+
+    <div class="amz-side-section">
+      <h3 class="amz-side-section__title">Shop by Department</h3>
+      <ul class="amz-side-list">
+        {%- if linklists[section.settings.main_menu].links != blank -%}
+          {%- for link in linklists[section.settings.main_menu].links -%}
+            <li>
+              <a href="{{ link.url }}">{{ link.title }}</a>
+              <span class="amz-side-arrow" aria-hidden="true">›</span>
+            </li>
+          {%- endfor -%}
+        {%- else -%}
+          <li><a href="/collections/all">All Products<span class="amz-side-arrow">›</span></a></li>
+          <li><a href="/collections">Collections<span class="amz-side-arrow">›</span></a></li>
+          <li><a href="/pages/about">About Us<span class="amz-side-arrow">›</span></a></li>
+          <li><a href="/pages/contact">Contact<span class="amz-side-arrow">›</span></a></li>
+        {%- endif -%}
+      </ul>
+    </div>
+
+    <div class="amz-side-section">
+      <h3 class="amz-side-section__title">Help & Settings</h3>
+      <ul class="amz-side-list">
+        <li><a href="{{ routes.account_url }}">Your Account</a></li>
+        <li><a href="/pages/customer-service">Customer Service</a></li>
+        <li><a href="{{ routes.cart_url }}">Your Cart ({{ cart.item_count }})</a></li>
+        {%- if customer -%}
+          <li><a href="{{ routes.account_logout_url }}">Sign Out</a></li>
+        {%- else -%}
+          <li><a href="{{ routes.account_login_url }}">Sign In</a></li>
+        {%- endif -%}
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- Premium header styles (responsive) -->
+<style>
+.amz-mobile-menu-btn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  background: none;
+  border: 2px solid transparent;
+  border-radius: 3px;
+  padding: 4px;
+  flex-shrink: 0;
+  color: #fff;
+  transition: border-color 0.15s;
+}
+.amz-mobile-menu-btn:hover { border-color: #fff; }
+.amz-logo-img { width: 110px; height: auto; object-fit: contain; }
+
+/* Nav link active */
+.amz-nav-link--active {
+  border-color: #fff !important;
+  font-weight: 700;
+}
+
+/* Mobile overrides */
+@media (max-width: 768px) {
+  .amz-hide-mobile { display: none !important; }
+  .amz-mobile-menu-btn { display: flex; }
+  .amz-nav__all { display: none; }
+}
+@media (max-width: 900px) {
+  .amz-hide-tablet { display: none !important; }
+}
+@media (max-width: 480px) {
+  .amz-hide-small .amz-search__category,
+  .amz-hide-small { display: none !important; }
+  .amz-search__category { display: none; }
+}
+</style>
+
+{% schema %}
+{
+  "name": "Premium Header",
+  "settings": [
+    { "type": "image_picker", "id": "logo", "label": "Logo Image" },
+    { "type": "text", "id": "delivery_location", "label": "Delivery Location", "default": "United States" },
+    { "type": "text", "id": "search_placeholder", "label": "Search Placeholder", "default": "Search products..." },
+    { "type": "link_list", "id": "main_menu", "label": "Main Menu", "default": "main-menu" },
+    { "type": "text", "id": "nav_item_1", "label": "Extra Nav Item 1" },
+    { "type": "url", "id": "nav_url_1", "label": "Extra Nav URL 1" },
+    { "type": "text", "id": "nav_item_2", "label": "Extra Nav Item 2" },
+    { "type": "url", "id": "nav_url_2", "label": "Extra Nav URL 2" },
+    { "type": "text", "id": "nav_item_3", "label": "Extra Nav Item 3" },
+    { "type": "url", "id": "nav_url_3", "label": "Extra Nav URL 3" }
+  ]
+}
+{% endschema %}

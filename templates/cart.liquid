@@ -1,0 +1,254 @@
+{% comment %} Amazo Premium — Cart Page Template {% endcomment %}
+
+<div class="cart-page">
+  <div class="cart-page__inner page-width">
+
+    <h1 style="font-size: clamp(22px, 3vw, 28px); font-weight: 400; margin-bottom: 20px; color: var(--amz-text); grid-column: 1 / -1;">Shopping Cart</h1>
+
+    {%- if cart.item_count > 0 -%}
+    <div class="cart-page__columns">
+
+      <!-- LEFT: Cart Items -->
+      <div>
+
+        <!-- Select All Bar -->
+        <div style="background:#fff; padding:12px 20px; border-radius:6px; margin-bottom:10px; display:flex; align-items:center; gap:12px; box-shadow:0 1px 4px rgba(0,0,0,0.08); border:1px solid #eee;">
+          <input type="checkbox" id="select-all" style="width:16px; height:16px; accent-color:var(--amz-orange); cursor:pointer;">
+          <label for="select-all" style="font-size:14px; font-weight:600; cursor:pointer;">Select all items</label>
+          <span style="color:#ccc; margin:0 4px;">|</span>
+          <span style="font-size:14px; font-weight:700; color:var(--amz-text);">
+            Price
+          </span>
+        </div>
+
+        <!-- Cart Items -->
+        {%- for item in cart.items -%}
+        <div class="cart-page__item">
+          <input type="checkbox" class="item-checkbox" style="width:16px; height:16px; flex-shrink:0; margin-top:6px; accent-color:var(--amz-orange); cursor:pointer;">
+
+          <!-- Image -->
+          <a href="{{ item.url }}" style="flex-shrink:0; display:block;">
+            <img
+              src="{{ item.image | image_url: width: 180 }}"
+              alt="{{ item.image.alt | default: item.product.title | escape }}"
+              style="width:120px; height:120px; object-fit:contain; border-radius:4px; background:#fafafa;"
+              loading="lazy"
+              width="120" height="120">
+          </a>
+
+          <!-- Details -->
+          <div style="flex:1; min-width:0;">
+            <a href="{{ item.url }}" style="font-size:17px; color:var(--amz-link); text-decoration:none; line-height:1.3; display:block; margin-bottom:6px; font-weight:400;">
+              {{ item.product.title }}
+            </a>
+            {%- if item.variant.title != 'Default Title' -%}
+              <div style="font-size:13px; color:#555; margin-bottom:6px;">{{ item.variant.title }}</div>
+            {%- endif -%}
+
+            {%- if item.variant.sku != blank -%}
+              <div style="font-size:12px; color:#888; margin-bottom:4px;">SKU: {{ item.variant.sku }}</div>
+            {%- endif -%}
+
+            <div style="color:var(--amz-green); font-size:13px; font-weight:600; margin-bottom:10px; display:flex; align-items:center; gap:4px;">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+              In Stock
+            </div>
+
+            <!-- Qty + Actions row -->
+            <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+              <!-- Quantity selector -->
+              <div style="border:1px solid var(--amz-border); border-radius:3px; overflow:hidden; display:flex; background:#f7f8f8;">
+                <a href="{{ routes.cart_change_url }}?id={{ item.key }}&quantity={{ item.quantity | minus: 1 }}"
+                   style="width:34px; height:32px; display:flex; align-items:center; justify-content:center; font-size:18px; font-weight:700; text-decoration:none; color:#111; background:#f7f8f8; border-right:1px solid var(--amz-border); transition:background 0.15s;"
+                   onmouseover="this.style.background='#e9e9e9'" onmouseout="this.style.background='#f7f8f8'"
+                   aria-label="Decrease quantity">−</a>
+                <span style="min-width:44px; height:32px; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:600; background:#fff; padding:0 8px;">
+                  {{ item.quantity }}
+                </span>
+                <a href="{{ routes.cart_change_url }}?id={{ item.key }}&quantity={{ item.quantity | plus: 1 }}"
+                   style="width:34px; height:32px; display:flex; align-items:center; justify-content:center; font-size:18px; font-weight:700; text-decoration:none; color:#111; background:#f7f8f8; border-left:1px solid var(--amz-border); transition:background 0.15s;"
+                   onmouseover="this.style.background='#e9e9e9'" onmouseout="this.style.background='#f7f8f8'"
+                   aria-label="Increase quantity">+</a>
+              </div>
+
+              <span style="color:#ccc;">|</span>
+
+              <a href="{{ routes.cart_change_url }}?id={{ item.key }}&quantity=0"
+                 style="color:var(--amz-link); font-size:13px; text-decoration:none; transition:color 0.15s;"
+                 onmouseover="this.style.color='var(--amz-link-hover)'" onmouseout="this.style.color='var(--amz-link)'"
+                 aria-label="Delete {{ item.product.title }} from cart">Delete</a>
+
+              <span style="color:#ccc;">|</span>
+              <button style="color:var(--amz-link); font-size:13px; background:none; border:none; cursor:pointer; padding:0;" aria-label="Save for later">Save for later</button>
+              <span style="color:#ccc;">|</span>
+              <button style="color:var(--amz-link); font-size:13px; background:none; border:none; cursor:pointer; padding:0;" aria-label="Share">Share</button>
+            </div>
+          </div>
+
+          <!-- Price -->
+          <div style="text-align:right; flex-shrink:0; min-width:80px;">
+            <div style="font-size:18px; font-weight:700; color:var(--amz-text);">{{ item.final_line_price | money }}</div>
+            {%- if item.original_line_price > item.final_line_price -%}
+              <div style="text-decoration:line-through; font-size:13px; color:var(--amz-gray);">{{ item.original_line_price | money }}</div>
+              <div style="font-size:12px; color:var(--amz-deal-red); font-weight:600;">
+                Save {{ item.original_line_price | minus: item.final_line_price | money }}
+              </div>
+            {%- endif -%}
+          </div>
+        </div>
+        {%- endfor -%}
+
+        <!-- Subtotal (mobile) -->
+        <div class="cart-subtotal-mobile" style="background:#fff; padding:14px 20px; border-radius:6px; margin-top:10px; font-size:16px; box-shadow:0 1px 4px rgba(0,0,0,0.08);">
+          Subtotal ({{ cart.item_count }} item{{ cart.item_count | pluralize: '', 's' }}):
+          <strong>{{ cart.total_price | money }}</strong>
+        </div>
+      </div>
+
+      <!-- RIGHT: Order Summary -->
+      <div class="cart-page__summary" style="background:#fff; padding:20px; border-radius:6px; position:sticky; top:80px; box-shadow:0 1px 4px rgba(0,0,0,0.08); border:1px solid var(--amz-border);">
+
+        <!-- Free shipping bar -->
+        {%- assign threshold_cents = 3500 -%}
+        {%- if cart.total_price >= threshold_cents -%}
+          <div style="color:var(--amz-green); font-size:14px; font-weight:700; margin-bottom:14px; display:flex; align-items:center; gap:6px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+            Your order qualifies for <strong>FREE Shipping!</strong>
+          </div>
+        {%- else -%}
+          {%- assign remaining_cents = threshold_cents | minus: cart.total_price -%}
+          <div style="margin-bottom:14px;">
+            <div style="font-size:13px; color:var(--amz-text); margin-bottom:6px;">
+              Add <strong style="color:var(--amz-deal-red);">{{ remaining_cents | money }}</strong> more to get <strong>FREE Shipping</strong>
+            </div>
+            <div style="height:6px; background:#eee; border-radius:3px; overflow:hidden;">
+              {%- assign progress_pct = cart.total_price | times: 100 | divided_by: threshold_cents -%}
+              <div style="height:100%; width:{{ progress_pct }}%; background:linear-gradient(90deg,var(--amz-orange),#febd69); border-radius:3px; transition:width 0.4s;"></div>
+            </div>
+          </div>
+        {%- endif -%}
+
+        <!-- Subtotal -->
+        <div style="font-size:17px; margin-bottom:16px; line-height:1.5;">
+          Subtotal ({{ cart.item_count }} item{{ cart.item_count | pluralize: '', 's' }}):
+          <strong style="font-size:20px;">{{ cart.total_price | money }}</strong>
+        </div>
+
+        <!-- Gift option -->
+        <div style="font-size:13px; margin-bottom:16px; display:flex; align-items:center; gap:6px;">
+          <input type="checkbox" id="is-gift" style="width:14px; height:14px; accent-color:var(--amz-orange); cursor:pointer;">
+          <label for="is-gift" style="cursor:pointer;">This order contains a gift</label>
+        </div>
+
+        <!-- Checkout Button -->
+        <a href="{{ routes.checkout_url }}" class="cart-page__checkout-btn" aria-label="Proceed to checkout">
+          Proceed to checkout ({{ cart.item_count }} item{{ cart.item_count | pluralize: '', 's' }})
+        </a>
+
+        <!-- Continue Shopping -->
+        <div style="text-align:center; font-size:13px; margin-top:10px;">
+          <a href="/collections/all" style="color:var(--amz-link); transition:color 0.15s;"
+             onmouseover="this.style.color='var(--amz-link-hover)'" onmouseout="this.style.color='var(--amz-link)'">
+            ← Continue shopping
+          </a>
+        </div>
+
+        <!-- Secure badge -->
+        <div style="display:flex; align-items:center; justify-content:center; gap:5px; margin-top:16px; font-size:12px; color:var(--amz-gray);">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="#555" aria-hidden="true"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+          Secure transaction
+        </div>
+
+        <!-- Payment icons -->
+        <div style="display:flex; align-items:center; justify-content:center; gap:6px; margin-top:12px; flex-wrap:wrap;">
+          <!-- Mastercard -->
+          <svg width="38" height="24" viewBox="0 0 38 24" xmlns="http://www.w3.org/2000/svg" style="border:1px solid #eee; border-radius:3px;" aria-label="Mastercard">
+            <rect width="38" height="24" rx="3" fill="white"/>
+            <circle cx="15" cy="12" r="7" fill="#EB001B"/>
+            <circle cx="23" cy="12" r="7" fill="#F79E1B"/>
+            <path d="M19 6.8a7 7 0 0 1 0 10.4A7 7 0 0 1 19 6.8z" fill="#FF5F00"/>
+          </svg>
+          <!-- Visa -->
+          <svg width="38" height="24" viewBox="0 0 38 24" xmlns="http://www.w3.org/2000/svg" style="border-radius:3px;" aria-label="Visa">
+            <rect width="38" height="24" rx="3" fill="#00457C"/>
+            <text x="6" y="17" fill="white" font-size="11" font-weight="bold" font-family="Arial, sans-serif">VISA</text>
+          </svg>
+          <!-- Amex -->
+          <svg width="38" height="24" viewBox="0 0 38 24" xmlns="http://www.w3.org/2000/svg" style="border-radius:3px;" aria-label="American Express">
+            <rect width="38" height="24" rx="3" fill="#016FD0"/>
+            <text x="3" y="16" fill="white" font-size="8" font-weight="bold" font-family="Arial, sans-serif">AMEX</text>
+          </svg>
+          <!-- PayPal -->
+          <svg width="38" height="24" viewBox="0 0 38 24" xmlns="http://www.w3.org/2000/svg" style="border:1px solid #eee; border-radius:3px;" aria-label="PayPal">
+            <rect width="38" height="24" rx="3" fill="white"/>
+            <text x="5" y="16" fill="#003087" font-size="8" font-weight="bold" font-family="Arial, sans-serif">Pay</text>
+            <text x="16" y="16" fill="#009CDE" font-size="8" font-weight="bold" font-family="Arial, sans-serif">Pal</text>
+          </svg>
+        </div>
+      </div>
+
+    </div><!-- /.grid -->
+
+    {%- else -%}
+
+    <!-- Empty Cart -->
+    <div style="background:#fff; padding:50px 40px; border-radius:8px; text-align:center; max-width:580px; margin:0 auto; box-shadow:0 2px 12px rgba(0,0,0,0.08);">
+      <div style="font-size:64px; margin-bottom:20px; line-height:1;">🛒</div>
+      <h2 style="font-size:26px; font-weight:400; margin-bottom:10px; color:var(--amz-text);">Your Cart is empty</h2>
+      <p style="font-size:14px; color:var(--amz-gray); margin-bottom:28px; line-height:1.6;">
+        When you add items to your cart, they'll appear here.<br>
+        Start shopping to fill it up!
+      </p>
+      <a href="/collections/all"
+         style="display:inline-block; background:linear-gradient(to bottom,#f7dfa5,var(--amz-yellow)); border:1px solid #a88734; border-radius:3px; padding:12px 36px; color:var(--amz-text); font-size:15px; font-weight:600; text-decoration:none; transition:all 0.15s; box-shadow:0 1px 4px rgba(0,0,0,0.1);"
+         onmouseover="this.style.background='linear-gradient(to bottom,#f5d78e,#ddb347)'" onmouseout="this.style.background='linear-gradient(to bottom,#f7dfa5,var(--amz-yellow))'">
+        Continue Shopping
+      </a>
+    </div>
+    {%- endif -%}
+
+  </div>
+</div>
+
+<style>
+/* Cart columns layout */
+.cart-page__columns {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 20px;
+  align-items: start;
+  grid-column: 1 / -1;
+}
+@media (max-width: 900px) {
+  .cart-page__columns { grid-template-columns: 1fr !important; }
+  .cart-subtotal-mobile { display: block !important; }
+  .cart-page__summary { position: static !important; }
+}
+@media (max-width: 768px) {
+  .cart-page__columns { grid-template-columns: 1fr !important; gap: 12px; }
+  .cart-page__item { flex-wrap: wrap !important; }
+  .cart-page__item > a img { width: 90px !important; height: 90px !important; }
+  .cart-page__item > div:last-child { text-align: left !important; min-width: auto; width: 100% !important; }
+}
+@media (max-width: 480px) {
+  .cart-page__item { gap: 10px !important; padding: 14px 12px !important; }
+}
+</style>
+
+<script>
+// Select all checkbox
+const selectAll = document.getElementById('select-all');
+if (selectAll) {
+  selectAll.addEventListener('change', function() {
+    document.querySelectorAll('.item-checkbox').forEach(cb => cb.checked = this.checked);
+  });
+}
+// Sync select-all state
+document.querySelectorAll('.item-checkbox').forEach(cb => {
+  cb.addEventListener('change', () => {
+    const all = document.querySelectorAll('.item-checkbox');
+    const checked = document.querySelectorAll('.item-checkbox:checked');
+    if (selectAll) selectAll.checked = all.length === checked.length;
+  });
+});
+</script>

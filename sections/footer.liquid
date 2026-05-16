@@ -1,0 +1,160 @@
+{% comment %} Amazon Footer - Exact Amazon.com Footer Replica {% endcomment %}
+
+<!-- BACK TO TOP BUTTON (Amazon Style) -->
+<div class="amz-back-top" id="amz-back-top">
+  <button onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top">
+    Back to top
+  </button>
+</div>
+
+<footer class="amz-footer" id="amz-footer">
+
+  <!-- FOOTER MAIN LINKS -->
+  <div class="amz-footer__main">
+    <div class="amz-footer__inner page-width">
+
+      <div class="amz-footer__col">
+        <h3 class="amz-footer__heading">Get to Know Us</h3>
+        <ul class="amz-footer__list">
+          <li><a href="/pages/about">About Us</a></li>
+          <li><a href="/blogs/news">Our Blog</a></li>
+          <li><a href="/pages/careers">Careers</a></li>
+          <li><a href="/pages/press">Press & Media</a></li>
+          <li><a href="/pages/sustainability">Sustainability</a></li>
+          <li><a href="/pages/contact">Contact Us</a></li>
+        </ul>
+      </div>
+
+      <div class="amz-footer__col">
+        <h3 class="amz-footer__heading">Sell & Partner With Us</h3>
+        <ul class="amz-footer__list">
+          <li><a href="/pages/sell">Sell on {{ shop.name }}</a></li>
+          <li><a href="/pages/affiliate">Become an Affiliate</a></li>
+          <li><a href="/pages/advertise">Advertise Your Products</a></li>
+          <li><a href="/pages/partner">Partner Program</a></li>
+          <li><a href="/pages/bulk-orders">Bulk / B2B Orders</a></li>
+          <li><a href="/pages/contact">Business Enquiries</a></li>
+        </ul>
+      </div>
+
+      <div class="amz-footer__col">
+        <h3 class="amz-footer__heading">Payments & Security</h3>
+        <ul class="amz-footer__list">
+          <li><a href="/pages/payment-methods">Payment Methods</a></li>
+          <li><a href="/pages/emi-options">EMI Options</a></li>
+          <li><a href="/pages/gift-cards">Gift Cards</a></li>
+          <li><a href="/pages/secure-shopping">Secure Shopping</a></li>
+          <li><a href="/pages/privacy-policy">Privacy Policy</a></li>
+          <li><a href="/pages/terms-of-service">Terms of Service</a></li>
+        </ul>
+      </div>
+
+      <div class="amz-footer__col">
+        <h3 class="amz-footer__heading">Let Us Help You</h3>
+        <ul class="amz-footer__list">
+          <li><a href="{{ routes.account_url }}">Your Account</a></li>
+          <li><a href="{{ routes.account_url }}/orders">Your Orders</a></li>
+          <li><a href="/pages/shipping">Shipping Rates & Policies</a></li>
+          <li><a href="/policies/refund-policy">Returns & Replacements</a></li>
+          <li><a href="/pages/customer-service">Customer Service</a></li>
+          <li><a href="/pages/track-order">Track Your Order</a></li>
+          <li><a href="/pages/faq">FAQs</a></li>
+          <li><a href="/pages/contact">Contact Us</a></li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- FOOTER DIVIDER -->
+  <div class="amz-footer__divider"></div>
+
+  <!-- FOOTER BOTTOM: Logo + Language + Country -->
+  <div class="amz-footer__bottom">
+    <div class="amz-footer__bottom-inner">
+
+      <!-- Logo -->
+      <a href="{{ routes.root_url }}" class="amz-footer__logo" aria-label="{{ shop.name }}">
+        <svg viewBox="0 0 160 38" xmlns="http://www.w3.org/2000/svg" width="120" height="28">
+          <text x="0" y="26" font-family="Arial Black, sans-serif" font-size="20" font-weight="900" fill="#ffffff" letter-spacing="-0.5">{{ shop.name | downcase | truncate: 10, '' }}</text>
+          <path d="M5 32 Q40 42 75 34 Q92 30 110 34" stroke="#FF9900" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        </svg>
+      </a>
+
+      <!-- Language Selector -->
+      <button class="amz-footer__lang-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="#ffffff"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm6.93 6h-2.95c-.32-1.25-.78-2.45-1.38-3.56 1.84.63 3.37 1.91 4.33 3.56zM12 4.04c.83 1.2 1.48 2.53 1.91 3.96h-3.82c.43-1.43 1.08-2.76 1.91-3.96zM4.26 14C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2 0 .68.06 1.34.14 2H4.26zm.82 2h2.95c.32 1.25.78 2.45 1.38 3.56-1.84-.63-3.37-1.91-4.33-3.56zm2.95-8H5.08c.96-1.65 2.49-2.93 4.33-3.56C8.81 5.55 8.35 6.75 8.03 8zM12 19.96c-.83-1.2-1.48-2.53-1.91-3.96h3.82c-.43 1.43-1.08 2.76-1.91 3.96zM14.34 14H9.66c-.09-.66-.16-1.32-.16-2 0-.68.07-1.35.16-2h4.68c.09.65.16 1.32.16 2 0 .68-.07 1.34-.16 2zm.25 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95c-.96 1.65-2.49 2.93-4.33 3.56zM16.36 14c.08-.66.14-1.32.14-2 0-.68-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2h-3.38z"/></svg>
+        <span>English</span>
+      </button>
+
+      <!-- Currency -->
+      <button class="amz-footer__currency-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="#ffffff"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
+        <span>$ USD - U.S. Dollar</span>
+      </button>
+
+      <!-- Country -->
+      <button class="amz-footer__country-btn">
+        <span>🇺🇸</span>
+        <span>United States</span>
+      </button>
+
+    </div>
+  </div>
+
+  <!-- FOOTER SUB LINKS -->
+  <div class="amz-footer__sub">
+    <div class="amz-footer__sub-inner">
+      <div class="amz-footer__sub-links">
+        <a href="/collections/electronics">Electronics</a>
+        <a href="/collections/mobiles">Mobiles &amp; Tablets</a>
+        <a href="/collections/fashion">Fashion &amp; Apparel</a>
+        <a href="/collections/home-kitchen">Home &amp; Kitchen</a>
+        <a href="/collections/beauty">Beauty &amp; Personal Care</a>
+        <a href="/collections/sports">Sports &amp; Fitness</a>
+        <a href="/collections/toys">Toys &amp; Games</a>
+        <a href="/collections/books">Books &amp; Stationery</a>
+        <a href="/collections/grocery">Grocery &amp; Gourmet Foods</a>
+        <a href="/collections/automotive">Automotive</a>
+        <a href="/collections/health">Health &amp; Wellness</a>
+        <a href="/collections/baby">Baby &amp; Kids</a>
+        <a href="/collections/pet-supplies">Pet Supplies</a>
+        <a href="/collections/office">Office &amp; Stationery</a>
+        <a href="/collections/garden">Garden &amp; Outdoor</a>
+        <a href="/collections/new-arrivals">New Arrivals</a>
+        <a href="/collections/sale">Sale &amp; Offers</a>
+        <a href="/collections/best-sellers">Best Sellers</a>
+        <a href="/pages/about">About Us</a>
+        <a href="/pages/contact">Contact Us</a>
+        <a href="/pages/faq">FAQs</a>
+        <a href="/pages/shipping">Shipping Policy</a>
+        <a href="/policies/refund-policy">Return Policy</a>
+        <a href="/policies/privacy-policy">Privacy Policy</a>
+        <a href="/policies/terms-of-service">Terms &amp; Conditions</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER COPYRIGHT -->
+  <div class="amz-footer__copyright">
+    <div class="amz-footer__copyright-inner">
+      <div class="amz-footer__legal-links">
+        <a href="/policies/terms-of-service">Terms of Service</a>
+        <a href="/policies/privacy-policy">Privacy Policy</a>
+        <a href="/policies/refund-policy">Return Policy</a>
+        <a href="/policies/shipping-policy">Shipping Policy</a>
+        <a href="/pages/contact">Contact Us</a>
+      </div>
+      <p class="amz-footer__copyright-text">© 2025, {{ shop.name }}. All rights reserved.</p>
+    </div>
+  </div>
+
+</footer>
+
+{% schema %}
+{
+  "name": "Amazon Footer",
+  "settings": [],
+  "presets": [{ "name": "Amazon Footer" }]
+}
+{% endschema %}

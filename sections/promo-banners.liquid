@@ -1,0 +1,54 @@
+{% comment %} Amazon Promo Banners - 3 Column Promotional Section {% endcomment %}
+<div class="amz-promos">
+  <div class="amz-promos__grid">
+    {%- for block in section.blocks -%}
+      {%- if block.type == 'banner' -%}
+        <div class="amz-promo-card" {{ block.shopify_attributes }}>
+          {%- if block.settings.image != blank -%}
+            <img src="{{ block.settings.image | img_url: '740x380', crop: 'center' }}" alt="{{ block.settings.title }}" class="amz-promo-card__img" loading="lazy">
+          {%- else -%}
+            <div class="amz-promo-card__img" style="background:{{ block.settings.bg_color | default: '#e0e0e0' }};height:190px;"></div>
+          {%- endif -%}
+          <div class="amz-promo-card__body">
+            <h3 class="amz-promo-card__title">{{ block.settings.title }}</h3>
+            <p class="amz-promo-card__desc">{{ block.settings.description }}</p>
+            <a href="{{ block.settings.link }}" class="amz-promo-card__link">{{ block.settings.link_text | default: 'Shop now' }}</a>
+          </div>
+        </div>
+      {%- endif -%}
+    {%- else -%}
+      {%- assign promo_titles = "Outdoor Adventure,Home & Kitchen Deals,Beauty Essentials" | split: "," -%}
+      {%- assign promo_colors = "#4a90d9,#7ed321,#f5a623" | split: "," -%}
+      {%- for t in promo_titles -%}
+        <div class="amz-promo-card">
+          <div class="amz-promo-card__img" style="background:{{ promo_colors[forloop.index0] }};height:190px;"></div>
+          <div class="amz-promo-card__body">
+            <h3 class="amz-promo-card__title">{{ t }}</h3>
+            <p class="amz-promo-card__desc">Discover amazing deals in this category</p>
+            <a href="/collections/all" class="amz-promo-card__link">Shop now</a>
+          </div>
+        </div>
+      {%- endfor -%}
+    {%- endfor -%}
+  </div>
+</div>
+{% schema %}
+{
+  "name": "Amazon Promo Banners",
+  "max_blocks": 6,
+  "settings": [],
+  "blocks": [{
+    "type": "banner",
+    "name": "Promo Banner",
+    "settings": [
+      { "type": "image_picker", "id": "image", "label": "Image" },
+      { "type": "color", "id": "bg_color", "label": "Background Color", "default": "#4a90d9" },
+      { "type": "text", "id": "title", "label": "Title" },
+      { "type": "textarea", "id": "description", "label": "Description" },
+      { "type": "url", "id": "link", "label": "Link" },
+      { "type": "text", "id": "link_text", "label": "Link Text", "default": "Shop now" }
+    ]
+  }],
+  "presets": [{ "name": "Amazon Promo Banners" }]
+}
+{% endschema %}

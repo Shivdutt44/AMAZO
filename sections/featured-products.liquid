@@ -1,0 +1,43 @@
+{% comment %} Amazon Featured Products - Grid layout for homepage cards {% endcomment %}
+<div class="amz-fc">
+  <div class="amz-fc__inner">
+    <h2 class="amz-fc__title">{{ section.settings.title | default: "Top Picks For You" }}</h2>
+
+    <div class="amz-fc__grid">
+      {%- assign fc_products = section.settings.collection.products | default: collections.all.products -%}
+      {%- for product in fc_products limit: 4 -%}
+        <div class="amz-fc__grid-item">
+          <a href="{{ product.url }}">
+            <img src="{{ product.featured_image | img_url: '160x160', crop: 'center' }}" alt="{{ product.title | escape }}" loading="lazy" class="amz-fc__grid-img">
+            <p style="font-size:12px;color:#0f1111;margin-top:4px;">{{ product.title | truncate: 22 }}</p>
+          </a>
+        </div>
+      {%- else -%}
+        {%- assign fc_colors = "#ffb347,#87ceeb,#90ee90,#dda0dd" | split: "," -%}
+        {%- for i in (1..4) -%}
+          <div class="amz-fc__grid-item">
+            <div style="background:{{ fc_colors[forloop.index0] }};height:120px;border-radius:2px;"></div>
+            <p style="font-size:12px;margin-top:4px;">Product {{ i }}</p>
+          </div>
+        {%- endfor -%}
+      {%- endfor -%}
+    </div>
+
+    <a href="{{ section.settings.view_all_url | default: '/collections/all' }}" class="amz-fc__link">
+      {{ section.settings.link_text | default: 'See all recommendations' }}
+    </a>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Amazon Featured Products",
+  "settings": [
+    { "type": "text", "id": "title", "label": "Title", "default": "Top Picks For You" },
+    { "type": "collection", "id": "collection", "label": "Collection" },
+    { "type": "text", "id": "link_text", "label": "View All Text", "default": "See all recommendations" },
+    { "type": "url", "id": "view_all_url", "label": "View All URL" }
+  ],
+  "presets": [{ "name": "Amazon Featured Products" }]
+}
+{% endschema %}

@@ -1,0 +1,244 @@
+{% comment %} Amazon Category Grid - 4x2 Grid Layout exactly like Amazon.com homepage cards {% endcomment %}
+
+<div class="amz-cats" id="amz-cats">
+  <div class="amz-cats__grid">
+
+    {%- for block in section.blocks -%}
+      {%- if block.type == 'category' -%}
+        <div class="amz-cats__card" {{ block.shopify_attributes }}>
+          <div class="amz-cats__card-inner">
+            <h2 class="amz-cats__title">{{ block.settings.title }}</h2>
+            <div class="amz-cats__img-wrap">
+              {%- if block.settings.image != blank -%}
+                <img 
+                  src="{{ block.settings.image | img_url: '370x280', crop: 'center' }}" 
+                  alt="{{ block.settings.title | escape }}"
+                  class="amz-cats__img"
+                  loading="lazy"
+                >
+              {%- else -%}
+                <div class="amz-cats__img-placeholder" style="background: {{ block.settings.bg_color | default: '#f3f3f3' }};">
+                  <div class="amz-cats__placeholder-grid">
+                    {%- for i in (1..4) -%}
+                      <div class="amz-cats__placeholder-item" style="background: {{ block.settings.accent_color | default: '#e0e0e0' }};"></div>
+                    {%- endfor -%}
+                  </div>
+                </div>
+              {%- endif -%}
+            </div>
+            <a href="{{ block.settings.link | default: '#' }}" class="amz-cats__link">
+              {{ block.settings.link_text | default: 'See more' }}
+            </a>
+          </div>
+        </div>
+      {%- endif -%}
+    {%- else -%}
+
+    <!-- DEFAULT CATEGORY CARDS - Exact Amazon style -->
+
+    <!-- Card 1: Top Deals -->
+    <div class="amz-cats__card">
+      <div class="amz-cats__card-inner">
+        <h2 class="amz-cats__title">Top deals</h2>
+        <div class="amz-cats__4grid">
+          {%- assign deal_collections = collections | slice: 0, 4 -%}
+          {%- for col in deal_collections -%}
+            <div class="amz-cats__4grid-item">
+              {%- if col.image -%}
+                <img src="{{ col.image | img_url: '160x160', crop: 'center' }}" alt="{{ col.title }}" loading="lazy">
+              {%- else -%}
+                {%- assign fp = col.products.first -%}
+                {%- if fp -%}
+                  <img src="{{ fp.featured_image | img_url: '160x160', crop: 'center' }}" alt="{{ fp.title }}" loading="lazy">
+                {%- else -%}
+                  <div class="amz-cats__4grid-placeholder" style="background: #e0e0e0;"></div>
+                {%- endif -%}
+              {%- endif -%}
+              <p>{{ col.title | truncate: 20 }}</p>
+            </div>
+          {%- else -%}
+            <div class="amz-cats__4grid-item"><div class="amz-cats__4grid-placeholder" style="background: #ffb347;"></div><p>Electronics</p></div>
+            <div class="amz-cats__4grid-item"><div class="amz-cats__4grid-placeholder" style="background: #87ceeb;"></div><p>Fashion</p></div>
+            <div class="amz-cats__4grid-item"><div class="amz-cats__4grid-placeholder" style="background: #90ee90;"></div><p>Home</p></div>
+            <div class="amz-cats__4grid-item"><div class="amz-cats__4grid-placeholder" style="background: #dda0dd;"></div><p>Toys</p></div>
+          {%- endfor -%}
+        </div>
+        <a href="/collections/all" class="amz-cats__link">See all deals</a>
+      </div>
+    </div>
+
+    <!-- Card 2: New in Electronics -->
+    <div class="amz-cats__card">
+      <div class="amz-cats__card-inner">
+        <h2 class="amz-cats__title">New in Electronics</h2>
+        <div class="amz-cats__4grid">
+          {%- assign elec_products = collections['electronics'].products | default: collections.all.products -%}
+          {%- for prod in elec_products limit: 4 -%}
+            <div class="amz-cats__4grid-item">
+              <img src="{{ prod.featured_image | img_url: '160x160', crop: 'center' }}" alt="{{ prod.title }}" loading="lazy">
+              <p>{{ prod.title | truncate: 18 }}</p>
+            </div>
+          {%- else -%}
+            <div class="amz-cats__4grid-item"><div class="amz-cats__4grid-placeholder" style="background: #333;"></div><p>Laptops</p></div>
+            <div class="amz-cats__4grid-item"><div class="amz-cats__4grid-placeholder" style="background: #555;"></div><p>Phones</p></div>
+            <div class="amz-cats__4grid-item"><div class="amz-cats__4grid-placeholder" style="background: #777;"></div><p>Tablets</p></div>
+            <div class="amz-cats__4grid-item"><div class="amz-cats__4grid-placeholder" style="background: #999;"></div><p>Cameras</p></div>
+          {%- endfor -%}
+        </div>
+        <a href="/collections/electronics" class="amz-cats__link">Explore Electronics</a>
+      </div>
+    </div>
+
+    <!-- Card 3: Fashion & Clothing -->
+    <div class="amz-cats__card">
+      <div class="amz-cats__card-inner">
+        <h2 class="amz-cats__title">Fashion & Clothing</h2>
+        <div class="amz-cats__4grid">
+          {%- assign fashion_products = collections['clothing'].products | default: collections.all.products -%}
+          {%- for prod in fashion_products limit: 4 -%}
+            <div class="amz-cats__4grid-item">
+              <img src="{{ prod.featured_image | img_url: '160x160', crop: 'center' }}" alt="{{ prod.title }}" loading="lazy">
+              <p>{{ prod.title | truncate: 18 }}</p>
+            </div>
+          {%- else -%}
+            <div class="amz-cats__4grid-item"><div class="amz-cats__4grid-placeholder" style="background: #f8bbd0;"></div><p>Women</p></div>
+            <div class="amz-cats__4grid-item"><div class="amz-cats__4grid-placeholder" style="background: #bbdefb;"></div><p>Men</p></div>
+            <div class="amz-cats__4grid-item"><div class="amz-cats__4grid-placeholder" style="background: #c8e6c9;"></div><p>Kids</p></div>
+            <div class="amz-cats__4grid-item"><div class="amz-cats__4grid-placeholder" style="background: #fff9c4;"></div><p>Shoes</p></div>
+          {%- endfor -%}
+        </div>
+        <a href="/collections/clothing" class="amz-cats__link">Shop Fashion</a>
+      </div>
+    </div>
+
+    <!-- Card 4: Home & Kitchen -->
+    <div class="amz-cats__card">
+      <div class="amz-cats__card-inner">
+        <h2 class="amz-cats__title">Home & Kitchen</h2>
+        <div class="amz-cats__4grid">
+          {%- for prod in collections.all.products limit: 4 offset: 4 -%}
+            <div class="amz-cats__4grid-item">
+              <img src="{{ prod.featured_image | img_url: '160x160', crop: 'center' }}" alt="{{ prod.title }}" loading="lazy">
+              <p>{{ prod.title | truncate: 18 }}</p>
+            </div>
+          {%- else -%}
+            <div class="amz-cats__4grid-item"><div class="amz-cats__4grid-placeholder" style="background: #ffe0b2;"></div><p>Furniture</p></div>
+            <div class="amz-cats__4grid-item"><div class="amz-cats__4grid-placeholder" style="background: #f3e5f5;"></div><p>Kitchen</p></div>
+            <div class="amz-cats__4grid-item"><div class="amz-cats__4grid-placeholder" style="background: #e0f7fa;"></div><p>Bedding</p></div>
+            <div class="amz-cats__4grid-item"><div class="amz-cats__4grid-placeholder" style="background: #fce4ec;"></div><p>Bath</p></div>
+          {%- endfor -%}
+        </div>
+        <a href="/collections/home" class="amz-cats__link">Shop Home</a>
+      </div>
+    </div>
+
+    <!-- Card 5: Books -->
+    <div class="amz-cats__card">
+      <div class="amz-cats__card-inner">
+        <h2 class="amz-cats__title">Books</h2>
+        <div class="amz-cats__4grid">
+          {%- for prod in collections.all.products limit: 4 offset: 8 -%}
+            <div class="amz-cats__4grid-item">
+              <img src="{{ prod.featured_image | img_url: '160x160', crop: 'center' }}" alt="{{ prod.title }}" loading="lazy">
+              <p>{{ prod.title | truncate: 18 }}</p>
+            </div>
+          {%- else -%}
+            <div class="amz-cats__4grid-item"><div class="amz-cats__4grid-placeholder" style="background: #d32f2f;"></div><p>Fiction</p></div>
+            <div class="amz-cats__4grid-item"><div class="amz-cats__4grid-placeholder" style="background: #1565c0;"></div><p>Non-Fiction</p></div>
+            <div class="amz-cats__4grid-item"><div class="amz-cats__4grid-placeholder" style="background: #2e7d32;"></div><p>Children's</p></div>
+            <div class="amz-cats__4grid-item"><div class="amz-cats__4grid-placeholder" style="background: #e65100;"></div><p>Textbooks</p></div>
+          {%- endfor -%}
+        </div>
+        <a href="/collections/books" class="amz-cats__link">Shop Books</a>
+      </div>
+    </div>
+
+    <!-- Card 6: Sports -->
+    <div class="amz-cats__card">
+      <div class="amz-cats__card-inner">
+        <h2 class="amz-cats__title">Sports & Outdoors</h2>
+        <div class="amz-cats__4grid">
+          {%- for prod in collections.all.products limit: 4 offset: 12 -%}
+            <div class="amz-cats__4grid-item">
+              <img src="{{ prod.featured_image | img_url: '160x160', crop: 'center' }}" alt="{{ prod.title }}" loading="lazy">
+              <p>{{ prod.title | truncate: 18 }}</p>
+            </div>
+          {%- else -%}
+            <div class="amz-cats__4grid-item"><div class="amz-cats__4grid-placeholder" style="background: #43a047;"></div><p>Exercise</p></div>
+            <div class="amz-cats__4grid-item"><div class="amz-cats__4grid-placeholder" style="background: #00897b;"></div><p>Outdoor</p></div>
+            <div class="amz-cats__4grid-item"><div class="amz-cats__4grid-placeholder" style="background: #0288d1;"></div><p>Team Sports</p></div>
+            <div class="amz-cats__4grid-item"><div class="amz-cats__4grid-placeholder" style="background: #f57f17;"></div><p>Golf</p></div>
+          {%- endfor -%}
+        </div>
+        <a href="/collections/sports" class="amz-cats__link">Shop Sports</a>
+      </div>
+    </div>
+
+    <!-- Card 7: Beauty -->
+    <div class="amz-cats__card">
+      <div class="amz-cats__card-inner">
+        <h2 class="amz-cats__title">Beauty & Personal Care</h2>
+        <div class="amz-cats__4grid">
+          {%- for prod in collections.all.products limit: 4 offset: 16 -%}
+            <div class="amz-cats__4grid-item">
+              <img src="{{ prod.featured_image | img_url: '160x160', crop: 'center' }}" alt="{{ prod.title }}" loading="lazy">
+              <p>{{ prod.title | truncate: 18 }}</p>
+            </div>
+          {%- else -%}
+            <div class="amz-cats__4grid-item"><div class="amz-cats__4grid-placeholder" style="background: #f48fb1;"></div><p>Makeup</p></div>
+            <div class="amz-cats__4grid-item"><div class="amz-cats__4grid-placeholder" style="background: #e91e63;"></div><p>Skin Care</p></div>
+            <div class="amz-cats__4grid-item"><div class="amz-cats__4grid-placeholder" style="background: #9c27b0;"></div><p>Hair Care</p></div>
+            <div class="amz-cats__4grid-item"><div class="amz-cats__4grid-placeholder" style="background: #7b1fa2;"></div><p>Fragrance</p></div>
+          {%- endfor -%}
+        </div>
+        <a href="/collections/beauty" class="amz-cats__link">Shop Beauty</a>
+      </div>
+    </div>
+
+    <!-- Card 8: Toys & Games -->
+    <div class="amz-cats__card">
+      <div class="amz-cats__card-inner">
+        <h2 class="amz-cats__title">Toys & Games</h2>
+        <div class="amz-cats__4grid">
+          {%- for prod in collections.all.products limit: 4 offset: 20 -%}
+            <div class="amz-cats__4grid-item">
+              <img src="{{ prod.featured_image | img_url: '160x160', crop: 'center' }}" alt="{{ prod.title }}" loading="lazy">
+              <p>{{ prod.title | truncate: 18 }}</p>
+            </div>
+          {%- else -%}
+            <div class="amz-cats__4grid-item"><div class="amz-cats__4grid-placeholder" style="background: #ffcc02;"></div><p>Action Figures</p></div>
+            <div class="amz-cats__4grid-item"><div class="amz-cats__4grid-placeholder" style="background: #ff5722;"></div><p>Board Games</p></div>
+            <div class="amz-cats__4grid-item"><div class="amz-cats__4grid-placeholder" style="background: #4caf50;"></div><p>Dolls</p></div>
+            <div class="amz-cats__4grid-item"><div class="amz-cats__4grid-placeholder" style="background: #2196f3;"></div><p>Building Sets</p></div>
+          {%- endfor -%}
+        </div>
+        <a href="/collections/toys" class="amz-cats__link">Shop Toys</a>
+      </div>
+    </div>
+
+    {%- endfor -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Amazon Category Grid",
+  "max_blocks": 12,
+  "settings": [],
+  "blocks": [
+    {
+      "type": "category",
+      "name": "Category Card",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Category Title", "default": "Shop by Category" },
+        { "type": "image_picker", "id": "image", "label": "Category Image" },
+        { "type": "color", "id": "bg_color", "label": "Background Color", "default": "#f3f3f3" },
+        { "type": "color", "id": "accent_color", "label": "Accent Color", "default": "#e0e0e0" },
+        { "type": "url", "id": "link", "label": "Category Link" },
+        { "type": "text", "id": "link_text", "label": "Link Text", "default": "See more" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Amazon Category Grid" }]
+}
+{% endschema %}

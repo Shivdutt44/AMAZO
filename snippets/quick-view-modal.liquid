@@ -1,0 +1,499 @@
+{% comment %}
+  Amazo Theme – Quick View Modal v4.0 FIXED
+  - Full AJAX product loading via /products/{handle}.js
+  - Smooth open/close animations
+  - Variant selection with price/stock updates
+  - Add to Cart → opens cart drawer
+  - Buy Now → redirects to /checkout
+  - Image gallery with thumbnails
+  - Qty stepper
+{% endcomment %}
+
+<div id="QuickViewModal"
+     class="amz-quickview-modal"
+     role="dialog"
+     aria-modal="true"
+     aria-labelledby="QuickViewTitle"
+     aria-hidden="true"
+     tabindex="-1">
+
+  <!-- Overlay (click to close) -->
+  <div class="amz-quickview-overlay" id="QuickViewOverlay"></div>
+
+  <div class="amz-quickview-container">
+
+    <!-- Close Button -->
+    <button class="amz-quickview-close" id="QuickViewClose" aria-label="Close quick view">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+        <line x1="18" y1="6" x2="6" y2="18"/>
+        <line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+
+    <!-- Loading State -->
+    <div class="amz-quickview-loading" id="QuickViewLoading">
+      <div class="amz-qv-spinner">
+        <svg width="40" height="40" viewBox="0 0 50 50" class="amz-spin" aria-hidden="true">
+          <circle cx="25" cy="25" r="20" fill="none" stroke="#ff9900" stroke-width="4" stroke-dasharray="60 40" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <p style="margin-top:12px;color:#565959;font-size:14px;">Loading product…</p>
+    </div>
+
+    <!-- Content (populated by JS) -->
+    <div class="amz-quickview-content" id="QuickViewContent" style="display:none;">
+      <!-- JS renders this dynamically -->
+    </div>
+
+  </div>
+</div>
+
+<style>
+/* ═══════════════════════════════════════════════════
+   QUICK VIEW MODAL — COMPLETE CSS v4.0
+═══════════════════════════════════════════════════ */
+
+/* ── Overlay ── */
+.amz-quickview-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  z-index: 0;
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+}
+
+/* ── Modal wrapper ── */
+.amz-quickview-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  pointer-events: none;
+  opacity: 0;
+  /* Smooth fade in/out */
+  transition: opacity 0.25s ease;
+}
+
+.amz-quickview-modal.is-open {
+  pointer-events: auto;
+  opacity: 1;
+}
+
+/* ── Container (modal box) ── */
+.amz-quickview-container {
+  position: relative;
+  z-index: 1;
+  background: #fff;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 860px;
+  max-height: 90vh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  transform: translateY(30px) scale(0.97);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  font-family: 'Open Sans', Arial, sans-serif;
+}
+
+.amz-quickview-modal.is-open .amz-quickview-container {
+  transform: translateY(0) scale(1);
+}
+
+/* ── Close button ── */
+.amz-quickview-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 10;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid #ddd;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #333;
+  transition: background 0.15s, transform 0.15s, box-shadow 0.15s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.amz-quickview-close:hover {
+  background: #ff9900;
+  color: #fff;
+  border-color: #ff9900;
+  transform: scale(1.1);
+}
+
+/* ── Loading state ── */
+.amz-quickview-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  padding: 40px;
+}
+
+/* Spinner animation */
+@keyframes qv-spin {
+  to { transform: rotate(360deg); }
+}
+.amz-spin {
+  animation: qv-spin 0.8s linear infinite;
+}
+
+/* ── Content grid ── */
+.amz-quickview-content {
+  display: flex;
+  gap: 24px;
+  padding: 28px;
+  padding-top: 20px;
+}
+
+/* ── Image panel ── */
+.amz-qv-image {
+  flex: 0 0 300px;
+  max-width: 300px;
+}
+
+.amz-qv-img {
+  width: 100%;
+  height: 300px;
+  object-fit: contain;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  background: #fafafa;
+  transition: opacity 0.2s;
+}
+
+/* Thumbnails */
+.amz-qv-thumbs {
+  display: flex;
+  gap: 6px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.amz-qv-thumb {
+  width: 54px;
+  height: 54px;
+  border: 2px solid #eee;
+  border-radius: 6px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: border-color 0.15s, transform 0.15s;
+  background: #fafafa;
+}
+
+.amz-qv-thumb:hover {
+  border-color: #ff9900;
+  transform: scale(1.05);
+}
+
+.amz-qv-thumb.is-active {
+  border-color: #ff9900;
+  box-shadow: 0 0 0 1px #ff9900;
+}
+
+.amz-qv-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* ── Info panel ── */
+.amz-qv-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.amz-qv-brand {
+  font-size: 12px;
+  color: #007185;
+  margin: 0 0 6px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.amz-qv-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #0f1111;
+  line-height: 1.4;
+  margin: 0 0 8px;
+}
+
+/* Rating */
+.amz-qv-rating {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 10px;
+  font-size: 13px;
+}
+
+/* Price */
+.amz-qv-price {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.amz-qv-price-main {
+  font-size: 22px;
+  font-weight: 700;
+  color: #B12704;
+}
+
+.amz-qv-price-compare {
+  font-size: 14px;
+  color: #888;
+  text-decoration: line-through;
+}
+
+.amz-qv-price-badge {
+  background: #cc0c39;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+/* Stock */
+.amz-qv-stock {
+  margin-bottom: 12px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.amz-qv-instock { color: #007600; }
+.amz-qv-outstock { color: #cc0c39; }
+
+/* ── Variant Options ── */
+.amz-qv-variants { margin-bottom: 14px; }
+
+.amz-qv-option-group {
+  margin-bottom: 12px;
+}
+
+.amz-qv-option-label {
+  display: block;
+  font-size: 13px;
+  color: #0f1111;
+  margin-bottom: 6px;
+}
+
+.amz-qv-option-val {
+  font-weight: 400;
+  color: #565959;
+}
+
+.amz-qv-option-btns {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.amz-qv-opt-btn {
+  padding: 5px 12px;
+  border: 1px solid #d5d9d9;
+  border-radius: 6px;
+  background: #fff;
+  font-size: 13px;
+  color: #0f1111;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.amz-qv-opt-btn:hover {
+  border-color: #ff9900;
+  background: #fff8f0;
+}
+
+.amz-qv-opt-btn.is-active {
+  border-color: #ff9900;
+  background: #fff8f0;
+  box-shadow: 0 0 0 1px #ff9900;
+  font-weight: 600;
+}
+
+/* ── Qty row ── */
+.amz-qv-qty-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+/* ── Action buttons ── */
+.amz-qv-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+/* Shared button base */
+.amz-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  transition: background 0.15s, transform 0.1s, box-shadow 0.15s;
+  width: 100%;
+  text-align: center;
+}
+
+.amz-btn:active { transform: scale(0.98); }
+.amz-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Add to Cart */
+.amz-btn--atc {
+  background: #FFD814;
+  border: 1px solid #FCD200;
+  color: #0f1111;
+}
+.amz-btn--atc:hover:not(:disabled) {
+  background: #F7CA00;
+  box-shadow: 0 2px 8px rgba(255,200,0,0.4);
+}
+
+/* Buy Now */
+.amz-btn--buy {
+  background: #FF9900;
+  border: 1px solid #FF8C00;
+  color: #fff;
+}
+.amz-btn--buy:hover:not(:disabled) {
+  background: #e88a00;
+  box-shadow: 0 2px 8px rgba(255,140,0,0.4);
+}
+
+/* View full link */
+.amz-qv-full-link {
+  display: block;
+  font-size: 13px;
+  color: #007185;
+  text-decoration: none;
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+.amz-qv-full-link:hover { color: #c45500; text-decoration: underline; }
+
+/* Trust badges */
+.amz-qv-trust {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  font-size: 11px;
+  color: #565959;
+  padding-top: 10px;
+  border-top: 1px solid #f0f0f0;
+}
+
+/* ── QTY CONTROLS ── */
+.amz-qty-wrap {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.amz-qty-btn {
+  width: 32px;
+  height: 32px;
+  background: #f7f8f8;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  color: #0f1111;
+  transition: background 0.1s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.amz-qty-btn:hover { background: #eee; }
+
+.amz-qty-input {
+  width: 44px;
+  height: 32px;
+  text-align: center;
+  border: none;
+  border-left: 1px solid #ddd;
+  border-right: 1px solid #ddd;
+  font-size: 14px;
+  font-weight: 600;
+  color: #0f1111;
+  background: #fff;
+  -moz-appearance: textfield;
+}
+.amz-qty-input::-webkit-outer-spin-button,
+.amz-qty-input::-webkit-inner-spin-button { -webkit-appearance: none; }
+
+.amz-qty-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #0f1111;
+  white-space: nowrap;
+}
+
+/* ── Prevent page scroll when modal open ── */
+body.quickview-is-open { overflow: hidden; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 640px) {
+  .amz-quickview-container {
+    border-radius: 16px 16px 0 0;
+    max-height: 92vh;
+    margin-top: auto;
+    margin-bottom: 0;
+  }
+
+  .amz-quickview-modal {
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  .amz-quickview-content {
+    flex-direction: column;
+    padding: 20px 16px;
+    padding-top: 14px;
+  }
+
+  .amz-qv-image {
+    flex: none;
+    max-width: 100%;
+  }
+
+  .amz-qv-img {
+    height: 220px;
+  }
+}
+
+@media (max-width: 420px) {
+  .amz-quickview-container { max-width: 100%; width: 100%; }
+}
+</style>

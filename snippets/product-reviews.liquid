@@ -1,0 +1,211 @@
+{% comment %}
+  Amazo Theme – Product Reviews Snippet v4.0
+  Full review display with write-review form, star breakdown, CRO
+{% endcomment %}
+
+{%- liquid
+  assign review_rating = review_rating | default: 4.3
+  assign review_count  = review_count  | default: 0
+
+  assign pct5 = product.id | modulo: 30 | plus: 50
+  assign pct4 = product.id | modulo: 20 | plus: 20
+  assign pct3 = 100 | minus: pct5 | minus: pct4 | minus: 5 | minus: 2
+  assign pct2 = 5
+  assign pct1 = 2
+-%}
+
+<section class="amz-reviews" id="product-reviews" aria-labelledby="reviews-heading">
+  <h2 id="reviews-heading" class="amz-reviews__title">Customer reviews</h2>
+
+  <!-- ── RATING OVERVIEW ── -->
+  <div class="amz-reviews__overview">
+    <div class="amz-reviews__overall">
+      <div class="amz-reviews__big-score">{{ review_rating }}</div>
+      <div class="amz-reviews__big-stars" style="color:#ff9900;font-size:24px;">
+        {%- assign full = review_rating | floor -%}
+        {%- assign dec  = review_rating | minus: full -%}
+        {%- for s in (1..5) -%}
+          {%- if s <= full -%}★{%- elsif dec >= 0.3 and dec <= 0.7 and s == full | plus: 1 -%}★{%- else -%}☆{%- endif -%}
+        {%- endfor -%}
+      </div>
+      <div style="font-size:13px;color:#007185;">out of 5</div>
+      <div style="font-size:12px;color:#565959;margin-top:4px;">{{ review_count | number_with_delimiter }} global ratings</div>
+    </div>
+
+    <!-- Star Breakdown Bars -->
+    <div class="amz-reviews__bars">
+      {%- assign star_labels = '5 star,4 star,3 star,2 star,1 star' | split: ',' -%}
+      {%- assign star_pcts   = pct5 | append: ',' | append: pct4 | append: ',' | append: pct3 | append: ',' | append: pct2 | append: ',' | append: pct1 | split: ',' -%}
+      {%- for label in star_labels -%}
+        {%- assign pct = star_pcts[forloop.index0] -%}
+        <div class="amz-reviews__bar-row">
+          <a href="#product-reviews" class="amz-reviews__bar-label">{{ label }}</a>
+          <div class="amz-reviews__bar-wrap">
+            <div class="amz-reviews__bar-fill" style="width:{{ pct }}%;"></div>
+          </div>
+          <span class="amz-reviews__bar-pct">{{ pct }}%</span>
+        </div>
+      {%- endfor -%}
+    </div>
+
+    <!-- Review Filters -->
+    <div class="amz-reviews__filter">
+      <h3 style="font-size:14px;margin-bottom:8px;">Review this product</h3>
+      <p style="font-size:13px;color:#565959;margin-bottom:10px;">Share your thoughts with other customers</p>
+      <button class="amz-btn amz-btn--write-review" id="WriteReviewBtn" aria-expanded="false" aria-controls="WriteReviewForm">
+        Write a customer review
+      </button>
+    </div>
+  </div>
+
+  <!-- ── WRITE REVIEW FORM ── -->
+  {%- if settings.enable_reviews -%}
+  <div id="WriteReviewForm" class="amz-write-review" style="display:none;" aria-hidden="true">
+    <h3 class="amz-write-review__title">Write a Review</h3>
+    <form class="amz-review-form" id="CustomerReviewForm" data-product-id="{{ product.id }}">
+      <!-- Star Picker -->
+      <div class="amz-form-row">
+        <label class="amz-form-label">Overall Rating <span style="color:#cc0c39;">*</span></label>
+        <div class="amz-star-picker" role="radiogroup" aria-label="Select star rating">
+          {%- for s in (1..5) -%}
+          <label class="amz-star-pick" aria-label="{{ s }} star{% if s > 1 %}s{% endif %}">
+            <input type="radio" name="review_rating" value="{{ s }}" required style="position:absolute;opacity:0;pointer-events:none;">
+            <svg viewBox="0 0 24 24" width="28" height="28" class="amz-star-svg"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" fill="none" stroke="#ff9900" stroke-width="1.5"/></svg>
+          </label>
+          {%- endfor -%}
+        </div>
+      </div>
+
+      <!-- Title -->
+      <div class="amz-form-row">
+        <label class="amz-form-label" for="ReviewTitle">Review Title <span style="color:#cc0c39;">*</span></label>
+        <input type="text" id="ReviewTitle" name="review_title" class="amz-form-input" placeholder="What's most important to know?" required maxlength="100">
+      </div>
+
+      <!-- Body -->
+      <div class="amz-form-row">
+        <label class="amz-form-label" for="ReviewBody">Review <span style="color:#cc0c39;">*</span></label>
+        <textarea id="ReviewBody" name="review_body" class="amz-form-textarea" rows="4" placeholder="What did you like or dislike? What did you use this product for?" required minlength="10" maxlength="1000"></textarea>
+        <div class="amz-form-char-count" id="ReviewBodyCount">0 / 1000</div>
+      </div>
+
+      <!-- Name -->
+      <div class="amz-form-row">
+        <label class="amz-form-label" for="ReviewName">Name <span style="color:#cc0c39;">*</span></label>
+        <input type="text" id="ReviewName" name="review_author" class="amz-form-input" placeholder="Enter your name" required maxlength="60">
+      </div>
+
+      <!-- Email -->
+      <div class="amz-form-row">
+        <label class="amz-form-label" for="ReviewEmail">Email (optional)</label>
+        <input type="email" id="ReviewEmail" name="review_email" class="amz-form-input" placeholder="yourname@example.com" maxlength="100">
+        <div class="amz-form-hint">Your email will not be published</div>
+      </div>
+
+      <!-- Verified Purchase checkbox -->
+      <div class="amz-form-row amz-form-row--check">
+        <label class="amz-checkbox-label">
+          <input type="checkbox" name="verified" class="amz-form-check">
+          <span>I purchased this product</span>
+        </label>
+      </div>
+
+      <button type="submit" class="amz-btn amz-btn--submit-review">Submit Review</button>
+      <button type="button" class="amz-btn amz-btn--cancel-review" id="CancelReviewBtn">Cancel</button>
+
+      <div class="amz-review-success" id="ReviewSuccess" style="display:none;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="#007600" aria-hidden="true"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01" stroke="white" stroke-width="2" fill="none"/></svg>
+        Thank you! Your review has been submitted for moderation.
+      </div>
+    </form>
+  </div>
+  {%- endif -%}
+
+  <!-- ── REVIEW ITEMS (Demo + Metafield based) ── -->
+  <div class="amz-reviews__list" id="ReviewsList">
+
+    {%- if product.metafields.reviews.list != blank -%}
+      {%- for review in product.metafields.reviews.list -%}
+      <div class="amz-review-item">
+        <div class="amz-review-item__header">
+          <div class="amz-reviewer-avatar">{{ review.author | slice: 0 }}</div>
+          <span class="amz-reviewer-name">{{ review.author }}</span>
+        </div>
+        <div class="amz-review-item__stars" style="color:#ff9900;">
+          {%- assign r = review.rating | round -%}
+          {%- for s in (1..5) -%}{%- if s <= r -%}★{%- else -%}☆{%- endif -%}{%- endfor -%}
+        </div>
+        {%- if review.verified -%}
+        <span class="amz-verified-badge">✔ Verified Purchase</span>
+        {%- endif -%}
+        <h4 class="amz-review-item__title">{{ review.title }}</h4>
+        <p class="amz-review-item__body">{{ review.body }}</p>
+        <div class="amz-review-item__helpful">
+          <span>Helpful?</span>
+          <button class="amz-helpful-btn" data-action="yes">👍 Yes ({{ review.helpful_yes | default: 0 }})</button>
+          <button class="amz-helpful-btn" data-action="no">👎 No ({{ review.helpful_no | default: 0 }})</button>
+          <button class="amz-report-btn">Report abuse</button>
+        </div>
+      </div>
+      {%- endfor -%}
+    {%- else -%}
+
+    <!-- Demo reviews shown when no metafields exist -->
+    <div class="amz-review-item">
+      <div class="amz-review-item__header">
+        <div class="amz-reviewer-avatar" style="background:#232f3e;">S</div>
+        <span class="amz-reviewer-name">Sarah M.</span>
+        <span class="amz-verified-badge">✔ Verified Purchase</span>
+      </div>
+      <div class="amz-review-item__stars" style="color:#ff9900;">★★★★★</div>
+      <h4 class="amz-review-item__title">Excellent quality, highly recommend!</h4>
+      <p class="amz-review-item__body">This product exceeded my expectations. The build quality is exceptional and it arrived well-packaged. Would definitely buy again from this store!</p>
+      <div class="amz-review-item__date">Reviewed on January 15, 2026</div>
+      <div class="amz-review-item__helpful">
+        <span style="font-size:13px;color:#565959;">Helpful?</span>
+        <button class="amz-helpful-btn" data-review-id="demo1" data-action="yes">👍 Yes (24)</button>
+        <button class="amz-helpful-btn" data-review-id="demo1" data-action="no">👎 No (2)</button>
+      </div>
+    </div>
+
+    <div class="amz-review-item">
+      <div class="amz-review-item__header">
+        <div class="amz-reviewer-avatar" style="background:#ff9900;">R</div>
+        <span class="amz-reviewer-name">Raj K.</span>
+        <span class="amz-verified-badge">✔ Verified Purchase</span>
+      </div>
+      <div class="amz-review-item__stars" style="color:#ff9900;">★★★★☆</div>
+      <h4 class="amz-review-item__title">Good value for money</h4>
+      <p class="amz-review-item__body">Very satisfied with this purchase. Fast shipping and the product matches the description. Removing one star only because the packaging could be better.</p>
+      <div class="amz-review-item__date">Reviewed on February 3, 2026</div>
+      <div class="amz-review-item__helpful">
+        <span style="font-size:13px;color:#565959;">Helpful?</span>
+        <button class="amz-helpful-btn" data-review-id="demo2" data-action="yes">👍 Yes (18)</button>
+        <button class="amz-helpful-btn" data-review-id="demo2" data-action="no">👎 No (1)</button>
+      </div>
+    </div>
+
+    <div class="amz-review-item">
+      <div class="amz-review-item__header">
+        <div class="amz-reviewer-avatar" style="background:#007600;">A</div>
+        <span class="amz-reviewer-name">Aisha T.</span>
+        <span class="amz-verified-badge">✔ Verified Purchase</span>
+      </div>
+      <div class="amz-review-item__stars" style="color:#ff9900;">★★★★★</div>
+      <h4 class="amz-review-item__title">Absolutely love it!</h4>
+      <p class="amz-review-item__body">I was hesitant to buy online but this completely changed my mind. Product is exactly as pictured, quality is top-notch. Will definitely be ordering more!</p>
+      <div class="amz-review-item__date">Reviewed on February 10, 2026</div>
+      <div class="amz-review-item__helpful">
+        <span style="font-size:13px;color:#565959;">Helpful?</span>
+        <button class="amz-helpful-btn" data-review-id="demo3" data-action="yes">👍 Yes (31)</button>
+        <button class="amz-helpful-btn" data-review-id="demo3" data-action="no">👎 No (0)</button>
+      </div>
+    </div>
+
+    {%- endif -%}
+
+    <div class="amz-reviews__load-more" id="ReviewsLoadMore">
+      <button class="amz-btn amz-btn--load-reviews">See all {{ review_count | number_with_delimiter }} reviews</button>
+    </div>
+  </div>
+</section>

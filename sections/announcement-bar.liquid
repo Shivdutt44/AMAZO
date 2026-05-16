@@ -1,0 +1,22 @@
+{% comment %} Amazon Announcement Bar {% endcomment %}
+{%- if section.settings.text != blank -%}
+<div class="amz-announce">
+  <div class="amz-announce__inner">
+    {%- if section.settings.link != blank -%}
+      <a href="{{ section.settings.link }}">{{ section.settings.text }}</a>
+    {%- else -%}
+      {{ section.settings.text }}
+    {%- endif -%}
+  </div>
+</div>
+{%- endif -%}
+{% schema %}
+{
+  "name": "Amazon Announcement Bar",
+  "settings": [
+    { "type": "text", "id": "text", "label": "Announcement Text", "default": "🎉 Free Shipping on orders over $35! Shop now and save big →" },
+    { "type": "url", "id": "link", "label": "Announcement Link" }
+  ],
+  "presets": [{ "name": "Amazon Announcement Bar" }]
+}
+{% endschema %}

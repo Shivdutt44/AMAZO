@@ -1,0 +1,517 @@
+{% comment %}
+  Amazo Theme - Main Product Page v4.0 PRO
+  Full CRO: Wishlist, Quick View, ATC, Buy Now, Reviews, Urgency, Trust
+{% endcomment %}
+
+{%- liquid
+  assign current_variant = product.selected_or_first_available_variant
+  assign featured_media = product.featured_media
+
+  assign discount_percentage = 0
+  if current_variant.compare_at_price > current_variant.price
+    assign saved_amount = current_variant.compare_at_price | minus: current_variant.price
+    assign discount_percentage = saved_amount | times: 100 | divided_by: current_variant.compare_at_price | round
+  endif
+
+  assign review_count = product.metafields.reviews.rating_count | default: 0
+  assign review_rating = product.metafields.reviews.rating.value | default: 0
+  if review_rating == 0
+    assign review_rating = product.id | modulo: 25 | times: 0.2 | plus: 3.5 | round: 1
+    assign review_count = product.id | modulo: 8000 | plus: 200
+  endif
+
+  assign stock_count = current_variant.inventory_quantity | default: 0
+  assign low_stock = false
+  if stock_count > 0 and stock_count <= 10
+    assign low_stock = true
+  endif
+
+  assign viewers_count = product.id | modulo: 40 | plus: 12
+  assign orders_today = product.id | modulo: 30 | plus: 5
+-%}
+
+<!-- ─── BREADCRUMB ─── -->
+{%- if settings.show_product_breadcrumb -%}
+<nav class="amz-breadcrumb" aria-label="Breadcrumb">
+  <div class="page-width">
+    <ol itemscope itemtype="http://schema.org/BreadcrumbList" style="list-style:none;display:flex;gap:6px;flex-wrap:wrap;padding:10px 0;font-size:13px;color:#007185;">
+      <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+        <a href="/" itemprop="item" style="color:#007185;text-decoration:none;"><span itemprop="name">Home</span></a>
+        <meta itemprop="position" content="1">
+      </li>
+      {%- if product.collections.first -%}
+      <li aria-hidden="true">›</li>
+      <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+        <a href="{{ product.collections.first.url }}" itemprop="item" style="color:#007185;text-decoration:none;"><span itemprop="name">{{ product.collections.first.title }}</span></a>
+        <meta itemprop="position" content="2">
+      </li>
+      {%- endif -%}
+      <li aria-hidden="true">›</li>
+      <li aria-current="page" style="color:#0f1111;" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+        <span itemprop="name">{{ product.title | truncate: 50 }}</span>
+        <meta itemprop="position" content="3">
+      </li>
+    </ol>
+  </div>
+</nav>
+{%- endif -%}
+
+<div class="amz-product-page" itemscope itemtype="http://schema.org/Product">
+  <div class="page-width">
+    <div class="amz-product-layout">
+
+      <!-- ═══════════════════════════════════════
+           COLUMN 1: IMAGES
+      ═══════════════════════════════════════ -->
+      <div class="amz-product-images" id="ProductImages">
+        <!-- Thumbnails -->
+        <div class="amz-thumbnails" role="list">
+          {%- for image in product.images limit: 8 -%}
+          <div class="amz-thumb-wrap {% if forloop.first %}is-active{% endif %}"
+               role="listitem"
+               data-image-src="{{ image | image_url: width: 600 }}"
+               data-image-idx="{{ forloop.index0 }}">
+            <img src="{{ image | image_url: width: 100 }}"
+                 alt="{{ image.alt | default: product.title | escape }}"
+                 class="amz-thumb"
+                 loading="lazy"
+                 width="100" height="100">
+          </div>
+          {%- endfor -%}
+        </div>
+
+        <!-- Main Image -->
+        <div class="amz-main-img-wrap">
+          <div class="amz-zoom-lens" id="ZoomLens"></div>
+          <img id="ProductMainImage"
+               src="{{ featured_media | image_url: width: 600 }}"
+               alt="{{ product.title | escape }}"
+               class="amz-main-img {% if settings.enable_zoom %}amz-zoomable{% endif %}"
+               width="600" height="600"
+               itemprop="image">
+
+          <!-- Wishlist on Product Page -->
+          {%- if settings.enable_wishlist -%}
+          <button class="amz-product-wishlist amz-wishlist-btn"
+                  aria-label="Save to wishlist"
+                  data-product-id="{{ product.id }}"
+                  data-product-title="{{ product.title | escape }}"
+                  data-product-url="{{ product.url }}"
+                  data-product-image="{{ featured_media | image_url: width: 150 }}">
+            <svg class="amz-heart-icon" viewBox="0 0 24 24" width="20" height="20"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            <span>Save</span>
+          </button>
+          {%- endif -%}
+
+          <!-- Badges on image -->
+          {%- if discount_percentage >= 5 -%}
+          <span class="amz-img-badge">-{{ discount_percentage }}%</span>
+          {%- endif -%}
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════
+           COLUMN 2: PRODUCT INFO
+      ═══════════════════════════════════════ -->
+      <div class="amz-product-info">
+
+        <!-- Brand -->
+        {%- if product.vendor != blank -%}
+        <a href="{{ product.vendor | url_for_vendor }}" class="amz-product-brand">Visit the <strong>{{ product.vendor }}</strong> Store</a>
+        {%- endif -%}
+
+        <!-- Title -->
+        <h1 class="amz-product-title" itemprop="name">{{ product.title }}</h1>
+
+        <!-- ── RATINGS SUMMARY ── -->
+        {%- if settings.show_rating -%}
+        <div class="amz-product-rating" id="ratings-summary">
+          <a href="#product-reviews" class="amz-rating-link">
+            <span class="amz-stars" style="color:#ff9900;" aria-label="{{ review_rating }} out of 5 stars">
+              {%- assign full = review_rating | floor -%}
+              {%- assign decimal_part = review_rating | minus: full -%}
+              {%- assign half_star_pos = full | plus: 1 -%}
+              {%- for s in (1..5) -%}
+                {%- if s <= full -%}★{%- elsif decimal_part >= 0.3 and decimal_part <= 0.7 and s == half_star_pos -%}★{%- else -%}☆{%- endif -%}
+              {%- endfor -%}
+            </span>
+            <span class="amz-rating-score">{{ review_rating }}</span>
+            <span class="amz-rating-count">{{ review_count | number_with_delimiter }} ratings</span>
+          </a>
+          <span class="amz-rating-sep">|</span>
+          <a href="#product-reviews" class="amz-rating-link">{{ review_count | number_with_delimiter }} customer reviews</a>
+          <span class="amz-rating-sep">|</span>
+          <a href="#product-reviews" class="amz-rating-link amz-ask-link">Answer customers' questions</a>
+        </div>
+        {%- endif -%}
+
+        <div class="amz-divider"></div>
+
+        <!-- ── PRICE BLOCK ── -->
+        <div class="amz-price-block" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+          <meta itemprop="priceCurrency" content="{{ cart.currency.iso_code }}">
+          <meta itemprop="price" content="{{ current_variant.price | divided_by: 100.0 }}">
+          <link itemprop="availability" href="http://schema.org/{% if product.available %}InStock{% else %}OutOfStock{% endif %}">
+
+          <div class="amz-price-row">
+            <span class="amz-price-label">Price:</span>
+            <div class="amz-price-wrap">
+              <span class="amz-price-main">
+                <span class="amz-price-sym">{{ cart.currency.symbol }}</span>{{ current_variant.price | money_without_currency }}
+              </span>
+              {%- if current_variant.compare_at_price > current_variant.price -%}
+              <div class="amz-price-was">
+                List Price: <s>{{ current_variant.compare_at_price | money }}</s>
+                <span class="amz-price-save">Save {{ saved_amount | money }} ({{ discount_percentage }}%)</span>
+              </div>
+              {%- endif -%}
+            </div>
+          </div>
+
+          <!-- Prime Free Shipping -->
+          {%- if settings.show_prime_badge -%}
+          <div class="amz-prime-strip">
+            <span class="amz-prime-logo">prime</span>
+            <span>Get FREE delivery with Prime</span>
+          </div>
+          {%- endif -%}
+        </div>
+
+        <div class="amz-divider"></div>
+
+        <!-- ── CRO: Social Proof ── -->
+        {%- if settings.enable_cro_social_proof -%}
+        <div class="amz-social-proof">
+          <span class="pulse-dot"></span>
+          <strong>{{ viewers_count }} people</strong> are viewing this right now
+          <span class="amz-sep">•</span>
+          <strong>{{ orders_today }} sold</strong> in last 24 hours
+        </div>
+        {%- endif -%}
+
+        <!-- ── VARIANT SELECTOR ── -->
+        {%- unless product.has_only_default_variant -%}
+        <div class="amz-variants">
+          {%- for option in product.options_with_values -%}
+          {%- assign option_key = 'option' | append: forloop.index -%}
+          <div class="amz-option-group">
+            <label class="amz-option-label">
+              <strong>{{ option.name }}:</strong>
+              <span class="amz-option-selected">{{ current_variant[option_key] }}</span>
+            </label>
+            <div class="amz-option-btns" data-option-position="{{ forloop.index }}">
+              {%- for value in option.values -%}
+              <button type="button"
+                      class="amz-option-btn {% if current_variant[option_key] == value %}is-active{% endif %}"
+                      data-option-value="{{ value | escape }}"
+                      data-option-name="{{ option.name | escape }}">
+                {{ value }}
+              </button>
+              {%- endfor -%}
+            </div>
+          </div>
+          {%- endfor -%}
+        </div>
+        {%- endunless -%}
+
+        <!-- ── FEATURES / DESCRIPTION ── -->
+        {%- if product.description != blank -%}
+        <div class="amz-divider"></div>
+        <div class="amz-about">
+          <h3 class="amz-about-title">About this item</h3>
+          <div class="amz-description" itemprop="description">
+            {{ product.description }}
+          </div>
+        </div>
+        {%- endif -%}
+
+        <!-- ── SHARE BUTTONS ── -->
+        <div class="amz-share-row">
+          <span style="font-size:12px;color:#565959;">Share: </span>
+          <a href="https://www.facebook.com/sharer/sharer.php?u={{ shop.url }}{{ product.url }}" target="_blank" rel="noopener" class="amz-share-btn amz-share--fb" aria-label="Share on Facebook">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="#1877F2"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>
+          </a>
+          <a href="https://twitter.com/intent/tweet?url={{ shop.url }}{{ product.url }}&text={{ product.title | url_encode }}" target="_blank" rel="noopener" class="amz-share-btn amz-share--tw" aria-label="Share on Twitter">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="#1DA1F2"><path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"/></svg>
+          </a>
+          <a href="https://pinterest.com/pin/create/button/?url={{ shop.url }}{{ product.url }}&media={{ featured_media | image_url: width: 600 }}&description={{ product.title | url_encode }}" target="_blank" rel="noopener" class="amz-share-btn amz-share--pin" aria-label="Share on Pinterest">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="#E60023"><path d="M12 0C5.373 0 0 5.373 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738a.36.36 0 01.083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.632-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0z"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════
+           COLUMN 3: BUY BOX
+      ═══════════════════════════════════════ -->
+      <div class="amz-buybox" id="ProductBuyBox">
+
+        <!-- Price in Buy Box -->
+        <div class="amz-buybox__price">{{ current_variant.price | money }}</div>
+        {%- if current_variant.compare_at_price > current_variant.price -%}
+        <div style="font-size:13px;color:#565959;">List: <s>{{ current_variant.compare_at_price | money }}</s>
+          <span style="color:#cc0c39;"> &nbsp;{{ discount_percentage }}% off</span>
+        </div>
+        {%- endif -%}
+
+        <!-- FREE Delivery -->
+        <div class="amz-buybox__delivery">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#007600" stroke-width="2" aria-hidden="true"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+          <div>
+            <strong style="color:#007600;">FREE Delivery</strong>
+            {%- if settings.show_delivery_date -%}
+            <div style="font-size:12px;">Arrives in 3-5 business days</div>
+            {%- endif -%}
+          </div>
+        </div>
+
+        <!-- Stock Status -->
+        {%- if current_variant.available -%}
+          {%- if low_stock -%}
+          <div class="amz-buybox__stock amz-buybox__stock--low">
+            ⚠️ Only {{ stock_count }} left in stock!
+          </div>
+          {%- else -%}
+          <div class="amz-buybox__stock amz-buybox__stock--in">In Stock</div>
+          {%- endif -%}
+        {%- else -%}
+          <div class="amz-buybox__stock amz-buybox__stock--out">Currently Unavailable</div>
+        {%- endif -%}
+
+        <!-- Ships From -->
+        <div class="amz-buybox__ships">
+          Ships from <strong>{{ shop.name }}</strong><br>
+          Sold by <strong>{{ shop.name }}</strong>
+        </div>
+
+        <!-- Variants JSON for JS variant selector (safe in script tag, not HTML attribute) -->
+        <script type="application/json" id="ProductJson-{{ product.id }}">
+          {
+            "variants": [
+              {%- for variant in product.variants -%}
+              {
+                "id": {{ variant.id }},
+                "available": {{ variant.available }},
+                "price": {{ variant.price }},
+                "compare_at_price": {{ variant.compare_at_price | default: 'null' }},
+                "option1": {{ variant.option1 | json }},
+                "option2": {{ variant.option2 | json | default: 'null' }},
+                "option3": {{ variant.option3 | json | default: 'null' }},
+                "featured_image": {% if variant.featured_image %}{ "src": "{{ variant.featured_image | image_url: width: 600 }}" }{% else %}null{% endif %}
+              }{%- unless forloop.last -%},{%- endunless -%}
+              {%- endfor -%}
+            ]
+          }
+        </script>
+
+        <!-- ── FORM (always rendered — JS controls availability state) ── -->
+        <form action="/cart/add" method="post" id="ProductForm-{{ product.id }}" class="amz-product-form"
+              data-product-id="{{ product.id }}">
+          <input type="hidden" name="id" id="VariantId-{{ product.id }}" value="{{ current_variant.id }}">
+
+
+          <!-- Quantity -->
+          {%- if settings.show_quantity_selector -%}
+          <div class="amz-qty-row">
+            <label for="Quantity-{{ product.id }}" class="amz-qty-label">Qty:</label>
+            <div class="amz-qty-wrap">
+              <button type="button" class="amz-qty-btn amz-qty-minus" aria-label="Decrease quantity">−</button>
+              <input type="number" id="Quantity-{{ product.id }}" name="quantity" value="1" min="1" max="10" class="amz-qty-input" aria-label="Product quantity">
+              <button type="button" class="amz-qty-btn amz-qty-plus" aria-label="Increase quantity">+</button>
+            </div>
+          </div>
+          {%- endif -%}
+
+          <!-- ── ADD TO CART BUTTON ── -->
+          {%- if settings.enable_add_to_cart -%}
+          <button type="submit" name="add"
+                  class="amz-btn amz-btn--atc amz-add-to-cart{% unless current_variant.available %} is-unavailable{% endunless %}"
+                  id="AddToCartBtn-{{ product.id }}"
+                  data-product-id="{{ product.id }}"
+                  data-variant-id="{{ current_variant.id }}"
+                  {% unless current_variant.available %}disabled{% endunless %}>
+            <svg class="btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+            <span class="btn-text">{%- if current_variant.available -%}Add to Cart{%- else -%}Out of Stock{%- endif -%}</span>
+            <span class="btn-loading" style="display:none;">Adding…</span>
+          </button>
+          {%- endif -%}
+
+          <!-- ── BUY NOW BUTTON ── -->
+          {%- if settings.enable_buy_now -%}
+          <button type="button"
+                  class="amz-btn amz-btn--buy amz-buy-now"
+                  id="BuyNowBtn-{{ product.id }}"
+                  data-product-id="{{ product.id }}"
+                  data-variant-id="{{ current_variant.id }}"
+                  data-form-id="ProductForm-{{ product.id }}">
+            Buy Now
+          </button>
+          {%- endif -%}
+
+        </form>
+
+        <!-- Trust Badges -->
+        {%- if settings.enable_trust_badges -%}
+        <div class="amz-trust-badges">
+          {%- if settings.show_secure_transaction -%}
+          <div class="amz-trust-item">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#007185" stroke-width="2" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            <span>Secure transaction</span>
+          </div>
+          {%- endif -%}
+          {%- if settings.show_return_policy -%}
+          <div class="amz-trust-item">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#007185" stroke-width="2" aria-hidden="true"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg>
+            <span>Free returns</span>
+          </div>
+          {%- endif -%}
+          <div class="amz-trust-item">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#007185" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <span>Order within 2 hrs for same-day</span>
+          </div>
+        </div>
+        {%- endif -%}
+
+        <!-- Payment Methods -->
+        <div class="amz-payment-icons">
+          <svg width="38" height="24" viewBox="0 0 38 24" aria-label="Visa" style="border:1px solid #ddd;border-radius:3px;"><rect width="38" height="24" rx="3" fill="#1A1F71"/><text x="5" y="17" font-size="11" font-weight="bold" fill="white" font-family="Arial">VISA</text></svg>
+          <svg width="38" height="24" viewBox="0 0 38 24" aria-label="Mastercard" style="border:1px solid #ddd;border-radius:3px;"><rect width="38" height="24" rx="3" fill="white"/><circle cx="14" cy="12" r="7" fill="#EB001B"/><circle cx="24" cy="12" r="7" fill="#F79E1B"/><path d="M19 6.8a7 7 0 010 10.4A7 7 0 0119 6.8z" fill="#FF5F00"/></svg>
+          <svg width="38" height="24" viewBox="0 0 38 24" aria-label="PayPal" style="border:1px solid #ddd;border-radius:3px;"><rect width="38" height="24" rx="3" fill="white"/><text x="4" y="16" font-size="9" font-weight="bold" fill="#003087" font-family="Arial">Pay</text><text x="16" y="16" font-size="9" font-weight="bold" fill="#009CDE" font-family="Arial">Pal</text></svg>
+        </div>
+
+        <!-- Out of Stock fallback message (shown when ALL variants unavailable) -->
+        {%- unless product.available -%}
+        <div class="amz-outofstock-msg" style="margin-top:12px;">
+          <p>This item is currently unavailable.</p>
+          <button class="amz-btn amz-btn--notify amz-notify-me"
+                  data-product-id="{{ product.id }}"
+                  data-product-title="{{ product.title | escape }}">
+            🔔 Notify me when available
+          </button>
+        </div>
+        {%- endunless -%}
+
+        <!-- Add to Wishlist in Buy Box -->
+        {%- if settings.enable_wishlist -%}
+        <button class="amz-buybox__wishlist amz-wishlist-btn"
+                data-product-id="{{ product.id }}"
+                data-product-title="{{ product.title | escape }}"
+                data-product-url="{{ product.url }}"
+                data-product-image="{{ featured_media | image_url: width: 150 }}">
+          <svg class="amz-heart-icon" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          <span class="amz-wishlist-text">Add to List</span>
+        </button>
+        {%- endif -%}
+      </div>
+      <!-- end buybox -->
+
+    </div>
+    <!-- end layout -->
+  </div>
+</div>
+
+<!-- ─────────────────────────────────────────────────
+     CRO: PRODUCT DETAIL TABS
+───────────────────────────────────────────────── -->
+{%- if settings.show_product_tabs -%}
+<div class="amz-product-tabs page-width" id="product-tabs">
+  <div class="amz-tabs-nav" role="tablist">
+    <button class="amz-tab-btn is-active" role="tab" aria-selected="true" aria-controls="tab-description" data-tab="description">Product Details</button>
+    <button class="amz-tab-btn" role="tab" aria-selected="false" aria-controls="tab-specs" data-tab="specs">Specifications</button>
+    <button class="amz-tab-btn" role="tab" aria-selected="false" aria-controls="tab-reviews" data-tab="reviews">
+      Customer Reviews ({{ review_count | number_with_delimiter }})
+    </button>
+    <button class="amz-tab-btn" role="tab" aria-selected="false" aria-controls="tab-faq" data-tab="faq">Q&A</button>
+  </div>
+
+  <div id="tab-description" class="amz-tab-panel is-active" role="tabpanel" tabindex="0">
+    <div class="amz-tab-content">
+      {{ product.description }}
+    </div>
+  </div>
+
+  <div id="tab-specs" class="amz-tab-panel" role="tabpanel" tabindex="0">
+    <div class="amz-specs-table">
+      <table>
+        <tbody>
+          {%- if product.vendor != blank -%}
+          <tr><th>Brand</th><td>{{ product.vendor }}</td></tr>
+          {%- endif -%}
+          <tr><th>SKU</th><td>{{ product.variants.first.sku | default: 'N/A' }}</td></tr>
+          <tr><th>Weight</th><td>{{ product.variants.first.weight | weight_with_unit | default: 'N/A' }}</td></tr>
+          {%- for option in product.options_with_values -%}
+          <tr><th>{{ option.name }}</th><td>{{ option.values | join: ', ' }}</td></tr>
+          {%- endfor -%}
+          <tr><th>Available</th><td>{% if product.available %}Yes{% else %}No{% endif %}</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="tab-reviews" class="amz-tab-panel" role="tabpanel" tabindex="0">
+    <span id="product-reviews"></span>
+    {%- render 'product-reviews', product: product, review_rating: review_rating, review_count: review_count -%}
+  </div>
+
+  <div id="tab-faq" class="amz-tab-panel" role="tabpanel" tabindex="0">
+    <div class="amz-faq">
+      <p style="color:#565959;font-size:14px;">Have a question? Find answers in product info, Q&As, and reviews.</p>
+      {%- if product.metafields.custom.faq != blank -%}
+        {{ product.metafields.custom.faq }}
+      {%- else -%}
+      <div class="amz-faq-item">
+        <div class="amz-faq-q">Q: Is this product available for international shipping?</div>
+        <div class="amz-faq-a">A: Please contact us for international shipping options. We ship to most countries worldwide.</div>
+      </div>
+      <div class="amz-faq-item">
+        <div class="amz-faq-q">Q: What is the return policy?</div>
+        <div class="amz-faq-a">A: We offer 30-day free returns on all items. Simply contact our support team to initiate a return.</div>
+      </div>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+{%- endif -%}
+
+<!-- ─────────────────────────────────────────────────
+     CRO: RECENTLY VIEWED (placeholder)
+───────────────────────────────────────────────── -->
+{%- if settings.enable_cro_recently_viewed -%}
+<div class="amz-recently-viewed page-width" id="recently-viewed">
+  <h2 class="amz-section-title">Recently Viewed Items</h2>
+  <div class="amz-rv-grid" id="RecentlyViewedGrid">
+    <!-- Populated by JavaScript -->
+  </div>
+</div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Amazo Product Page",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_prime",
+      "label": "Show Prime Badge",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_buy_now",
+      "label": "Show Buy Now Button",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "dummy_reviews",
+      "label": "Dummy Review Count",
+      "default": "12,345"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Amazo Product Template",
+      "category": "Product"
+    }
+  ]
+}
+{% endschema %}
