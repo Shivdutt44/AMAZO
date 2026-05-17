@@ -34,10 +34,12 @@
 
   {{ content_for_header }}
 
-  <!-- Amazo Theme CSS: base reset → premium UI → CRO overlays -->
+  <!-- Amazo Theme CSS: base reset → main theme layout → premium UI → CRO overlays → mobile -->
   {{ 'amazo-base.css' | asset_url | stylesheet_tag }}
+  {{ 'amazo-theme.css' | asset_url | stylesheet_tag }}
   {{ 'amazo-premium.css' | asset_url | stylesheet_tag }}
   {{ 'amazo-cro.css' | asset_url | stylesheet_tag }}
+  {{ 'amazo-mobile.css' | asset_url | stylesheet_tag }}
 
   <style>
     :root {
@@ -285,10 +287,6 @@
   })();
   </script>
 
-  <!-- Quick View Modal -->
-  {%- if settings.enable_quick_view -%}
-    {% render 'quick-view-modal' %}
-  {%- endif -%}
 
 </body>
 </html>

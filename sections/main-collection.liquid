@@ -1,0 +1,483 @@
+{% comment %}
+  Amazo Premium — Collection Page
+  Full responsive, premium Amazon-style product listing
+{% endcomment %}
+
+<!-- Collection Banner -->
+<div class="collection-banner">
+  <div class="collection-banner__inner">
+    {%- render 'breadcrumb' -%}
+    <h1 class="collection-banner__title">{{ collection.title }}</h1>
+    {%- if collection.description != blank -%}
+      <p class="collection-banner__desc">{{ collection.description | strip_html | truncate: 220 }}</p>
+    {%- endif -%}
+  </div>
+</div>
+
+<!-- Collection Body -->
+<div class="collection-page">
+  <div class="collection-page__inner">
+
+    <!-- Filters Sidebar -->
+    <aside class="filters-sidebar" id="FiltersSidebar" role="complementary" aria-label="Product filters">
+      <div class="filters-sidebar__title">
+        <span>Filters</span>
+        <a href="{{ collection.url }}" style="font-size:12px; color:var(--amz-link); font-weight:500; text-decoration:none;">Clear All</a>
+      </div>
+
+      <!-- Availability -->
+      <div class="filter-group">
+        <div class="filter-group__title">
+          Availability
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 10l5 5 5-5z"/></svg>
+        </div>
+        <div class="filter-option">
+          <input type="checkbox" id="filter-available" name="availability" value="available">
+          <label for="filter-available">In Stock <span class="filter-option__count">({{ collection.products_count }})</span></label>
+        </div>
+      </div>
+
+      <!-- Price - Fully Dynamic -->
+      {%- assign _pmin = collection.price_min | divided_by: 100 -%}
+      {%- assign _pmax = collection.price_max | divided_by: 100 -%}
+      {%- assign _prange = _pmax | minus: _pmin -%}
+      {%- assign _raw_step = _prange | divided_by: 5 -%}
+      {%- if _raw_step <= 5 -%}{%- assign _step = 5 -%}
+      {%- elsif _raw_step <= 15 -%}{%- assign _step = 10 -%}
+      {%- elsif _raw_step <= 30 -%}{%- assign _step = 25 -%}
+      {%- elsif _raw_step <= 75 -%}{%- assign _step = 50 -%}
+      {%- elsif _raw_step <= 150 -%}{%- assign _step = 100 -%}
+      {%- elsif _raw_step <= 300 -%}{%- assign _step = 250 -%}
+      {%- elsif _raw_step <= 750 -%}{%- assign _step = 500 -%}
+      {%- else -%}{%- assign _step = 1000 -%}{%- endif -%}
+      {%- assign _pb1 = _pmin | plus: _step -%}
+      {%- assign _pb2 = _pb1 | plus: _step -%}
+      {%- assign _pb3 = _pb2 | plus: _step -%}
+      {%- assign _pb4 = _pb3 | plus: _step -%}
+      {%- assign _m1 = _pb1 | times: 100 | money_without_trailing_zeros -%}
+      {%- assign _m2 = _pb2 | times: 100 | money_without_trailing_zeros -%}
+      {%- assign _m3 = _pb3 | times: 100 | money_without_trailing_zeros -%}
+      {%- assign _m4 = _pb4 | times: 100 | money_without_trailing_zeros -%}
+      <div class="filter-group" id="price-filter-group">
+        <div class="filter-group__title">
+          Price
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 10l5 5 5-5z"/></svg>
+        </div>
+        {%- if _prange > 0 -%}
+          <div class="filter-option">
+            <input type="checkbox" id="price-r1" name="price_range" value="{{ _pmin }}-{{ _pb1 }}" data-gte="{{ _pmin }}" data-lte="{{ _pb1 }}">
+            <label for="price-r1">Under {{ _m1 }}</label>
+          </div>
+          <div class="filter-option">
+            <input type="checkbox" id="price-r2" name="price_range" value="{{ _pb1 }}-{{ _pb2 }}" data-gte="{{ _pb1 }}" data-lte="{{ _pb2 }}">
+            <label for="price-r2">{{ _m1 }} to {{ _m2 }}</label>
+          </div>
+          <div class="filter-option">
+            <input type="checkbox" id="price-r3" name="price_range" value="{{ _pb2 }}-{{ _pb3 }}" data-gte="{{ _pb2 }}" data-lte="{{ _pb3 }}">
+            <label for="price-r3">{{ _m2 }} to {{ _m3 }}</label>
+          </div>
+          <div class="filter-option">
+            <input type="checkbox" id="price-r4" name="price_range" value="{{ _pb3 }}-{{ _pb4 }}" data-gte="{{ _pb3 }}" data-lte="{{ _pb4 }}">
+            <label for="price-r4">{{ _m3 }} to {{ _m4 }}</label>
+          </div>
+          <div class="filter-option">
+            <input type="checkbox" id="price-r5" name="price_range" value="{{ _pb4 }}-" data-gte="{{ _pb4 }}" data-lte="">
+            <label for="price-r5">{{ _m4 }} &amp; Above</label>
+          </div>
+        {%- else -%}
+          <p style="font-size:12px;color:var(--amz-gray);padding:4px 0;">{{ _pmin | times: 100 | money_without_trailing_zeros }}</p>
+        {%- endif -%}
+      </div>
+
+      <!-- Rating -->
+      <div class="filter-group">
+        <div class="filter-group__title">
+          Avg. Customer Review
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 10l5 5 5-5z"/></svg>
+        </div>
+        {%- for rating_val in (4..1) -%}
+          <div class="filter-option filter-rating">
+            <input type="checkbox" id="rating-{{ rating_val }}" name="rating" value="{{ rating_val }}">
+            <label for="rating-{{ rating_val }}" style="display:flex; align-items:center; gap:5px;">
+              <span style="color:var(--amz-orange); font-size:14px;">
+                {%- for s in (1..5) -%}
+                  {%- if s <= rating_val -%}★{%- else -%}☆{%- endif -%}
+                {%- endfor -%}
+              </span>
+              <span style="font-size:12px; color:var(--amz-gray);">& Up</span>
+            </label>
+          </div>
+        {%- endfor -%}
+      </div>
+
+      <!-- Brand/Vendor -->
+      {%- assign vendors = collection.all_vendors -%}
+      {%- if vendors.size > 0 -%}
+      <div class="filter-group">
+        <div class="filter-group__title">
+          Brand
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 10l5 5 5-5z"/></svg>
+        </div>
+        {%- for vendor in vendors limit: 8 -%}
+          <div class="filter-option">
+            <input type="checkbox" id="vendor-{{ forloop.index }}" name="vendor" value="{{ vendor | handleize }}">
+            <label for="vendor-{{ forloop.index }}">{{ vendor }}</label>
+          </div>
+        {%- endfor -%}
+      </div>
+      {%- endif -%}
+
+      <!-- Tags -->
+      {%- if collection.all_tags.size > 0 -%}
+      <div class="filter-group">
+        <div class="filter-group__title">
+          Features
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 10l5 5 5-5z"/></svg>
+        </div>
+        {%- for tag in collection.all_tags limit: 12 -%}
+          <div class="filter-option">
+            <input type="checkbox" id="tag-{{ forloop.index }}" name="tag" value="{{ tag | handleize }}"
+              {%- if current_tags contains tag %} checked{%- endif -%}>
+            <label for="tag-{{ forloop.index }}">{{ tag | replace: '-', ' ' | capitalize }}</label>
+          </div>
+        {%- endfor -%}
+      </div>
+      {%- endif -%}
+    </aside>
+
+    <!-- Product Results -->
+    <div class="collection-results">
+
+      <!-- Toolbar -->
+      <div class="collection-toolbar">
+        <div class="collection-toolbar__info">
+          {%- paginate collection.products by 24 -%}
+            Showing <strong>{{ paginate.current_offset | plus: 1 }}&ndash;{{ paginate.current_offset | plus: collection.products.size }}</strong>
+            of <strong>{{ collection.products_count }}</strong> results
+            {%- if current_tags.size > 0 -%} for "<strong>{{ current_tags | join: ', ' }}</strong>"{%- endif -%}
+          {%- endpaginate -%}
+        </div>
+        <div class="collection-toolbar__sort">
+          <!-- Mobile filter toggle -->
+          <button id="FilterToggle" aria-label="Toggle filters" aria-expanded="false" aria-controls="FiltersSidebar">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z"/></svg>
+            Filters
+          </button>
+
+          <label for="SortBy" style="white-space:nowrap; font-size:13px;">Sort by:</label>
+          <select class="sort-select" id="SortBy" aria-label="Sort products">
+            <option value="featured"{% if collection.sort_by == 'featured' %} selected{% endif %}>Featured</option>
+            <option value="best-selling"{% if collection.sort_by == 'best-selling' %} selected{% endif %}>Best Sellers</option>
+            <option value="title-ascending"{% if collection.sort_by == 'title-ascending' %} selected{% endif %}>Name: A-Z</option>
+            <option value="title-descending"{% if collection.sort_by == 'title-descending' %} selected{% endif %}>Name: Z-A</option>
+            <option value="price-ascending"{% if collection.sort_by == 'price-ascending' %} selected{% endif %}>Price: Low to High</option>
+            <option value="price-descending"{% if collection.sort_by == 'price-descending' %} selected{% endif %}>Price: High to Low</option>
+            <option value="created-descending"{% if collection.sort_by == 'created-descending' %} selected{% endif %}>Newest First</option>
+          </select>
+
+          <!-- Column toggle (desktop) -->
+          <div class="amz-col-toggle" aria-label="Products per row" role="group">
+            <button title="4 columns" onclick="setColumns(4)" class="amz-col-btn" aria-label="4 column view">
+              <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><rect x="1" y="1" width="4" height="4"/><rect x="8" y="1" width="4" height="4"/><rect x="15" y="1" width="4" height="4"/><rect x="1" y="8" width="4" height="4"/><rect x="8" y="8" width="4" height="4"/><rect x="15" y="8" width="4" height="4"/></svg>
+            </button>
+            <button title="3 columns" onclick="setColumns(3)" class="amz-col-btn" aria-label="3 column view">
+              <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><rect x="1" y="1" width="5" height="5"/><rect x="8" y="1" width="5" height="5"/><rect x="1" y="9" width="5" height="5"/><rect x="8" y="9" width="5" height="5"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Active Filters Bar (tags via Liquid, price/availability/vendor injected by JS) -->
+      <div class="active-filters" id="ActiveFiltersBar" role="list" aria-label="Active filters"{% unless current_tags.size > 0 %} style="display:none"{% endunless %}>
+        {%- for tag in current_tags -%}
+          {%- assign _rem = "" -%}
+          {%- for _t in current_tags -%}
+            {%- unless _t == tag -%}
+              {%- if _rem == "" -%}{%- assign _rem = _t | handleize -%}
+              {%- else -%}{%- assign _rem = _rem | append: '+' | append: _t | handleize -%}
+              {%- endif -%}
+            {%- endunless -%}
+          {%- endfor -%}
+          {%- if _rem == "" -%}{%- assign _tag_remove_url = collection.url -%}
+          {%- else -%}{%- assign _tag_remove_url = collection.url | append: '/' | append: _rem -%}
+          {%- endif -%}
+          <a href="{{ _tag_remove_url }}{{ request.page_url | split: '?' | last | prepend: '?' | replace: '?/', '' }}" class="active-filter-tag" role="listitem" aria-label="Remove {{ tag }} filter">
+            {{ tag | replace: '-', ' ' }} <span aria-hidden="true">×</span>
+          </a>
+        {%- endfor -%}
+      </div>
+
+      <!-- Products Grid -->
+      {%- paginate collection.products by 24 -%}
+        <div class="products-grid" id="ProductsGrid" style="--products-per-row: 4;">
+          {%- for product in collection.products -%}
+            {%- render 'product-card', product: product -%}
+          {%- else -%}
+            <div class="collection-empty">
+              <div class="collection-empty__icon">🔍</div>
+              <h2 class="collection-empty__title">No products found</h2>
+              <p class="collection-empty__text">Try adjusting or removing your filters.</p>
+              <a href="{{ collection.url }}" class="btn btn--add-cart" style="width:auto; display:inline-block; padding:10px 28px;">Browse All</a>
+            </div>
+          {%- endfor -%}
+        </div>
+
+        <!-- Pagination -->
+        {%- if paginate.pages > 1 -%}
+        <nav class="pagination" role="navigation" aria-label="Pagination">
+          {%- if paginate.previous -%}
+            <a href="{{ paginate.previous.url }}" class="pagination__item" aria-label="Previous page">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+            </a>
+          {%- endif -%}
+          {%- for part in paginate.parts -%}
+            {%- if part.is_link -%}
+              <a href="{{ part.url }}" class="pagination__item" aria-label="Page {{ part.title }}">{{ part.title }}</a>
+            {%- elsif part.title == paginate.current_page -%}
+              <span class="pagination__item active" aria-current="page">{{ part.title }}</span>
+            {%- else -%}
+              <span class="pagination__item" aria-hidden="true">{{ part.title }}</span>
+            {%- endif -%}
+          {%- endfor -%}
+          {%- if paginate.next -%}
+            <a href="{{ paginate.next.url }}" class="pagination__item" aria-label="Next page">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+            </a>
+          {%- endif -%}
+        </nav>
+        {%- endif -%}
+
+      {%- endpaginate -%}
+    </div><!-- /.collection-results -->
+
+  </div>
+</div>
+
+<style>
+.collection-empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 60px 20px;
+}
+.collection-empty__icon { font-size: 54px; margin-bottom: 16px; }
+.collection-empty__title { font-size: 24px; font-weight: 700; margin-bottom: 8px; }
+.collection-empty__text { font-size: 14px; color: var(--amz-gray); margin-bottom: 20px; }
+.active-filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+.active-filter-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #e8f4fd;
+  border: 1px solid #b3d4e8;
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 12px;
+  color: #0f1111;
+  text-decoration: none;
+  transition: all 0.15s;
+}
+.active-filter-tag:hover { background: #ffd8d8; border-color: #e99; text-decoration: none; }
+.amz-col-toggle { display: flex; gap: 4px; }
+.amz-col-btn {
+  width: 30px;
+  height: 30px;
+  border: 1px solid var(--amz-border);
+  border-radius: 3px;
+  background: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+.amz-col-btn:hover, .amz-col-btn.active { background: #e6e6e6; border-color: #999; }
+@media (max-width: 768px) {
+  .amz-col-toggle { display: none; }
+}
+</style>
+
+<script>
+(function () {
+  'use strict';
+
+  var BASE_URL = '{{ collection.url }}';
+  var params   = new URLSearchParams(window.location.search);
+
+  /* ── navigate ─────────────────────────────── */
+  function go(url) { window.location.href = url.toString(); }
+
+  /* ── active-filter bar helper ─────────────── */
+  function addFilterTag(label, removeHref) {
+    var bar = document.getElementById('ActiveFiltersBar');
+    if (!bar) return;
+    bar.style.display = '';
+    var a = document.createElement('a');
+    a.href = removeHref;
+    a.className = 'active-filter-tag';
+    a.setAttribute('role', 'listitem');
+    a.setAttribute('aria-label', 'Remove ' + label + ' filter');
+    a.innerHTML = label + ' <span aria-hidden="true">\u00d7</span>';
+    bar.appendChild(a);
+  }
+
+  /* ══════════════════════════════════════════
+     SORT
+  ══════════════════════════════════════════ */
+  document.getElementById('SortBy')?.addEventListener('change', function () {
+    var url = new URL(window.location.href);
+    url.searchParams.set('sort_by', this.value);
+    go(url);
+  });
+
+  /* ══════════════════════════════════════════
+     COLUMN TOGGLE
+  ══════════════════════════════════════════ */
+  function setColumns(num) {
+    var grid = document.getElementById('ProductsGrid');
+    if (grid) grid.style.setProperty('--products-per-row', num);
+    localStorage.setItem('amazo_cols', num);
+    document.querySelectorAll('.amz-col-btn').forEach(function (btn, i) {
+      btn.classList.toggle('active', [4, 3][i] === num);
+    });
+  }
+  window.setColumns = setColumns;
+  var savedCols = localStorage.getItem('amazo_cols');
+  if (savedCols) setColumns(parseInt(savedCols));
+
+  /* ══════════════════════════════════════════
+     MOBILE FILTER TOGGLE
+  ══════════════════════════════════════════ */
+  var filterToggle   = document.getElementById('FilterToggle');
+  var filtersSidebar = document.getElementById('FiltersSidebar');
+  if (filterToggle && filtersSidebar) {
+    filterToggle.addEventListener('click', function () {
+      var isOpen = filtersSidebar.classList.toggle('mobile-open');
+      filterToggle.setAttribute('aria-expanded', isOpen);
+    });
+  }
+
+  /* ══════════════════════════════════════════
+     AVAILABILITY FILTER
+  ══════════════════════════════════════════ */
+  var availCb       = document.getElementById('filter-available');
+  var availIsActive = params.get('filter.v.availability') === '1';
+
+  if (availCb) {
+    if (availIsActive) availCb.checked = true;
+
+    availCb.addEventListener('change', function () {
+      var url = new URL(window.location.href);
+      url.searchParams.delete('page');
+      if (this.checked) {
+        url.searchParams.set('filter.v.availability', '1');
+      } else {
+        url.searchParams.delete('filter.v.availability');
+      }
+      go(url);
+    });
+
+    if (availIsActive) {
+      var avUrl = new URL(window.location.href);
+      avUrl.searchParams.delete('filter.v.availability');
+      avUrl.searchParams.delete('page');
+      addFilterTag('In Stock', avUrl.toString());
+    }
+  }
+
+  /* ══════════════════════════════════════════
+     PRICE FILTER  (single-select, dynamic ranges)
+  ══════════════════════════════════════════ */
+  var priceGte = params.get('filter.v.price.gte');
+  var priceLte = params.get('filter.v.price.lte');
+
+  document.querySelectorAll('[name="price_range"]').forEach(function (cb) {
+    /* Restore checked state from URL */
+    if (priceGte !== null && cb.dataset.gte === priceGte) {
+      var ltOk = cb.dataset.lte === '' ? (priceLte === null) : (cb.dataset.lte === priceLte);
+      if (ltOk) cb.checked = true;
+    }
+
+    cb.addEventListener('change', function () {
+      var url = new URL(window.location.href);
+      url.searchParams.delete('filter.v.price.gte');
+      url.searchParams.delete('filter.v.price.lte');
+      url.searchParams.delete('page');
+      /* Single-select — uncheck siblings */
+      document.querySelectorAll('[name="price_range"]').forEach(function (o) {
+        if (o !== cb) o.checked = false;
+      });
+      if (cb.checked) {
+        url.searchParams.set('filter.v.price.gte', cb.dataset.gte);
+        if (cb.dataset.lte !== '') url.searchParams.set('filter.v.price.lte', cb.dataset.lte);
+      }
+      go(url);
+    });
+  });
+
+  if (priceGte !== null) {
+    var activePriceCb = document.querySelector('[name="price_range"]:checked');
+    var priceLabel    = activePriceCb
+      ? activePriceCb.nextElementSibling.textContent.trim()
+      : 'Price';
+    var priceRemUrl = new URL(window.location.href);
+    priceRemUrl.searchParams.delete('filter.v.price.gte');
+    priceRemUrl.searchParams.delete('filter.v.price.lte');
+    priceRemUrl.searchParams.delete('page');
+    addFilterTag(priceLabel, priceRemUrl.toString());
+  }
+
+  /* ══════════════════════════════════════════
+     VENDOR / BRAND FILTER  (multi-select)
+  ══════════════════════════════════════════ */
+  var activeVendors = params.getAll('filter.p.vendor');
+
+  document.querySelectorAll('[name="vendor"]').forEach(function (cb) {
+    /* Restore checked state */
+    if (activeVendors.indexOf(cb.value) !== -1) cb.checked = true;
+
+    cb.addEventListener('change', function () {
+      var url = new URL(window.location.href);
+      url.searchParams.delete('filter.p.vendor');
+      url.searchParams.delete('page');
+      document.querySelectorAll('[name="vendor"]:checked').forEach(function (c) {
+        url.searchParams.append('filter.p.vendor', c.value);
+      });
+      go(url);
+    });
+  });
+
+  activeVendors.forEach(function (vendor) {
+    var vRemUrl = new URL(window.location.href);
+    vRemUrl.searchParams.delete('filter.p.vendor');
+    vRemUrl.searchParams.delete('page');
+    activeVendors
+      .filter(function (v) { return v !== vendor; })
+      .forEach(function (v) { vRemUrl.searchParams.append('filter.p.vendor', v); });
+    addFilterTag(vendor.replace(/-/g, ' '), vRemUrl.toString());
+  });
+
+  /* ══════════════════════════════════════════
+     TAG FILTER  (multi-select, path-based)
+     Preserves existing query params (price, avail, vendor)
+  ══════════════════════════════════════════ */
+  document.querySelectorAll('[name="tag"]').forEach(function (cb) {
+    cb.addEventListener('change', function () {
+      var checked = Array.from(document.querySelectorAll('[name="tag"]:checked'))
+        .map(function (c) { return c.value; });
+      var qs = window.location.search; /* keep price / vendor / avail params */
+      var path = checked.length > 0
+        ? BASE_URL + '/' + checked.join('+')
+        : BASE_URL;
+      go(path + qs);
+    });
+  });
+
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Main Collection",
+  "settings": []
+}
+{% endschema %}

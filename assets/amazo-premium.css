@@ -4384,13 +4384,13 @@ body.menu-open {
 }
 
 /* Fix amz-fc (featured collection) sections inside cards */
-.amz-homepage-cards .amz-fc {
+.amz-fc {
   background: transparent !important;
   padding: 0 !important;
   height: 100% !important;
 }
 
-.amz-homepage-cards .amz-fc__inner {
+.amz-fc__inner {
   border-radius: 0 !important;
   box-shadow: none !important;
   padding: 18px !important;
@@ -4402,33 +4402,33 @@ body.menu-open {
   max-width: none !important;
 }
 
-.amz-homepage-cards .amz-fc__title {
+.amz-fc__title {
   font-size: 18px !important;
   margin-bottom: 12px !important;
 }
 
-.amz-homepage-cards .amz-fc__grid {
+.amz-fc__grid {
   flex: 1 !important;
   gap: 6px !important;
 }
 
-.amz-homepage-cards .amz-fc__grid-item img {
+.amz-fc__grid-item img {
   height: 110px !important;
 }
 
-.amz-homepage-cards .amz-fc__link {
+.amz-fc__link {
   margin-top: auto !important;
   padding-top: 10px !important;
 }
 
 /* Fix amz-deals (deals of the day) section inside cards */
-.amz-homepage-cards .amz-deals {
+.amz-deals {
   background: transparent !important;
   padding: 0 !important;
   height: 100% !important;
 }
 
-.amz-homepage-cards .amz-deals__inner {
+.amz-deals__inner {
   border-radius: 0 !important;
   box-shadow: none !important;
   padding: 18px !important;
@@ -4438,40 +4438,40 @@ body.menu-open {
   max-width: none !important;
 }
 
-.amz-homepage-cards .amz-deals__header {
+.amz-deals__header {
   flex-wrap: wrap !important;
   gap: 4px !important;
   margin-bottom: 10px !important;
 }
 
-.amz-homepage-cards .amz-deals__title {
+.amz-deals__title {
   font-size: 18px !important;
 }
 
-.amz-homepage-cards .amz-deals__slider-wrap {
+.amz-deals__slider-wrap {
   flex: 1;
 }
 
-.amz-homepage-cards .amz-deals__track-outer {
+.amz-deals__track-outer {
   overflow: hidden;
 }
 
-.amz-homepage-cards .amz-deals__item {
+.amz-deals__item {
   min-width: 145px !important;
 }
 
-.amz-homepage-cards .amz-deals__card-img-wrap img {
+.amz-deals__card-img-wrap img {
   height: 130px !important;
 }
 
 /* Fix amz-featured (featured products) inside cards */
-.amz-homepage-cards .amz-featured {
+.amz-featured {
   background: transparent !important;
   padding: 0 !important;
   height: 100% !important;
 }
 
-.amz-homepage-cards .amz-featured__inner {
+.amz-featured__inner {
   border-radius: 0 !important;
   box-shadow: none !important;
   padding: 18px !important;
@@ -4483,16 +4483,16 @@ body.menu-open {
   max-width: none !important;
 }
 
-.amz-homepage-cards .amz-featured__title {
+.amz-featured__title {
   font-size: 18px !important;
 }
 
-.amz-homepage-cards .amz-featured__grid {
+.amz-featured__grid {
   grid-template-columns: repeat(2, 1fr) !important;
   flex: 1 !important;
 }
 
-.amz-homepage-cards .amz-featured__link-all {
+.amz-featured__link-all {
   margin-top: auto !important;
   padding-top: 8px !important;
 }
@@ -5369,4 +5369,25 @@ body.menu-open {
   .amz-products-grid {
     grid-template-columns: 1fr 1fr;
   }
+}
+/* OS 2.0 Homepage Grid */
+@media(min-width: 1024px) {
+  #shopify-section-template--index__featured-products { width: 25%; float: left; padding: 20px 10px 20px 20px; box-sizing: border-box; }
+  #shopify-section-template--index__featured-collection-2,
+  #shopify-section-template--index__featured-collection-3 { width: 25%; float: left; padding: 20px 10px; box-sizing: border-box; }
+  #shopify-section-template--index__deals-of-the-day { width: 25%; float: left; padding: 20px 20px 20px 10px; box-sizing: border-box; }
+  #shopify-section-template--index__amazon-product-slider { clear: both; }
+}
+@media(max-width: 1023px) and (min-width: 768px) {
+  #shopify-section-template--index__featured-products,
+  #shopify-section-template--index__featured-collection-2,
+  #shopify-section-template--index__featured-collection-3,
+  #shopify-section-template--index__deals-of-the-day { width: 50%; float: left; padding: 10px; box-sizing: border-box; }
+  #shopify-section-template--index__amazon-product-slider { clear: both; }
+}
+@media(max-width: 767px) {
+  #shopify-section-template--index__featured-products,
+  #shopify-section-template--index__featured-collection-2,
+  #shopify-section-template--index__featured-collection-3,
+  #shopify-section-template--index__deals-of-the-day { width: 100%; padding: 10px; box-sizing: border-box; }
 }

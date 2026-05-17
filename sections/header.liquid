@@ -81,18 +81,13 @@
           <div class="amz-search-wrap">
             <!-- Department Selector (hide on very small screens) -->
             <div class="amz-search__category amz-hide-small">
-              <select name="product_type" class="amz-category-select" aria-label="Search category">
+              <select name="filter.p.product_type" class="amz-category-select" aria-label="Search category">
                 <option value="">All</option>
-                <option value="Electronics">Electronics</option>
-                <option value="Clothing">Clothing</option>
-                <option value="Home">Home & Kitchen</option>
-                <option value="Beauty">Beauty</option>
-                <option value="Books">Books</option>
-                <option value="Toys">Toys & Games</option>
-                <option value="Sports">Sports</option>
-                <option value="Automotive">Automotive</option>
-                <option value="Health">Health</option>
-                <option value="Grocery">Grocery</option>
+                {%- for product_type in shop.types -%}
+                  {%- if product_type != blank -%}
+                    <option value="{{ product_type | escape }}">{{ product_type }}</option>
+                  {%- endif -%}
+                {%- endfor -%}
               </select>
               <span class="amz-category-arrow" aria-hidden="true">&#9660;</span>
             </div>
@@ -112,6 +107,15 @@
                 <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
               </svg>
             </button>
+            
+            <!-- PREDICTIVE SEARCH DROPDOWN -->
+            <div id="amz-predictive-search" class="amz-predictive-search" style="display: none;">
+              <div class="amz-predictive-search__results"></div>
+              <div class="amz-predictive-search__loading">
+                 <svg class="amz-spin" width="24" height="24" viewBox="0 0 50 50"><circle cx="25" cy="25" r="20" fill="none" stroke="#ff9900" stroke-width="4" stroke-dasharray="60 40"/></svg>
+              </div>
+            </div>
+            
           </div>
         </form>
       </div>
@@ -239,34 +243,61 @@
                   <!-- MEGA MENU CONTENT -->
                   <div class="amz-mega-menu">
                     <div class="amz-mega-menu__inner page-width">
-                      <div class="amz-mega-grid">
-                        {%- assign mega_menu_to_use = link.links -%}
-                        {%- if mega_block.settings.menu != blank -%}
-                          {%- assign mega_menu_to_use = linklists[mega_block.settings.menu].links -%}
-                        {%- endif -%}
+                      <div class="amz-mega-layout">
+                        <div class="amz-mega-links-area">
+                          {%- assign mega_menu_to_use = link.links -%}
+                          {%- if mega_block.settings.menu != blank -%}
+                            {%- assign mega_menu_to_use = linklists[mega_block.settings.menu].links -%}
+                          {%- endif -%}
 
-                        {%- for childlink in mega_menu_to_use -%}
-                          <div class="amz-mega-col">
-                            <a href="{{ childlink.url }}" class="amz-mega-title">{{ childlink.title }}</a>
-                            {%- if childlink.links != blank -%}
-                              <ul class="amz-mega-list">
-                                {%- for grandchildlink in childlink.links -%}
-                                  <li><a href="{{ grandchildlink.url }}">{{ grandchildlink.title }}</a></li>
-                                {%- endfor -%}
-                              </ul>
-                            {%- endif -%}
-                          </div>
-                        {%- endfor -%}
+                          {%- for childlink in mega_menu_to_use -%}
+                            <div class="amz-mega-col">
+                              <a href="{{ childlink.url }}" class="amz-mega-title">{{ childlink.title }}</a>
+                              {%- if childlink.links != blank -%}
+                                <ul class="amz-mega-list">
+                                  {%- for grandchildlink in childlink.links -%}
+                                    <li><a href="{{ grandchildlink.url }}">{{ grandchildlink.title }}</a></li>
+                                  {%- endfor -%}
+                                </ul>
+                              {%- endif -%}
+                            </div>
+                          {%- endfor -%}
+                        </div>
 
-                        {%- if mega_block.settings.image != blank -%}
-                          <div class="amz-mega-promo">
-                            <a href="{{ mega_block.settings.image_link }}">
-                              <img src="{{ mega_block.settings.image | image_url: width: 400 }}" alt="{{ mega_block.settings.image_alt }}" class="amz-mega-promo-img">
+                        {%- assign promo_count = 0 -%}
+                        {%- if mega_block.settings.image != blank -%}{%- assign promo_count = promo_count | plus: 1 -%}{%- endif -%}
+                        {%- if mega_block.settings.image_2 != blank -%}{%- assign promo_count = promo_count | plus: 1 -%}{%- endif -%}
+                        {%- if mega_block.settings.image_3 != blank -%}{%- assign promo_count = promo_count | plus: 1 -%}{%- endif -%}
+
+                        {%- if promo_count > 0 -%}
+                        <div class="amz-mega-promos-area" data-promo-count="{{ promo_count }}">
+                          {%- if mega_block.settings.image != blank -%}
+                            <a href="{{ mega_block.settings.image_link }}" class="amz-mega-promo">
+                              <img src="{{ mega_block.settings.image | image_url: width: 600 }}" alt="{{ mega_block.settings.image_alt }}" class="amz-mega-promo-img">
                               {% if mega_block.settings.image_title != blank %}
                                 <div class="amz-mega-promo-text">{{ mega_block.settings.image_title }}</div>
                               {% endif %}
                             </a>
-                          </div>
+                          {%- endif -%}
+                          
+                          {%- if mega_block.settings.image_2 != blank -%}
+                            <a href="{{ mega_block.settings.image_link_2 }}" class="amz-mega-promo">
+                              <img src="{{ mega_block.settings.image_2 | image_url: width: 600 }}" alt="{{ mega_block.settings.image_2_alt }}" class="amz-mega-promo-img">
+                              {% if mega_block.settings.image_title_2 != blank %}
+                                <div class="amz-mega-promo-text">{{ mega_block.settings.image_title_2 }}</div>
+                              {% endif %}
+                            </a>
+                          {%- endif -%}
+
+                          {%- if mega_block.settings.image_3 != blank -%}
+                            <a href="{{ mega_block.settings.image_link_3 }}" class="amz-mega-promo">
+                              <img src="{{ mega_block.settings.image_3 | image_url: width: 600 }}" alt="{{ mega_block.settings.image_3_alt }}" class="amz-mega-promo-img">
+                              {% if mega_block.settings.image_title_3 != blank %}
+                                <div class="amz-mega-promo-text">{{ mega_block.settings.image_title_3 }}</div>
+                              {% endif %}
+                            </a>
+                          {%- endif -%}
+                        </div>
                         {%- endif -%}
                       </div>
                     </div>
@@ -496,42 +527,82 @@
   margin: 0 auto;
   padding: 0 24px;
 }
-.amz-mega-grid {
+.amz-mega-layout {
+  display: flex;
+  gap: 40px;
+}
+.amz-mega-links-area {
+  flex: 1;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   gap: 24px 32px;
 }
+.amz-mega-promos-area {
+  flex: 0 0 340px; /* Base width for promos */
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.amz-mega-promos-area[data-promo-count="2"],
+.amz-mega-promos-area[data-promo-count="3"] {
+  flex: 0 0 460px; /* Wider area for multiple promos */
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+/* If 3 items, make the first one span full width on top */
+.amz-mega-promos-area[data-promo-count="3"] .amz-mega-promo:first-child {
+  grid-column: span 2;
+  min-height: 200px;
+}
+
 .amz-mega-title {
   font-weight: 700;
   color: #0f1111;
-  font-size: 14px;
-  margin-bottom: 10px;
+  font-size: 15px;
+  margin-bottom: 12px;
   display: block;
   padding-bottom: 6px;
-  border-bottom: 1px solid #e7e7e7;
-  transition: color 0.15s;
+  border-bottom: 2px solid #f0f0f0;
+  transition: color 0.15s, border-color 0.15s;
 }
-.amz-mega-title:hover { color: #ff9900; }
+.amz-mega-title:hover { color: #ff9900; border-color: #ff9900; }
 .amz-mega-list { list-style: none; padding: 0; margin: 0; }
-.amz-mega-list li { margin-bottom: 5px; }
+.amz-mega-list li { margin-bottom: 6px; }
 .amz-mega-list li a {
-  color: #555;
-  font-size: 13px;
+  color: #565959;
+  font-size: 14px;
   display: block;
-  padding: 2px 0;
-  transition: color 0.12s, padding-left 0.12s;
+  padding: 3px 0;
+  transition: color 0.15s, padding-left 0.2s;
 }
-.amz-mega-list li a:hover { color: #ff9900; padding-left: 4px; }
+.amz-mega-list li a:hover { color: #ff9900; padding-left: 6px; }
+
 .amz-mega-promo {
-  grid-column: span 2;
   position: relative;
-  border-radius: 8px;
+  border-radius: 10px;
   overflow: hidden;
-  min-height: 160px;
+  min-height: 140px;
+  display: block;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  border: 1px solid #eee;
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
 }
-.amz-mega-promo-img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.3s; }
-.amz-mega-promo:hover .amz-mega-promo-img { transform: scale(1.03); }
-.amz-mega-promo-text { position: absolute; bottom: 16px; left: 16px; color: #fff; font-weight: 700; font-size: 17px; text-shadow: 0 2px 6px rgba(0,0,0,0.6); pointer-events: none; }
+.amz-mega-promo:hover {
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  transform: translateY(-2px);
+}
+.amz-mega-promo-img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.5s ease; }
+.amz-mega-promo:hover .amz-mega-promo-img { transform: scale(1.05); }
+.amz-mega-promo-text { 
+  position: absolute; 
+  bottom: 0; left: 0; right: 0;
+  padding: 30px 16px 16px;
+  background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+  color: #fff; 
+  font-weight: 700; 
+  font-size: 16px; 
+  text-shadow: 0 2px 4px rgba(0,0,0,0.4); 
+}
 
 /* Mobile — hide mega & dropdown */
 @media (max-width: 768px) {
@@ -540,6 +611,77 @@
   .amz-nav__all { display: none; }
   .amz-mega-menu, .amz-dropdown-menu { display: none !important; }
 }
+
+/* ──────────────────────────────────────────────────
+   PREDICTIVE SEARCH
+────────────────────────────────────────────────── */
+.amz-predictive-search {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border-radius: 0 0 8px 8px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  border: 1px solid #ccc;
+  border-top: none;
+  z-index: 9999;
+  max-height: 480px;
+  overflow-y: auto;
+  text-align: left;
+}
+.amz-predictive-search__item {
+  display: flex;
+  align-items: center;
+  padding: 10px 16px;
+  text-decoration: none;
+  color: #0F1111;
+  border-bottom: 1px solid #eee;
+  transition: background 0.15s;
+}
+.amz-predictive-search__item:hover {
+  background: #f8f8f8;
+}
+.amz-predictive-search__img {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  margin-right: 14px;
+  border-radius: 4px;
+  border: 1px solid #f0f0f0;
+}
+.amz-predictive-search__title {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.3;
+  color: #0F1111;
+}
+.amz-predictive-search__price {
+  font-size: 13px;
+  color: #B12704;
+  margin-top: 4px;
+  font-weight: 700;
+}
+.amz-predictive-search__loading {
+  padding: 30px;
+  text-align: center;
+  display: none;
+}
+.amz-predictive-search__footer {
+  display: block;
+  text-align: center;
+  padding: 12px;
+  background: #f8f8f8;
+  color: #007185;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+}
+.amz-predictive-search__footer:hover {
+  text-decoration: underline;
+  color: #c45500;
+}
+
 @media (max-width: 900px) { .amz-hide-tablet { display: none !important; } }
 @media (max-width: 480px) {
   .amz-hide-small .amz-search__category,
@@ -547,6 +689,74 @@
   .amz-search__category { display: none; }
 }
 </style>
+
+<script>
+/* Predictive Search Logic */
+document.addEventListener('DOMContentLoaded', function() {
+  const input = document.querySelector('.amz-search__input');
+  const container = document.getElementById('amz-predictive-search');
+  const resultsDiv = container ? container.querySelector('.amz-predictive-search__results') : null;
+  const loadingDiv = container ? container.querySelector('.amz-predictive-search__loading') : null;
+  let debounceTimer;
+
+  if (!input || !container) return;
+
+  input.addEventListener('input', function() {
+    clearTimeout(debounceTimer);
+    const query = input.value.trim();
+    
+    if (query.length === 0) {
+      container.style.display = 'none';
+      return;
+    }
+
+    container.style.display = 'block';
+    resultsDiv.style.display = 'none';
+    loadingDiv.style.display = 'block';
+
+    debounceTimer = setTimeout(function() {
+      fetch('/search/suggest.json?q=' + encodeURIComponent(query) + '&resources[type]=product&resources[limit]=5&section_id=predictive-search')
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+          const products = data.resources.results.products;
+          loadingDiv.style.display = 'none';
+          resultsDiv.style.display = 'block';
+
+          if (products && products.length > 0) {
+            let html = products.map(function(product) {
+              return '<a href="' + product.url + '" class="amz-predictive-search__item">' +
+                (product.image ? '<img src="' + product.image + '" class="amz-predictive-search__img" alt="">' : '<div class="amz-predictive-search__img"></div>') +
+                '<div>' +
+                  '<div class="amz-predictive-search__title">' + product.title + '</div>' +
+                  '<div class="amz-predictive-search__price">' + product.price + '</div>' +
+                '</div>' +
+              '</a>';
+            }).join('');
+            html += '<a href="/search?q=' + encodeURIComponent(query) + '" class="amz-predictive-search__footer">See all results for "' + query + '"</a>';
+            resultsDiv.innerHTML = html;
+          } else {
+            resultsDiv.innerHTML = '<div style="padding: 16px; color: #555; text-align: center;">No products found for "' + query + '"</div>';
+          }
+        })
+        .catch(function() {
+          container.style.display = 'none';
+        });
+    }, 250);
+  });
+
+  document.addEventListener('click', function(e) {
+    if (!input.contains(e.target) && !container.contains(e.target)) {
+      container.style.display = 'none';
+    }
+  });
+
+  input.addEventListener('focus', function() {
+    if (input.value.trim().length > 0 && resultsDiv.innerHTML !== '') {
+      container.style.display = 'block';
+    }
+  });
+});
+</script>
 
 {% schema %}
 {
@@ -598,20 +808,26 @@
           "info": "Choose a specific menu to display as Mega Menu columns. If empty, it will use the sub-links of the trigger item."
         },
         {
-          "type": "image_picker",
-          "id": "image",
-          "label": "Promo Image"
+          "type": "header",
+          "content": "Promo Image 1"
         },
+        { "type": "image_picker", "id": "image", "label": "Promo Image 1" },
+        { "type": "text", "id": "image_title", "label": "Promo Title 1" },
+        { "type": "url", "id": "image_link", "label": "Promo Link 1" },
         {
-          "type": "text",
-          "id": "image_title",
-          "label": "Promo Title"
+          "type": "header",
+          "content": "Promo Image 2"
         },
+        { "type": "image_picker", "id": "image_2", "label": "Promo Image 2" },
+        { "type": "text", "id": "image_title_2", "label": "Promo Title 2" },
+        { "type": "url", "id": "image_link_2", "label": "Promo Link 2" },
         {
-          "type": "url",
-          "id": "image_link",
-          "label": "Promo Link"
-        }
+          "type": "header",
+          "content": "Promo Image 3"
+        },
+        { "type": "image_picker", "id": "image_3", "label": "Promo Image 3" },
+        { "type": "text", "id": "image_title_3", "label": "Promo Title 3" },
+        { "type": "url", "id": "image_link_3", "label": "Promo Link 3" }
       ]
     }
   ]

@@ -344,7 +344,7 @@ window.AmazoDrw = (function () {
             /* SUCCESS → redirect to checkout */
             window.location.href = '/checkout';
           })
-          .catch(function (err) {
+          .catch(function () {
             buyBtn.disabled = false;
             buyBtn.textContent = origText;
             showToast('⚠ Could not process. Please try again.', 'error');
@@ -444,7 +444,6 @@ window.AmazQV = (function () {
 
   /* ── DOM helpers ── */
   function modal()    { return document.getElementById('QuickViewModal'); }
-  function overlay()  { return document.getElementById('QuickViewOverlay'); }
   function loading()  { return document.getElementById('QuickViewLoading'); }
   function content()  { return document.getElementById('QuickViewContent'); }
   function closeBtn() { return document.getElementById('QuickViewClose'); }
@@ -506,7 +505,7 @@ window.AmazQV = (function () {
         _currentVariant = product.variants[0];
         renderProduct(product);
       })
-      .catch(function (err) {
+      .catch(function () {
         var l = loading();
         if (l) l.innerHTML = '<p style="color:#cc0c39;text-align:center;padding:20px;">⚠ Could not load product. Please try again.</p>';
       });
@@ -941,45 +940,9 @@ window.AmazQV = (function () {
 
 /* ============================================================
    7. SEARCH SUGGESTIONS
+   Handled by header.liquid's predictive search (#amz-predictive-search)
+   — no duplicate dropdown created here.
    ============================================================ */
-(function () {
-  var searchInput = document.querySelector('.amz-search__input');
-  if (!searchInput) return;
-
-  var dropdown = document.createElement('div');
-  dropdown.className = 'amz-search-suggestions';
-  dropdown.style.cssText = 'display:none;position:absolute;left:0;right:0;top:100%;background:#fff;border:1px solid #ddd;border-top:none;box-shadow:0 4px 8px rgba(0,0,0,0.15);z-index:9999;border-radius:0 0 4px 4px;max-height:300px;overflow-y:auto;';
-  var searchWrap = searchInput.closest('.amz-search-wrap');
-  if (!searchWrap) return;
-  searchWrap.style.position = 'relative';
-  searchWrap.appendChild(dropdown);
-
-  var debounceTimer;
-  searchInput.addEventListener('input', function () {
-    var val = this.value.trim();
-    clearTimeout(debounceTimer);
-    if (!val) { dropdown.style.display = 'none'; return; }
-    debounceTimer = setTimeout(function () {
-      fetch('/search/suggest.json?q=' + encodeURIComponent(val) + '&resources[type]=product&resources[limit]=6')
-        .then(function (r) { return r.json(); })
-        .then(function (data) {
-          var suggestions = (data.resources && data.resources.results && data.resources.results.products) || [];
-          if (!suggestions.length) { dropdown.style.display = 'none'; return; }
-          dropdown.innerHTML = suggestions.map(function (p) {
-            return '<a href="' + p.url + '" style="display:flex;align-items:center;gap:10px;padding:8px 14px;text-decoration:none;color:#0f1111;border-bottom:1px solid #f0f0f0;font-size:13px;" onmouseover="this.style.background=\'#f0f0f0\'" onmouseout="this.style.background=\'\'">' +
-              (p.featured_image && p.featured_image.url ? '<img src="' + p.featured_image.url + '" width="36" height="36" style="object-fit:contain;border:1px solid #eee;border-radius:3px;" alt="">' : '') +
-              '<span>' + p.title + '</span></a>';
-          }).join('');
-          dropdown.style.display = 'block';
-        })
-        .catch(function () { dropdown.style.display = 'none'; });
-    }, 300);
-  });
-
-  document.addEventListener('click', function (e) {
-    if (!searchWrap.contains(e.target)) dropdown.style.display = 'none';
-  });
-})();
 
 
 /* ============================================================
@@ -1002,43 +965,9 @@ window.AmazQV = (function () {
 
 /* ============================================================
    9. WISHLIST TOGGLE
+   Handled by amazo-cro.js (Wishlist module with key 'amz_wishlist_v2')
+   — no duplicate handler here to prevent double-fire and key mismatch.
    ============================================================ */
-(function () {
-  var KEY = 'amazo_wishlist_v2';
-  function getList() { try { return JSON.parse(localStorage.getItem(KEY)) || []; } catch (e) { return []; } }
-  function saveList(l) { localStorage.setItem(KEY, JSON.stringify(l)); }
-
-  function updateBtns() {
-    var list = getList();
-    document.querySelectorAll('.amz-wishlist-btn, [data-wishlist-btn]').forEach(function (btn) {
-      var id = btn.dataset.productId; if (!id) return;
-      var active = list.some(function (p) { return String(p.id) === String(id); });
-      btn.classList.toggle('is-wishlisted', active);
-      var heart = btn.querySelector('.amz-heart-icon');
-      if (heart) heart.style.fill = active ? '#cc0c39' : 'none';
-    });
-  }
-
-  document.addEventListener('click', function (e) {
-    var btn = e.target.closest('.amz-wishlist-btn, [data-wishlist-btn]');
-    if (!btn) return;
-    e.preventDefault();
-    var id = btn.dataset.productId; if (!id) return;
-    var list = getList();
-    var idx = list.findIndex(function (p) { return String(p.id) === String(id); });
-    if (idx > -1) {
-      list.splice(idx, 1);
-      window.AmazoDrw.showToast('Removed from wishlist', 'info');
-    } else {
-      list.push({ id: id, title: btn.dataset.productTitle, url: btn.dataset.productUrl, image: btn.dataset.productImage });
-      window.AmazoDrw.showToast('♥ Added to wishlist', 'success');
-    }
-    saveList(list);
-    updateBtns();
-  });
-
-  updateBtns();
-})();
 
 
 /* ============================================================
