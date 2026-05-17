@@ -308,6 +308,13 @@
           }
         </script>
 
+        <!-- ── HIDDEN BUY NOW FORM (native form submit → /checkout) ── -->
+        <form id="BuyNowForm-{{ product.id }}" action="/cart/add" method="post" style="display:none;">
+          <input type="hidden" name="id"        id="BuyNowVariantId-{{ product.id }}" value="{{ current_variant.id }}">
+          <input type="hidden" name="quantity"  value="1">
+          <input type="hidden" name="return_to" value="/checkout">
+        </form>
+
         <!-- ── FORM (always rendered — JS controls availability state) ── -->
         <form action="/cart/add" method="post" id="ProductForm-{{ product.id }}" class="amz-product-form"
               data-product-id="{{ product.id }}">
@@ -558,87 +565,66 @@
 
 <script>
 (function () {
-  /* ── DIRECT BUY NOW HANDLER ──────────────────────────────────────────────
-     Attached directly to the button — not relying on event delegation.
-     Reads variant from the hidden form input so variant changes are respected.
-  ──────────────────────────────────────────────────────────────────────── */
+  /* ── BUY NOW: Native form submit (most reliable Shopify approach)
+     Uses a hidden <form action="/cart/add"> with return_to=/checkout.
+     No fetch, no async, no redirect code — Shopify handles everything.
+  ── */
   function initBuyNow() {
-    var btn  = document.getElementById('BuyNowBtn-{{ product.id }}');
-    var form = document.getElementById('ProductForm-{{ product.id }}');
-    if (!btn || !form) return;
+    var buyNowForm   = document.getElementById('BuyNowForm-{{ product.id }}');
+    var buyNowBtn    = document.getElementById('BuyNowBtn-{{ product.id }}');
+    var mainForm     = document.getElementById('ProductForm-{{ product.id }}');
+    var buyNowVarId  = document.getElementById('BuyNowVariantId-{{ product.id }}');
 
-    btn.addEventListener('click', function (e) {
+    if (!buyNowBtn || !buyNowForm) return;
+
+    /* Keep Buy Now form's variant ID in sync with the main form */
+    function syncVariant() {
+      var mainVarInput = mainForm && mainForm.querySelector('[name="id"]');
+      if (mainVarInput && buyNowVarId) {
+        buyNowVarId.value = mainVarInput.value;
+      }
+    }
+
+    /* Also sync quantity */
+    buyNowBtn.addEventListener('click', function (e) {
       e.preventDefault();
-      e.stopPropagation(); /* prevent event delegation from double-firing */
+      e.stopPropagation();
 
-      /* Resolve variant ID: hidden input (kept fresh by variant selector JS) */
-      var variantInput = form.querySelector('[name="id"]');
-      var variantId    = variantInput ? parseInt(variantInput.value, 10) : 0;
+      syncVariant();
 
-      if (!variantId || isNaN(variantId)) {
-        if (window.AmazoDrw) window.AmazoDrw.showToast('⚠ Please select a product option first.', 'error');
-        return;
+      /* Sync quantity from main form */
+      var qtyInput = mainForm && mainForm.querySelector('[name="quantity"], .amz-qty-input');
+      var buyNowQty = buyNowForm.querySelector('[name="quantity"]');
+      if (qtyInput && buyNowQty) {
+        buyNowQty.value = parseInt(qtyInput.value, 10) || 1;
       }
 
-      var qtyInput = form.querySelector('[name="quantity"], .amz-qty-input');
-      var qty      = qtyInput ? (parseInt(qtyInput.value, 10) || 1) : 1;
+      buyNowBtn.disabled = true;
+      buyNowBtn.textContent = 'Processing\u2026';
 
-      var origText  = btn.textContent.trim();
-      btn.disabled  = true;
-      btn.textContent = 'Processing…';
-
-      fetch('/cart/add.js', {
-        method:  'POST',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body:    JSON.stringify({ id: variantId, quantity: qty })
-      })
-      .then(function (r) {
-        if (!r.ok) {
-          return r.json().then(function (body) {
-            throw new Error(body.description || body.message || 'Could not add item to cart.');
-          });
-        }
-        return r.json();
-      })
-      .then(function () {
-        window.location.href = '/checkout';
-      })
-      .catch(function (err) {
-        btn.disabled    = false;
-        btn.textContent = origText;
-        var msg = (err && err.message) ? ('⚠ ' + err.message) : '⚠ Could not process. Please try again.';
-        if (window.AmazoDrw) window.AmazoDrw.showToast(msg, 'error');
-        else alert(msg);
-      });
+      buyNowForm.submit();
     });
 
-    /* Sticky bar Buy Now — same logic */
+    /* Sticky bar Buy Now buttons */
     document.querySelectorAll('.amz-sticky-buy-btn.amz-buy-now').forEach(function (stickyBtn) {
       stickyBtn.addEventListener('click', function (e) {
         e.preventDefault();
         e.stopPropagation();
-        var variantInput = form.querySelector('[name="id"]');
-        var variantId    = variantInput ? parseInt(variantInput.value, 10) : 0;
-        if (!variantId) return;
+        syncVariant();
         stickyBtn.disabled = true;
-        var orig = stickyBtn.textContent.trim();
-        stickyBtn.textContent = 'Processing…';
-        fetch('/cart/add.js', {
-          method:  'POST',
-          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-          body:    JSON.stringify({ id: variantId, quantity: 1 })
-        })
-        .then(function (r) {
-          if (!r.ok) throw new Error('add_failed');
-          window.location.href = '/checkout';
-        })
-        .catch(function () {
-          stickyBtn.disabled    = false;
-          stickyBtn.textContent = orig;
-          if (window.AmazoDrw) window.AmazoDrw.showToast('⚠ Could not process. Please try again.', 'error');
-        });
+        stickyBtn.textContent = 'Processing\u2026';
+        buyNowForm.submit();
       });
     });
+
+    /* Keep variant synced whenever main form's hidden input changes (variant selector) */
+    if (mainForm) {
+      mainForm.addEventListener('change', syncVariant);
+      var mainVarObserved = mainForm.querySelector('[name="id"]');
+      if (mainVarObserved && window.MutationObserver) {
+        new MutationObserver(syncVariant).observe(mainVarObserved, { attributes: true, attributeFilter: ['value'] });
+      }
+    }
   }
 
   if (document.readyState === 'loading') {
