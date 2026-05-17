@@ -556,6 +556,99 @@
 </div>
 {%- endif -%}
 
+<script>
+(function () {
+  /* ── DIRECT BUY NOW HANDLER ──────────────────────────────────────────────
+     Attached directly to the button — not relying on event delegation.
+     Reads variant from the hidden form input so variant changes are respected.
+  ──────────────────────────────────────────────────────────────────────── */
+  function initBuyNow() {
+    var btn  = document.getElementById('BuyNowBtn-{{ product.id }}');
+    var form = document.getElementById('ProductForm-{{ product.id }}');
+    if (!btn || !form) return;
+
+    btn.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation(); /* prevent event delegation from double-firing */
+
+      /* Resolve variant ID: hidden input (kept fresh by variant selector JS) */
+      var variantInput = form.querySelector('[name="id"]');
+      var variantId    = variantInput ? parseInt(variantInput.value, 10) : 0;
+
+      if (!variantId || isNaN(variantId)) {
+        if (window.AmazoDrw) window.AmazoDrw.showToast('⚠ Please select a product option first.', 'error');
+        return;
+      }
+
+      var qtyInput = form.querySelector('[name="quantity"], .amz-qty-input');
+      var qty      = qtyInput ? (parseInt(qtyInput.value, 10) || 1) : 1;
+
+      var origText  = btn.textContent.trim();
+      btn.disabled  = true;
+      btn.textContent = 'Processing…';
+
+      fetch('/cart/add.js', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body:    JSON.stringify({ id: variantId, quantity: qty })
+      })
+      .then(function (r) {
+        if (!r.ok) {
+          return r.json().then(function (body) {
+            throw new Error(body.description || body.message || 'Could not add item to cart.');
+          });
+        }
+        return r.json();
+      })
+      .then(function () {
+        window.location.href = '/checkout';
+      })
+      .catch(function (err) {
+        btn.disabled    = false;
+        btn.textContent = origText;
+        var msg = (err && err.message) ? ('⚠ ' + err.message) : '⚠ Could not process. Please try again.';
+        if (window.AmazoDrw) window.AmazoDrw.showToast(msg, 'error');
+        else alert(msg);
+      });
+    });
+
+    /* Sticky bar Buy Now — same logic */
+    document.querySelectorAll('.amz-sticky-buy-btn.amz-buy-now').forEach(function (stickyBtn) {
+      stickyBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var variantInput = form.querySelector('[name="id"]');
+        var variantId    = variantInput ? parseInt(variantInput.value, 10) : 0;
+        if (!variantId) return;
+        stickyBtn.disabled = true;
+        var orig = stickyBtn.textContent.trim();
+        stickyBtn.textContent = 'Processing…';
+        fetch('/cart/add.js', {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body:    JSON.stringify({ id: variantId, quantity: 1 })
+        })
+        .then(function (r) {
+          if (!r.ok) throw new Error('add_failed');
+          window.location.href = '/checkout';
+        })
+        .catch(function () {
+          stickyBtn.disabled    = false;
+          stickyBtn.textContent = orig;
+          if (window.AmazoDrw) window.AmazoDrw.showToast('⚠ Could not process. Please try again.', 'error');
+        });
+      });
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initBuyNow);
+  } else {
+    initBuyNow();
+  }
+})();
+</script>
+
 {% schema %}
 {
   "name": "Amazo Product Page",
