@@ -1047,34 +1047,86 @@ window.AmazQV = (function () {
     if (!variant) return;
     var pid = form && form.dataset.productId;
 
+    /* Currency symbol from DOM or config */
+    var symText = (window.AmezoConfig && window.AmezoConfig.currencySymbol) || '₹';
+    var mainSym = document.querySelector('.amz-price-sym');
+    if (mainSym) symText = mainSym.textContent;
+
+    function fmt(cents) {
+      return symText + (cents / 100).toFixed(2).replace(/\.00$/, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    }
+
+    /* 1. Hidden variant input */
     var hiddenId = document.getElementById('VariantId-' + pid) || (form && form.querySelector('[name="id"]'));
     if (hiddenId) hiddenId.value = variant.id;
 
+    /* 2. All ATC + Buy Now buttons — update variant ID + availability */
     document.querySelectorAll('.amz-add-to-cart, .amz-buy-now').forEach(function (btn) {
       btn.dataset.variantId = variant.id;
+      btn.disabled = !variant.available;
+      btn.classList.toggle('is-unavailable', !variant.available);
     });
 
-    var atcBtn = document.querySelector('.amz-add-to-cart');
-    var atcText = atcBtn && atcBtn.querySelector('.btn-text');
-    if (atcBtn) {
-      atcBtn.disabled = !variant.available;
-      if (atcText) atcText.textContent = variant.available ? 'Add to Cart' : 'Out of Stock';
-      atcBtn.classList.toggle('is-unavailable', !variant.available);
+    /* 3. ATC button text (main product form only) */
+    var atcBtn = form && form.querySelector('.amz-add-to-cart .btn-text');
+    if (atcBtn) atcBtn.textContent = variant.available ? 'Add to Cart' : 'Out of Stock';
+
+    /* 4. Product info column price */
+    var infoPriceEl = document.querySelector('.amz-price-main');
+    if (infoPriceEl) {
+      infoPriceEl.innerHTML = '<span class="amz-price-sym">' + symText + '</span>' +
+        (variant.price / 100).toFixed(2).replace(/\.00$/, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     }
 
-    var priceEl = document.querySelectorAll('.amz-price-main, .amz-sticky-buy__price');
-    if (priceEl.length && variant.price) {
-      var symText = '₹';
-      var mainSym = document.querySelector('.amz-price-sym');
-      if (mainSym) symText = mainSym.textContent;
-      
-      var formatted = (variant.price / 100).toFixed(2);
-      priceEl.forEach(function(el) {
-        el.innerHTML = (el.classList.contains('amz-price-main') ? '<span class="amz-price-sym">' + symText + '</span>' : symText) +
-          formatted.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-      });
+    /* 5. Buybox column price */
+    var bbPrice = document.querySelector('.amz-buybox__price');
+    if (bbPrice) bbPrice.textContent = fmt(variant.price);
+
+    /* 6. Sticky bar price */
+    var stickyPrice = document.querySelector('.amz-sticky-buy__price');
+    if (stickyPrice) stickyPrice.textContent = fmt(variant.price);
+
+    /* 7. Compare price + discount badge (info column) */
+    var compareRow = document.querySelector('.amz-price-was');
+    if (compareRow) {
+      if (variant.compare_at_price && variant.compare_at_price > variant.price) {
+        var saved = variant.compare_at_price - variant.price;
+        var disc = Math.round(saved / variant.compare_at_price * 100);
+        compareRow.innerHTML = 'List Price: <s>' + fmt(variant.compare_at_price) + '</s>' +
+          ' <span class="amz-price-save">Save ' + fmt(saved) + ' (' + disc + '%)</span>';
+        compareRow.style.display = '';
+      } else {
+        compareRow.style.display = 'none';
+      }
     }
 
+    /* 8. Buybox compare price row */
+    var bbCompare = document.querySelector('.amz-buybox__price + div');
+    if (bbCompare) {
+      if (variant.compare_at_price && variant.compare_at_price > variant.price) {
+        var bbDisc = Math.round((variant.compare_at_price - variant.price) / variant.compare_at_price * 100);
+        bbCompare.innerHTML = 'List: <s>' + fmt(variant.compare_at_price) + '</s>' +
+          ' <span style="color:#cc0c39;"> &nbsp;' + bbDisc + '% off</span>';
+        bbCompare.style.display = '';
+      } else {
+        bbCompare.style.display = 'none';
+      }
+    }
+
+    /* 9. Buybox stock status */
+    var stockEl = document.querySelector('.amz-buybox__stock');
+    if (stockEl) {
+      stockEl.className = 'amz-buybox__stock';
+      if (variant.available) {
+        stockEl.classList.add('amz-buybox__stock--in');
+        stockEl.textContent = 'In Stock';
+      } else {
+        stockEl.classList.add('amz-buybox__stock--out');
+        stockEl.textContent = 'Currently Unavailable';
+      }
+    }
+
+    /* 10. Variant image swap */
     if (variant.featured_image && variant.featured_image.src) {
       var mainImg = document.getElementById('ProductMainImage');
       if (mainImg) {
