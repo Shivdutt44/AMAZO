@@ -5391,3 +5391,284 @@ body.menu-open {
   #shopify-section-template--index__featured-collection-3,
   #shopify-section-template--index__deals-of-the-day { width: 100%; padding: 10px; box-sizing: border-box; }
 }
+
+/* ============================================================
+   HOMEPAGE IMPROVEMENTS v2 — Featured Cards + Product Slider
+   ============================================================ */
+
+/* ── Featured Product Card upgrades ── */
+.amz-fc__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.amz-fc__grid-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.amz-fc__product-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+.amz-fc__product-link:hover { text-decoration: none; }
+
+.amz-fc__img-wrap {
+  overflow: hidden;
+  border-radius: 4px;
+  background: #f7f7f7;
+  margin-bottom: 6px;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.amz-fc__img-wrap:hover .amz-fc__grid-img {
+  transform: scale(1.08);
+}
+
+.amz-fc__grid-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  mix-blend-mode: multiply;
+  transition: transform 0.3s ease;
+}
+
+.amz-fc__product-title {
+  font-size: 12px;
+  color: #0f1111;
+  line-height: 1.3;
+  margin: 0 0 3px;
+  min-height: 30px;
+}
+
+.amz-fc__stars {
+  display: flex;
+  gap: 1px;
+  margin-bottom: 3px;
+}
+
+.amz-fc__star { color: #ddd; font-size: 11px; }
+.amz-fc__star--on { color: #ff9900; }
+
+.amz-fc__product-price {
+  font-size: 13px;
+  color: #0f1111;
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.amz-fc__was {
+  color: #565959;
+  font-size: 11px;
+  font-weight: 400;
+}
+
+/* ── Product Slider Card wrap — needed for Quick Add positioning ── */
+.amz-prod-card-wrap {
+  position: relative;
+  background: #fff;
+  border-radius: 4px;
+  overflow: hidden;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+  padding-bottom: 4px;
+}
+
+.amz-prod-card-wrap:hover {
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  transform: translateY(-2px);
+  z-index: 2;
+}
+
+/* Image zoom on hover */
+.amz-prod-card-wrap:hover .amz-prod-card__img {
+  transform: scale(1.05);
+}
+
+.amz-prod-card__img {
+  transition: transform 0.35s ease;
+}
+
+/* Quick Add button */
+.amz-prod-card__quick-add {
+  position: absolute;
+  bottom: -40px;
+  left: 0;
+  right: 0;
+  background: #ffd814;
+  border: 1px solid #fcd200;
+  color: #0f1111;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 8px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: bottom 0.2s ease, background 0.15s;
+  border-radius: 0 0 4px 4px;
+  white-space: nowrap;
+  z-index: 5;
+}
+
+.amz-prod-card-wrap:hover .amz-prod-card__quick-add {
+  bottom: 0;
+}
+
+.amz-prod-card__quick-add:hover {
+  background: #f7ca00;
+}
+
+.amz-prod-card__unavailable {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #f3f3f3;
+  color: #565959;
+  font-size: 12px;
+  text-align: center;
+  padding: 6px;
+  border-top: 1px solid #e3e3e3;
+  display: none;
+}
+
+.amz-prod-card-wrap:hover .amz-prod-card__unavailable {
+  display: block;
+}
+
+/* Deal badge fix — moved to image overlay */
+.amz-prod-card__badge-limited {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: #cc0c39;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 2px;
+  z-index: 2;
+  line-height: 1.4;
+}
+
+.amz-prod-card__badge-deal {
+  background: #cc0c39;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 2px;
+  display: inline-block;
+  margin-bottom: 4px;
+}
+
+.amz-prod-card__price-sym {
+  font-size: 13px;
+  vertical-align: super;
+  line-height: 1;
+  color: #0f1111;
+}
+
+/* ── Category grid card hover lift ── */
+.amz-cats__card {
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+  cursor: pointer;
+}
+
+.amz-cats__card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+}
+
+/* ── Trust badges improvement ── */
+.amz-trust-badges-strip {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  padding: 16px 20px;
+  background: #fff;
+  border-top: 1px solid #e7e7e7;
+  border-bottom: 1px solid #e7e7e7;
+  flex-wrap: wrap;
+}
+
+.amz-trust-badge-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: #0f1111;
+}
+
+.amz-trust-badge-item svg {
+  color: #007185;
+  flex-shrink: 0;
+}
+
+.amz-trust-badge-item strong {
+  display: block;
+  font-size: 14px;
+}
+
+.amz-trust-badge-item span {
+  font-size: 12px;
+  color: #565959;
+}
+
+/* ── Section divider label (like Amazon's orange bar) ── */
+.amz-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0 6px;
+}
+
+.amz-section-header__title {
+  font-size: 21px;
+  font-weight: 700;
+  color: #0f1111;
+  margin: 0;
+}
+
+.amz-section-header__link {
+  font-size: 13px;
+  color: #007185;
+  text-decoration: none;
+}
+
+.amz-section-header__link:hover {
+  color: #c7511f;
+  text-decoration: underline;
+}
+
+/* ── Homepage layout spacing ── */
+.amz-homepage-section {
+  background: #fff;
+  margin: 0 0 8px;
+  padding: 18px 0;
+}
+
+.amz-homepage-section--gray {
+  background: var(--amz-bg, #eaeded);
+}
+
+/* Responsive adjustments for new elements */
+@media (max-width: 767px) {
+  .amz-prod-card__quick-add { font-size: 12px; padding: 7px 8px; }
+  .amz-fc__grid { grid-template-columns: 1fr 1fr; gap: 6px; }
+  .amz-cats__card:hover { transform: none; }
+}

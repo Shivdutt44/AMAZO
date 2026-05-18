@@ -1,31 +1,27 @@
-{% comment %} Amazon Homepage - 100% Amazon.com Layout Replica {% endcomment %}
+{% comment %} AMAZO Homepage — Amazon.com Style v2 {% endcomment %}
 
-<!-- ANNOUNCEMENT BAR -->
+<!-- ── ANNOUNCEMENT BAR ── -->
 {% section 'announcement-bar' %}
 
-<!-- HERO BANNER CAROUSEL -->
+<!-- ── HERO CAROUSEL (full-width, no padding) ── -->
 {% section 'hero-banner' %}
 
-<!-- HOMEPAGE 4-COLUMN FEATURE CARDS (Below hero - Amazon style) -->
+<!-- ── 4-COLUMN FEATURE CARDS ── -->
 <div class="amz-homepage-cards">
   <div class="amz-homepage-cards__grid">
-    
-    <!-- Card 1: Featured Products -->
+
     <div class="amz-homepage-cards__card">
       {% section 'featured-products' %}
     </div>
-    
-    <!-- Card 2: Featured Collection 2 -->
+
     <div class="amz-homepage-cards__card">
       {% section 'featured-collection-2' %}
     </div>
-    
-    <!-- Card 3: Featured Collection 3 -->
+
     <div class="amz-homepage-cards__card">
       {% section 'featured-collection-3' %}
     </div>
-    
-    <!-- Card 4: Deals of the Day -->
+
     <div class="amz-homepage-cards__card">
       {% section 'deals-of-the-day' %}
     </div>
@@ -33,22 +29,21 @@
   </div>
 </div>
 
-<!-- FULL-WIDTH PRODUCT SLIDER - Best Sellers -->
+<!-- ── BEST SELLERS PRODUCT SLIDER ── -->
 {% section 'amazon-product-slider' %}
 
-<!-- TRUST BADGES -->
+<!-- ── TRUST BADGES ── -->
 {% section 'trust-badges' %}
 
-<!-- CATEGORY GRID - 4x2 -->
+<!-- ── CATEGORY GRID ── -->
 {% section 'category-grid' %}
 
-<!-- PROMO BANNERS - 3 Column -->
+<!-- ── PROMO BANNERS ── -->
 <div class="page-width" style="padding: 8px 10px;">
   {% section 'promo-banners' %}
 </div>
 
-<!-- NEWSLETTER -->
+<!-- ── NEWSLETTER ── -->
 {% section 'newsletter' %}
 
-<!-- Dynamic Sections added via Theme Editor will render below here -->
 {{ content_for_index }}
