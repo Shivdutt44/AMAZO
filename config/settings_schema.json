@@ -8,6 +8,25 @@
     "theme_support_url": "https://amazo-theme.com/support"
   },
   {
+    "name": "🤖 AI Shopping Assistant",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "enable_ai_assistant",
+        "label": "Enable AI Assistant",
+        "default": true,
+        "info": "Shows a floating AI chat widget that helps customers find products and answers FAQs"
+      },
+      {
+        "type": "text",
+        "id": "ai_greeting",
+        "label": "Greeting Message",
+        "default": "Hi! I'm your AI Shopping Assistant. How can I help you today? 🛍️",
+        "info": "First message shown when the chat opens"
+      }
+    ]
+  },
+  {
     "name": "🛒 Wishlist & Quick View",
     "settings": [
       {
@@ -91,15 +110,25 @@
         "label": "Show Star Ratings on Products",
         "default": true,
         "info": "Shows star rating on product cards and product pages"
-      },
-      {
-        "type": "checkbox",
-        "id": "show_review_count",
-        "label": "Show Review Count",
-        "default": true,
-        "info": "Shows number of reviews next to star rating"
-      }
-    ]
+      },    {
+      "type": "checkbox",
+      "id": "show_review_count",
+      "label": "Show Review Count",
+      "default": true,
+      "info": "Shows number of reviews next to star rating"
+    },
+    {
+      "type": "header",
+      "content": "Dynamic Reviews (localStorage)"
+    },
+    {
+      "type": "checkbox",
+      "id": "reviews_require_login",
+      "label": "Require Login to Write Reviews",
+      "default": false,
+      "info": "If enabled, users must be logged into their account to write a review. A login modal will be shown instead of the review form."
+    }
+  ]
   },
   {
     "name": "📈 CRO & Conversion Boosters",

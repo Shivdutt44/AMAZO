@@ -1,0 +1,364 @@
+/* ============================================================
+   AMAZO AI Shopping Assistant — Widget Styles
+   ============================================================ */
+
+/* ── Launcher Button ── */
+.amz-ai-launcher {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 9998;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #232f3e 0%, #37475a 100%);
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  outline: none;
+}
+.amz-ai-launcher:hover {
+  transform: scale(1.08);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.35);
+}
+.amz-ai-launcher svg { transition: opacity 0.2s; }
+.amz-ai-launcher .amz-ai-launcher__close { display: none; }
+.amz-ai-launcher.is-open .amz-ai-launcher__open  { display: none; }
+.amz-ai-launcher.is-open .amz-ai-launcher__close { display: block; }
+
+/* Pulse ring when closed */
+.amz-ai-launcher:not(.is-open)::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,153,0,0.5);
+  animation: amz-ai-pulse 2.5s ease-out infinite;
+}
+@keyframes amz-ai-pulse {
+  0%   { transform: scale(1);   opacity: 0.8; }
+  70%  { transform: scale(1.4); opacity: 0; }
+  100% { transform: scale(1.4); opacity: 0; }
+}
+
+/* Unread badge */
+.amz-ai-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background: #cc0c39;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #fff;
+}
+
+/* ── Chat Window ── */
+.amz-ai-window {
+  position: fixed;
+  bottom: 92px;
+  right: 24px;
+  z-index: 9997;
+  width: 360px;
+  max-height: 560px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.2);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transform: scale(0.92) translateY(16px);
+  transform-origin: bottom right;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.22s ease, transform 0.22s ease;
+}
+.amz-ai-window.is-open {
+  opacity: 1;
+  pointer-events: auto;
+  transform: scale(1) translateY(0);
+}
+
+/* ── Header ── */
+.amz-ai-header {
+  background: linear-gradient(135deg, #232f3e 0%, #37475a 100%);
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+.amz-ai-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255,153,0,0.2);
+  border: 2px solid rgba(255,153,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.amz-ai-header__info { flex: 1; }
+.amz-ai-header__name {
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  margin: 0;
+  line-height: 1.2;
+}
+.amz-ai-header__status {
+  font-size: 11px;
+  color: rgba(255,255,255,0.7);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 2px;
+}
+.amz-ai-header__status::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #44cc44;
+  flex-shrink: 0;
+}
+.amz-ai-clear-btn {
+  background: rgba(255,255,255,0.1);
+  border: none;
+  color: rgba(255,255,255,0.7);
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.amz-ai-clear-btn:hover { background: rgba(255,255,255,0.2); color: #fff; }
+
+/* ── Messages ── */
+.amz-ai-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  scroll-behavior: smooth;
+  background: #f8f9fa;
+}
+.amz-ai-messages::-webkit-scrollbar { width: 4px; }
+.amz-ai-messages::-webkit-scrollbar-track { background: transparent; }
+.amz-ai-messages::-webkit-scrollbar-thumb { background: #ccc; border-radius: 2px; }
+
+/* Message bubbles */
+.amz-ai-msg {
+  display: flex;
+  gap: 8px;
+  max-width: 90%;
+  animation: amz-ai-fadein 0.2s ease;
+}
+@keyframes amz-ai-fadein {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.amz-ai-msg--bot { align-self: flex-start; }
+.amz-ai-msg--user { align-self: flex-end; flex-direction: row-reverse; }
+
+.amz-ai-msg__icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #232f3e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.amz-ai-msg__bubble {
+  padding: 10px 13px;
+  border-radius: 14px;
+  font-size: 13px;
+  line-height: 1.5;
+  max-width: 100%;
+  word-wrap: break-word;
+}
+.amz-ai-msg--bot  .amz-ai-msg__bubble {
+  background: #fff;
+  color: #0f1111;
+  border-radius: 4px 14px 14px 14px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+.amz-ai-msg--user .amz-ai-msg__bubble {
+  background: #232f3e;
+  color: #fff;
+  border-radius: 14px 4px 14px 14px;
+}
+
+/* Typing indicator */
+.amz-ai-typing .amz-ai-msg__bubble {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 12px 16px;
+}
+.amz-ai-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #aaa;
+  animation: amz-ai-bounce 1.2s infinite ease-in-out;
+}
+.amz-ai-dot:nth-child(2) { animation-delay: 0.2s; }
+.amz-ai-dot:nth-child(3) { animation-delay: 0.4s; }
+@keyframes amz-ai-bounce {
+  0%, 60%, 100% { transform: translateY(0); }
+  30%           { transform: translateY(-6px); }
+}
+
+/* Product cards in chat */
+.amz-ai-products {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 6px;
+}
+.amz-ai-product-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #fff;
+  border: 1px solid #e8e8e8;
+  border-radius: 10px;
+  padding: 8px;
+  text-decoration: none;
+  color: inherit;
+  transition: box-shadow 0.15s, border-color 0.15s;
+}
+.amz-ai-product-card:hover {
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  border-color: #ff9900;
+}
+.amz-ai-product-card img {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+  border-radius: 6px;
+  background: #f5f5f5;
+  flex-shrink: 0;
+}
+.amz-ai-product-card__info { flex: 1; min-width: 0; }
+.amz-ai-product-card__title {
+  font-size: 12px;
+  font-weight: 600;
+  color: #0f1111;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 3px;
+}
+.amz-ai-product-card__price {
+  font-size: 13px;
+  font-weight: 700;
+  color: #cc0c39;
+}
+.amz-ai-product-card__arrow {
+  color: #aaa;
+  flex-shrink: 0;
+}
+
+/* Quick reply chips */
+.amz-ai-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+}
+.amz-ai-chip {
+  background: #fff;
+  border: 1px solid #d5d9d9;
+  color: #007185;
+  font-size: 12px;
+  padding: 5px 10px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  white-space: nowrap;
+}
+.amz-ai-chip:hover {
+  background: #f0f9fb;
+  border-color: #007185;
+}
+
+/* ── Input Area ── */
+.amz-ai-input-area {
+  padding: 12px;
+  border-top: 1px solid #e8e8e8;
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+  background: #fff;
+  flex-shrink: 0;
+}
+.amz-ai-input {
+  flex: 1;
+  border: 1px solid #d5d9d9;
+  border-radius: 20px;
+  padding: 9px 14px;
+  font-size: 13px;
+  outline: none;
+  resize: none;
+  font-family: inherit;
+  max-height: 80px;
+  overflow-y: auto;
+  transition: border-color 0.15s;
+  line-height: 1.4;
+}
+.amz-ai-input:focus { border-color: #ff9900; }
+.amz-ai-send-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #ff9900;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.15s, transform 0.15s;
+}
+.amz-ai-send-btn:hover { background: #e68a00; transform: scale(1.05); }
+.amz-ai-send-btn:disabled { background: #d5d9d9; cursor: not-allowed; transform: none; }
+
+/* ── Powered by ── */
+.amz-ai-footer {
+  text-align: center;
+  font-size: 10px;
+  color: #aaa;
+  padding: 4px 0 8px;
+  flex-shrink: 0;
+}
+
+/* ── Mobile ── */
+@media (max-width: 480px) {
+  .amz-ai-window {
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    max-height: 80vh;
+    border-radius: 20px 20px 0 0;
+  }
+  .amz-ai-launcher { bottom: 16px; right: 16px; }
+}

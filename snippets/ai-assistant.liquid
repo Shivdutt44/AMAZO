@@ -1,0 +1,16 @@
+{% comment %} AMAZO AI Shopping Assistant — included in theme.liquid {% endcomment %}
+{%- if settings.enable_ai_assistant -%}
+
+{{ 'amazo-ai.css' | asset_url | stylesheet_tag }}
+
+<script>
+  window.AMZ_AI_CONFIG = {
+    storeName: {{ shop.name | json }},
+    greeting:  {{ settings.ai_greeting | default: 'Hi! I\'m your AI Shopping Assistant. How can I help you today? 🛍️' | json }},
+    currency:  {{ cart.currency.symbol | json }}
+  };
+</script>
+
+<script src="{{ 'amazo-ai.js' | asset_url }}" defer></script>
+
+{%- endif -%}

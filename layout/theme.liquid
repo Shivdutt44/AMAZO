@@ -130,6 +130,9 @@
     {% render 'quick-view-modal' %}
   {%- endif -%}
 
+  <!-- Login Modal -->
+  {% render 'login-modal' %}
+
   <!-- Global Feature Flags for JS (must be before defer scripts) -->
   <script>
     window.AmezoConfig = {
@@ -290,6 +293,9 @@
     }
   })();
   </script>
+
+  <!-- ── AI SHOPPING ASSISTANT ── -->
+  {%- render 'ai-assistant' -%}
 
 
 </body>
