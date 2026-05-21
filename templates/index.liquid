@@ -1,31 +1,18 @@
-{% comment %} AMAZO Homepage — Amazon.com Style v2 {% endcomment %}
+{% comment %} AMAZO Homepage — Amazon.com Style v3 {% endcomment %}
 
 <!-- ── ANNOUNCEMENT BAR ── -->
 {% section 'announcement-bar' %}
 
-<!-- ── HERO CAROUSEL (full-width, no padding) ── -->
+<!-- ── HERO CAROUSEL ── -->
 {% section 'hero-banner' %}
 
-<!-- ── 4-COLUMN FEATURE CARDS (consolidated from 3 duplicated sections → 1 reusable) ── -->
+<!-- ── 4-COLUMN HOMEPAGE CARDS: 3 Featured Product Cards + Deal of the Day ── -->
 <div class="amz-homepage-cards">
   <div class="amz-homepage-cards__grid">
-
-    <div class="amz-homepage-cards__card">
-      {% section 'featured-products' %}
-    </div>
-
-    <div class="amz-homepage-cards__card">
-      {% section 'featured-products' %}
-    </div>
-
-    <div class="amz-homepage-cards__card">
-      {% section 'featured-products' %}
-    </div>
-
-    <div class="amz-homepage-cards__card">
+    {% section 'homepage-top-cards' %}
+    <div class="amz-homepage-cards__card amz-homepage-cards__card--deals">
       {% section 'deals-of-the-day' %}
     </div>
-
   </div>
 </div>
 
@@ -45,5 +32,3 @@
 
 <!-- ── NEWSLETTER ── -->
 {% section 'newsletter' %}
-
-<!-- content_for_index intentionally removed — sections are included manually with custom layout wrappers above -->

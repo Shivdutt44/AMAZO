@@ -4370,16 +4370,25 @@ body.menu-open {
   background: #fff !important;
   border-radius: var(--radius-md) !important;
   overflow: hidden !important;
-  min-height: 300px !important;
   display: flex !important;
   flex-direction: column !important;
 }
 
 /* Remove extra wrapper div margin/padding created by sections */
-.amz-homepage-cards__card>div,
-.amz-homepage-cards__card>section {
+.amz-homepage-cards__card > div,
+.amz-homepage-cards__card > section {
   flex: 1 !important;
   height: auto !important;
+  min-height: 0 !important;
+}
+
+/* homepage-top-cards section: display:contents makes its 3 card children direct grid items */
+.shopify-section.amz-top-cards-section {
+  display: contents !important;
+}
+
+/* Deals card needs min-height so it matches featured cards visually */
+.amz-homepage-cards__card--deals {
   min-height: 0 !important;
 }
 
