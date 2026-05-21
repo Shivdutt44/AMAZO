@@ -1,5 +1,9 @@
 {% comment %} Amazon Category Grid - 4x2 Grid Layout exactly like Amazon.com homepage cards {% endcomment %}
 
+{%- liquid
+  assign wl = settings.enable_wishlist
+-%}
+
 <div class="amz-cats" id="amz-cats">
   <div class="amz-cats__grid">
 
@@ -31,9 +35,10 @@
       {%- endif -%}
     {%- else -%}
 
-    <!-- DEFAULT CATEGORY CARDS - Exact Amazon style -->
+    <!-- ── MACRO: renders one 4-grid product item ── -->
+    <!-- Used inline per card below -->
 
-    <!-- Card 1: Top Deals -->
+    <!-- Card 1: Top Deals (collection thumbnails — no individual product links) -->
     <div class="amz-cats__card">
       <div class="amz-cats__card-inner">
         <h2 class="amz-cats__title">Top deals</h2>
@@ -41,23 +46,25 @@
           {%- assign deal_collections = collections | slice: 0, 4 -%}
           {%- for col in deal_collections -%}
             <div class="amz-cats__4grid-item">
-              {%- if col.image != blank -%}
-                <img src="{{ col.image | image_url: width: 160 }}" alt="{{ col.title | escape }}" loading="lazy" width="160" height="160">
-              {%- else -%}
-                {%- assign fp = col.products.first -%}
-                {%- if fp != blank and fp.featured_image != blank -%}
-                  <img src="{{ fp.featured_image | image_url: width: 160 }}" alt="{{ fp.title | escape }}" loading="lazy" width="160" height="160">
+              <a href="{{ col.url }}" class="amz-cats__item-link">
+                {%- if col.image != blank -%}
+                  <img src="{{ col.image | image_url: width: 160 }}" alt="{{ col.title | escape }}" loading="lazy" width="160" height="160">
                 {%- else -%}
-                  {{ 'collection-' | append: forloop.index | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}
+                  {%- assign fp = col.products.first -%}
+                  {%- if fp != blank and fp.featured_image != blank -%}
+                    <img src="{{ fp.featured_image | image_url: width: 160 }}" alt="{{ fp.title | escape }}" loading="lazy" width="160" height="160">
+                  {%- else -%}
+                    {{ 'collection-' | append: forloop.index | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}
+                  {%- endif -%}
                 {%- endif -%}
-              {%- endif -%}
-              <p>{{ col.title | truncate: 20 }}</p>
+                <p>{{ col.title | truncate: 20 }}</p>
+              </a>
             </div>
           {%- else -%}
-            <div class="amz-cats__4grid-item">{{ 'product-1' | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}<p>Electronics</p></div>
-            <div class="amz-cats__4grid-item">{{ 'product-2' | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}<p>Fashion</p></div>
-            <div class="amz-cats__4grid-item">{{ 'product-3' | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}<p>Home</p></div>
-            <div class="amz-cats__4grid-item">{{ 'product-4' | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}<p>Toys</p></div>
+            <div class="amz-cats__4grid-item"><a href="/collections/all" class="amz-cats__item-link">{{ 'product-1' | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}<p>Electronics</p></a></div>
+            <div class="amz-cats__4grid-item"><a href="/collections/all" class="amz-cats__item-link">{{ 'product-2' | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}<p>Fashion</p></a></div>
+            <div class="amz-cats__4grid-item"><a href="/collections/all" class="amz-cats__item-link">{{ 'product-3' | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}<p>Home</p></a></div>
+            <div class="amz-cats__4grid-item"><a href="/collections/all" class="amz-cats__item-link">{{ 'product-4' | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}<p>Toys</p></a></div>
           {%- endfor -%}
         </div>
         <a href="/collections/all" class="amz-cats__link">See all deals</a>
@@ -71,35 +78,30 @@
         <div class="amz-cats__4grid">
           {%- assign elec_products = collections['electronics'].products | default: collections.all.products -%}
           {%- for prod in elec_products limit: 4 -%}
+            {%- assign fav = prod.selected_or_first_available_variant -%}
             <div class="amz-cats__4grid-item">
-              {%- if prod.featured_image != blank -%}
-                <img src="{{ prod.featured_image | image_url: width: 160 }}" alt="{{ prod.title | escape }}" loading="lazy" width="160" height="160">
-              {%- else -%}
-                {{ 'product-' | append: forloop.index | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}
-              {%- endif -%}
-
-              <!-- Wishlist mini button -->
-              {%- if settings.enable_wishlist -%}
-              <button class="amz-wishlist-btn amz-cat-wish-btn"
-                 aria-label="Save to wishlist"
-                 data-product-id="{{ prod.id }}"
-                 data-product-title="{{ prod.title | escape }}"
-                 data-product-url="{{ prod.url }}"
-                 data-product-image="{{ prod.featured_image | image_url: width: 150 }}"
-                 data-product-price="{{ prod.price }}"
-                 data-variant-id="{{ prod.selected_or_first_available_variant.id }}">
-                 <svg class="amz-heart-icon" viewBox="0 0 24 24" width="10" height="10">
-                   <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-                 </svg>
+              <a href="{{ prod.url }}" class="amz-cats__item-link">
+                {%- if prod.featured_image != blank -%}
+                  <img src="{{ prod.featured_image | image_url: width: 160 }}" alt="{{ prod.title | escape }}" loading="lazy" width="160" height="160">
+                {%- else -%}
+                  {{ 'product-' | append: forloop.index | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}
+                {%- endif -%}
+                <p>{{ prod.title | truncate: 18 }}</p>
+              </a>
+              {%- if wl -%}
+              <button class="amz-wishlist-btn amz-cat-wish-btn" aria-label="Save to wishlist"
+                data-product-id="{{ prod.id }}" data-product-title="{{ prod.title | escape }}"
+                data-product-url="{{ prod.url }}" data-product-image="{{ prod.featured_image | image_url: width: 150 }}"
+                data-product-price="{{ fav.price }}" data-variant-id="{{ fav.id }}">
+                <svg class="amz-heart-icon" viewBox="0 0 24 24" width="10" height="10"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
               </button>
               {%- endif -%}
-              <p>{{ prod.title | truncate: 18 }}</p>
             </div>
           {%- else -%}
-            <div class="amz-cats__4grid-item">{{ 'product-1' | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}<p>Laptops</p></div>
-            <div class="amz-cats__4grid-item">{{ 'product-2' | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}<p>Phones</p></div>
-            <div class="amz-cats__4grid-item">{{ 'product-3' | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}<p>Tablets</p></div>
-            <div class="amz-cats__4grid-item">{{ 'product-4' | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}<p>Cameras</p></div>
+            <div class="amz-cats__4grid-item"><a href="/collections/electronics" class="amz-cats__item-link">{{ 'product-1' | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}<p>Laptops</p></a></div>
+            <div class="amz-cats__4grid-item"><a href="/collections/electronics" class="amz-cats__item-link">{{ 'product-2' | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}<p>Phones</p></a></div>
+            <div class="amz-cats__4grid-item"><a href="/collections/electronics" class="amz-cats__item-link">{{ 'product-3' | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}<p>Tablets</p></a></div>
+            <div class="amz-cats__4grid-item"><a href="/collections/electronics" class="amz-cats__item-link">{{ 'product-4' | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}<p>Cameras</p></a></div>
           {%- endfor -%}
         </div>
         <a href="/collections/electronics" class="amz-cats__link">Explore Electronics</a>
@@ -113,19 +115,30 @@
         <div class="amz-cats__4grid">
           {%- assign fashion_products = collections['clothing'].products | default: collections.all.products -%}
           {%- for prod in fashion_products limit: 4 -%}
+            {%- assign fav = prod.selected_or_first_available_variant -%}
             <div class="amz-cats__4grid-item">
-              {%- if prod.featured_image != blank -%}
-                <img src="{{ prod.featured_image | image_url: width: 160 }}" alt="{{ prod.title | escape }}" loading="lazy" width="160" height="160">
-              {%- else -%}
-                {{ 'product-' | append: forloop.index | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}
+              <a href="{{ prod.url }}" class="amz-cats__item-link">
+                {%- if prod.featured_image != blank -%}
+                  <img src="{{ prod.featured_image | image_url: width: 160 }}" alt="{{ prod.title | escape }}" loading="lazy" width="160" height="160">
+                {%- else -%}
+                  {{ 'product-' | append: forloop.index | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}
+                {%- endif -%}
+                <p>{{ prod.title | truncate: 18 }}</p>
+              </a>
+              {%- if wl -%}
+              <button class="amz-wishlist-btn amz-cat-wish-btn" aria-label="Save to wishlist"
+                data-product-id="{{ prod.id }}" data-product-title="{{ prod.title | escape }}"
+                data-product-url="{{ prod.url }}" data-product-image="{{ prod.featured_image | image_url: width: 150 }}"
+                data-product-price="{{ fav.price }}" data-variant-id="{{ fav.id }}">
+                <svg class="amz-heart-icon" viewBox="0 0 24 24" width="10" height="10"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              </button>
               {%- endif -%}
-              <p>{{ prod.title | truncate: 18 }}</p>
             </div>
           {%- else -%}
-            <div class="amz-cats__4grid-item">{{ 'product-1' | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}<p>Women</p></div>
-            <div class="amz-cats__4grid-item">{{ 'product-2' | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}<p>Men</p></div>
-            <div class="amz-cats__4grid-item">{{ 'product-3' | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}<p>Kids</p></div>
-            <div class="amz-cats__4grid-item">{{ 'product-4' | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}<p>Shoes</p></div>
+            <div class="amz-cats__4grid-item"><a href="/collections/clothing" class="amz-cats__item-link">{{ 'product-1' | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}<p>Women</p></a></div>
+            <div class="amz-cats__4grid-item"><a href="/collections/clothing" class="amz-cats__item-link">{{ 'product-2' | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}<p>Men</p></a></div>
+            <div class="amz-cats__4grid-item"><a href="/collections/clothing" class="amz-cats__item-link">{{ 'product-3' | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}<p>Kids</p></a></div>
+            <div class="amz-cats__4grid-item"><a href="/collections/clothing" class="amz-cats__item-link">{{ 'product-4' | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}<p>Shoes</p></a></div>
           {%- endfor -%}
         </div>
         <a href="/collections/clothing" class="amz-cats__link">Shop Fashion</a>
@@ -138,19 +151,30 @@
         <h2 class="amz-cats__title">Home & Kitchen</h2>
         <div class="amz-cats__4grid">
           {%- for prod in collections.all.products limit: 4 offset: 4 -%}
+            {%- assign fav = prod.selected_or_first_available_variant -%}
             <div class="amz-cats__4grid-item">
-              {%- if prod.featured_image != blank -%}
-                <img src="{{ prod.featured_image | image_url: width: 160 }}" alt="{{ prod.title | escape }}" loading="lazy" width="160" height="160">
-              {%- else -%}
-                {{ 'product-' | append: forloop.index | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}
+              <a href="{{ prod.url }}" class="amz-cats__item-link">
+                {%- if prod.featured_image != blank -%}
+                  <img src="{{ prod.featured_image | image_url: width: 160 }}" alt="{{ prod.title | escape }}" loading="lazy" width="160" height="160">
+                {%- else -%}
+                  {{ 'product-' | append: forloop.index | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}
+                {%- endif -%}
+                <p>{{ prod.title | truncate: 18 }}</p>
+              </a>
+              {%- if wl -%}
+              <button class="amz-wishlist-btn amz-cat-wish-btn" aria-label="Save to wishlist"
+                data-product-id="{{ prod.id }}" data-product-title="{{ prod.title | escape }}"
+                data-product-url="{{ prod.url }}" data-product-image="{{ prod.featured_image | image_url: width: 150 }}"
+                data-product-price="{{ fav.price }}" data-variant-id="{{ fav.id }}">
+                <svg class="amz-heart-icon" viewBox="0 0 24 24" width="10" height="10"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              </button>
               {%- endif -%}
-              <p>{{ prod.title | truncate: 18 }}</p>
             </div>
           {%- else -%}
-            <div class="amz-cats__4grid-item">{{ 'product-1' | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}<p>Furniture</p></div>
-            <div class="amz-cats__4grid-item">{{ 'product-2' | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}<p>Kitchen</p></div>
-            <div class="amz-cats__4grid-item">{{ 'product-3' | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}<p>Bedding</p></div>
-            <div class="amz-cats__4grid-item">{{ 'product-4' | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}<p>Bath</p></div>
+            <div class="amz-cats__4grid-item"><a href="/collections/home" class="amz-cats__item-link">{{ 'product-1' | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}<p>Furniture</p></a></div>
+            <div class="amz-cats__4grid-item"><a href="/collections/home" class="amz-cats__item-link">{{ 'product-2' | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}<p>Kitchen</p></a></div>
+            <div class="amz-cats__4grid-item"><a href="/collections/home" class="amz-cats__item-link">{{ 'product-3' | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}<p>Bedding</p></a></div>
+            <div class="amz-cats__4grid-item"><a href="/collections/home" class="amz-cats__item-link">{{ 'product-4' | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}<p>Bath</p></a></div>
           {%- endfor -%}
         </div>
         <a href="/collections/home" class="amz-cats__link">Shop Home</a>
@@ -163,19 +187,30 @@
         <h2 class="amz-cats__title">Books</h2>
         <div class="amz-cats__4grid">
           {%- for prod in collections.all.products limit: 4 offset: 8 -%}
+            {%- assign fav = prod.selected_or_first_available_variant -%}
             <div class="amz-cats__4grid-item">
-              {%- if prod.featured_image != blank -%}
-                <img src="{{ prod.featured_image | image_url: width: 160 }}" alt="{{ prod.title | escape }}" loading="lazy" width="160" height="160">
-              {%- else -%}
-                {{ 'product-' | append: forloop.index | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}
+              <a href="{{ prod.url }}" class="amz-cats__item-link">
+                {%- if prod.featured_image != blank -%}
+                  <img src="{{ prod.featured_image | image_url: width: 160 }}" alt="{{ prod.title | escape }}" loading="lazy" width="160" height="160">
+                {%- else -%}
+                  {{ 'product-' | append: forloop.index | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}
+                {%- endif -%}
+                <p>{{ prod.title | truncate: 18 }}</p>
+              </a>
+              {%- if wl -%}
+              <button class="amz-wishlist-btn amz-cat-wish-btn" aria-label="Save to wishlist"
+                data-product-id="{{ prod.id }}" data-product-title="{{ prod.title | escape }}"
+                data-product-url="{{ prod.url }}" data-product-image="{{ prod.featured_image | image_url: width: 150 }}"
+                data-product-price="{{ fav.price }}" data-variant-id="{{ fav.id }}">
+                <svg class="amz-heart-icon" viewBox="0 0 24 24" width="10" height="10"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              </button>
               {%- endif -%}
-              <p>{{ prod.title | truncate: 18 }}</p>
             </div>
           {%- else -%}
-            <div class="amz-cats__4grid-item">{{ 'product-1' | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}<p>Fiction</p></div>
-            <div class="amz-cats__4grid-item">{{ 'product-2' | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}<p>Non-Fiction</p></div>
-            <div class="amz-cats__4grid-item">{{ 'product-3' | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}<p>Children's</p></div>
-            <div class="amz-cats__4grid-item">{{ 'product-4' | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}<p>Textbooks</p></div>
+            <div class="amz-cats__4grid-item"><a href="/collections/books" class="amz-cats__item-link">{{ 'product-1' | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}<p>Fiction</p></a></div>
+            <div class="amz-cats__4grid-item"><a href="/collections/books" class="amz-cats__item-link">{{ 'product-2' | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}<p>Non-Fiction</p></a></div>
+            <div class="amz-cats__4grid-item"><a href="/collections/books" class="amz-cats__item-link">{{ 'product-3' | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}<p>Children's</p></a></div>
+            <div class="amz-cats__4grid-item"><a href="/collections/books" class="amz-cats__item-link">{{ 'product-4' | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}<p>Textbooks</p></a></div>
           {%- endfor -%}
         </div>
         <a href="/collections/books" class="amz-cats__link">Shop Books</a>
@@ -188,19 +223,30 @@
         <h2 class="amz-cats__title">Sports & Outdoors</h2>
         <div class="amz-cats__4grid">
           {%- for prod in collections.all.products limit: 4 offset: 12 -%}
+            {%- assign fav = prod.selected_or_first_available_variant -%}
             <div class="amz-cats__4grid-item">
-              {%- if prod.featured_image != blank -%}
-                <img src="{{ prod.featured_image | image_url: width: 160 }}" alt="{{ prod.title | escape }}" loading="lazy" width="160" height="160">
-              {%- else -%}
-                {{ 'product-' | append: forloop.index | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}
+              <a href="{{ prod.url }}" class="amz-cats__item-link">
+                {%- if prod.featured_image != blank -%}
+                  <img src="{{ prod.featured_image | image_url: width: 160 }}" alt="{{ prod.title | escape }}" loading="lazy" width="160" height="160">
+                {%- else -%}
+                  {{ 'product-' | append: forloop.index | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}
+                {%- endif -%}
+                <p>{{ prod.title | truncate: 18 }}</p>
+              </a>
+              {%- if wl -%}
+              <button class="amz-wishlist-btn amz-cat-wish-btn" aria-label="Save to wishlist"
+                data-product-id="{{ prod.id }}" data-product-title="{{ prod.title | escape }}"
+                data-product-url="{{ prod.url }}" data-product-image="{{ prod.featured_image | image_url: width: 150 }}"
+                data-product-price="{{ fav.price }}" data-variant-id="{{ fav.id }}">
+                <svg class="amz-heart-icon" viewBox="0 0 24 24" width="10" height="10"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              </button>
               {%- endif -%}
-              <p>{{ prod.title | truncate: 18 }}</p>
             </div>
           {%- else -%}
-            <div class="amz-cats__4grid-item">{{ 'product-1' | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}<p>Exercise</p></div>
-            <div class="amz-cats__4grid-item">{{ 'product-2' | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}<p>Outdoor</p></div>
-            <div class="amz-cats__4grid-item">{{ 'product-3' | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}<p>Team Sports</p></div>
-            <div class="amz-cats__4grid-item">{{ 'product-4' | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}<p>Golf</p></div>
+            <div class="amz-cats__4grid-item"><a href="/collections/sports" class="amz-cats__item-link">{{ 'product-1' | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}<p>Exercise</p></a></div>
+            <div class="amz-cats__4grid-item"><a href="/collections/sports" class="amz-cats__item-link">{{ 'product-2' | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}<p>Outdoor</p></a></div>
+            <div class="amz-cats__4grid-item"><a href="/collections/sports" class="amz-cats__item-link">{{ 'product-3' | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}<p>Team Sports</p></a></div>
+            <div class="amz-cats__4grid-item"><a href="/collections/sports" class="amz-cats__item-link">{{ 'product-4' | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}<p>Golf</p></a></div>
           {%- endfor -%}
         </div>
         <a href="/collections/sports" class="amz-cats__link">Shop Sports</a>
@@ -213,19 +259,30 @@
         <h2 class="amz-cats__title">Beauty & Personal Care</h2>
         <div class="amz-cats__4grid">
           {%- for prod in collections.all.products limit: 4 offset: 16 -%}
+            {%- assign fav = prod.selected_or_first_available_variant -%}
             <div class="amz-cats__4grid-item">
-              {%- if prod.featured_image != blank -%}
-                <img src="{{ prod.featured_image | image_url: width: 160 }}" alt="{{ prod.title | escape }}" loading="lazy" width="160" height="160">
-              {%- else -%}
-                {{ 'product-' | append: forloop.index | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}
+              <a href="{{ prod.url }}" class="amz-cats__item-link">
+                {%- if prod.featured_image != blank -%}
+                  <img src="{{ prod.featured_image | image_url: width: 160 }}" alt="{{ prod.title | escape }}" loading="lazy" width="160" height="160">
+                {%- else -%}
+                  {{ 'product-' | append: forloop.index | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}
+                {%- endif -%}
+                <p>{{ prod.title | truncate: 18 }}</p>
+              </a>
+              {%- if wl -%}
+              <button class="amz-wishlist-btn amz-cat-wish-btn" aria-label="Save to wishlist"
+                data-product-id="{{ prod.id }}" data-product-title="{{ prod.title | escape }}"
+                data-product-url="{{ prod.url }}" data-product-image="{{ prod.featured_image | image_url: width: 150 }}"
+                data-product-price="{{ fav.price }}" data-variant-id="{{ fav.id }}">
+                <svg class="amz-heart-icon" viewBox="0 0 24 24" width="10" height="10"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              </button>
               {%- endif -%}
-              <p>{{ prod.title | truncate: 18 }}</p>
             </div>
           {%- else -%}
-            <div class="amz-cats__4grid-item">{{ 'product-1' | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}<p>Makeup</p></div>
-            <div class="amz-cats__4grid-item">{{ 'product-2' | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}<p>Skin Care</p></div>
-            <div class="amz-cats__4grid-item">{{ 'product-3' | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}<p>Hair Care</p></div>
-            <div class="amz-cats__4grid-item">{{ 'product-4' | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}<p>Fragrance</p></div>
+            <div class="amz-cats__4grid-item"><a href="/collections/beauty" class="amz-cats__item-link">{{ 'product-1' | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}<p>Makeup</p></a></div>
+            <div class="amz-cats__4grid-item"><a href="/collections/beauty" class="amz-cats__item-link">{{ 'product-2' | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}<p>Skin Care</p></a></div>
+            <div class="amz-cats__4grid-item"><a href="/collections/beauty" class="amz-cats__item-link">{{ 'product-3' | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}<p>Hair Care</p></a></div>
+            <div class="amz-cats__4grid-item"><a href="/collections/beauty" class="amz-cats__item-link">{{ 'product-4' | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}<p>Fragrance</p></a></div>
           {%- endfor -%}
         </div>
         <a href="/collections/beauty" class="amz-cats__link">Shop Beauty</a>
@@ -238,19 +295,30 @@
         <h2 class="amz-cats__title">Toys & Games</h2>
         <div class="amz-cats__4grid">
           {%- for prod in collections.all.products limit: 4 offset: 20 -%}
+            {%- assign fav = prod.selected_or_first_available_variant -%}
             <div class="amz-cats__4grid-item">
-              {%- if prod.featured_image != blank -%}
-                <img src="{{ prod.featured_image | image_url: width: 160 }}" alt="{{ prod.title | escape }}" loading="lazy" width="160" height="160">
-              {%- else -%}
-                {{ 'product-' | append: forloop.index | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}
+              <a href="{{ prod.url }}" class="amz-cats__item-link">
+                {%- if prod.featured_image != blank -%}
+                  <img src="{{ prod.featured_image | image_url: width: 160 }}" alt="{{ prod.title | escape }}" loading="lazy" width="160" height="160">
+                {%- else -%}
+                  {{ 'product-' | append: forloop.index | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}
+                {%- endif -%}
+                <p>{{ prod.title | truncate: 18 }}</p>
+              </a>
+              {%- if wl -%}
+              <button class="amz-wishlist-btn amz-cat-wish-btn" aria-label="Save to wishlist"
+                data-product-id="{{ prod.id }}" data-product-title="{{ prod.title | escape }}"
+                data-product-url="{{ prod.url }}" data-product-image="{{ prod.featured_image | image_url: width: 150 }}"
+                data-product-price="{{ fav.price }}" data-variant-id="{{ fav.id }}">
+                <svg class="amz-heart-icon" viewBox="0 0 24 24" width="10" height="10"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              </button>
               {%- endif -%}
-              <p>{{ prod.title | truncate: 18 }}</p>
             </div>
           {%- else -%}
-            <div class="amz-cats__4grid-item">{{ 'product-1' | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}<p>Action Figures</p></div>
-            <div class="amz-cats__4grid-item">{{ 'product-2' | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}<p>Board Games</p></div>
-            <div class="amz-cats__4grid-item">{{ 'product-3' | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}<p>Dolls</p></div>
-            <div class="amz-cats__4grid-item">{{ 'product-4' | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}<p>Building Sets</p></div>
+            <div class="amz-cats__4grid-item"><a href="/collections/toys" class="amz-cats__item-link">{{ 'product-1' | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}<p>Action Figures</p></a></div>
+            <div class="amz-cats__4grid-item"><a href="/collections/toys" class="amz-cats__item-link">{{ 'product-2' | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}<p>Board Games</p></a></div>
+            <div class="amz-cats__4grid-item"><a href="/collections/toys" class="amz-cats__item-link">{{ 'product-3' | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}<p>Dolls</p></a></div>
+            <div class="amz-cats__4grid-item"><a href="/collections/toys" class="amz-cats__item-link">{{ 'product-4' | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}<p>Building Sets</p></a></div>
           {%- endfor -%}
         </div>
         <a href="/collections/toys" class="amz-cats__link">Shop Toys</a>
@@ -262,10 +330,21 @@
 </div>
 
 <style>
+.amz-cats__item-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+.amz-cats__item-link:hover img {
+  opacity: 0.85;
+}
+.amz-cats__item-link:hover p {
+  color: #c7511f;
+}
 .amz-cats__4grid-item { position: relative; }
 .amz-cat-wish-btn {
   position: absolute; top: 2px; right: 2px; background: rgba(255,255,255,0.9); border: 1px solid #ddd;
-  border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center;
+  border-radius: 50%; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center;
   cursor: pointer; z-index: 5; opacity: 0; transition: opacity 0.2s; padding: 0;
 }
 .amz-cats__4grid-item:hover .amz-cat-wish-btn { opacity: 1; }
