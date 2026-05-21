@@ -670,18 +670,135 @@
   const ProductTabs = { init() { /* handled by amazo-main.js */ } };
 
   /* ══════════════════════════════════════════
-     7. REVIEWS
+     7. REVIEWS — Dynamic (localStorage) + Login Modal
   ══════════════════════════════════════════ */
   const Reviews = {
+    STORAGE_KEY: 'amz_reviews',
+
+    /* ── Get reviews for a specific product ── */
+    getReviews(productId) {
+      try {
+        const all = JSON.parse(localStorage.getItem(this.STORAGE_KEY)) || {};
+        return all[productId] || [];
+      } catch { return []; }
+    },
+
+    /* ── Save a review for a product ── */
+    saveReview(productId, review) {
+      try {
+        const all = JSON.parse(localStorage.getItem(this.STORAGE_KEY)) || {};
+        if (!all[productId]) all[productId] = [];
+        review.id = 'review_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
+        review.date = new Date().toISOString().split('T')[0];
+        all[productId].unshift(review);
+        localStorage.setItem(this.STORAGE_KEY, JSON.stringify(all));
+        return review;
+      } catch { return null; }
+    },
+
+    /* ── Render user-submitted reviews into the DOM ── */
+    renderUserReviews(productId) {
+      const container = document.getElementById('UserReviewsList');
+      if (!container) return;
+      const reviews = this.getReviews(productId);
+      if (reviews.length === 0) {
+        container.innerHTML = '';
+        return;
+      }
+      container.innerHTML = reviews.map(r => `
+        <div class="amz-review-item amz-review-item--user">
+          <div class="amz-review-item__header">
+            <div class="amz-reviewer-avatar" style="background:#007185;">${(r.author || 'U').charAt(0).toUpperCase()}</div>
+            <span class="amz-reviewer-name">${this.escapeHtml(r.author)}</span>
+            <span class="amz-verified-badge">✔ Verified Purchase</span>
+            <span class="amz-user-review-badge">Your Review</span>
+          </div>
+          <div class="amz-review-item__stars" style="color:#ff9900;font-size:16px;">
+            ${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}
+          </div>
+          ${r.title ? `<h4 class="amz-review-item__title">${this.escapeHtml(r.title)}</h4>` : ''}
+          <p class="amz-review-item__body">${this.escapeHtml(r.body)}</p>
+          <div class="amz-review-item__date">Reviewed on ${r.date}</div>
+        </div>
+      `).join('');
+    },
+
+    /* ── Simple HTML escape ── */
+    escapeHtml(str) {
+      if (!str) return '';
+      const div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    },
+
+    /* ── Open login modal ── */
+    openLoginModal() {
+      const modal = document.getElementById('LoginModal');
+      if (!modal) { window.location.href = '/account/login'; return; }
+      modal.setAttribute('aria-hidden', 'false');
+      modal.classList.add('is-open');
+      document.body.classList.add('modal-open');
+    },
+
+    /* ── Close login modal ── */
+    closeLoginModal() {
+      const modal = document.getElementById('LoginModal');
+      if (!modal) return;
+      modal.setAttribute('aria-hidden', 'true');
+      modal.classList.remove('is-open');
+      document.body.classList.remove('modal-open');
+    },
+
     init() {
       if (!Cfg.enableReviews) return;
 
+      const formEl = document.getElementById('WriteReviewForm');
+      const requireLogin = formEl ? formEl.dataset.requireLogin === 'true' : false;
+      const isLoggedIn = formEl ? formEl.dataset.customerLoggedIn === 'true' : false;
+
+      // Get product ID from the form element (which has data-product-id)
+      const reviewForm = document.getElementById('CustomerReviewForm');
+      const productId = reviewForm ? reviewForm.dataset.productId : null;
+
+      // Load existing user reviews from localStorage
+      if (productId) this.renderUserReviews(productId);
+
+      // Login Prompt button → open login modal
+      document.addEventListener('click', (e) => {
+        const loginBtn = e.target.closest('#LoginPromptBtn');
+        if (loginBtn) {
+          e.preventDefault();
+          this.openLoginModal();
+          return;
+        }
+
+        // Login modal overlay/close
+        if (e.target.closest('#LoginModalOverlay') || e.target.closest('#LoginModalClose')) {
+          e.preventDefault();
+          this.closeLoginModal();
+          return;
+        }
+      });
+
+      // ESC close
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') this.closeLoginModal();
+      });
+
       // Toggle write review form
       document.addEventListener('click', (e) => {
-        if (e.target.closest('#WriteReviewBtn')) {
+        const writeBtn = e.target.closest('#WriteReviewBtn');
+        if (writeBtn) {
           const form = document.getElementById('WriteReviewForm');
           const btn = document.getElementById('WriteReviewBtn');
           if (!form) return;
+
+          // If login required and not logged in, show login modal
+          if (requireLogin && !isLoggedIn) {
+            this.openLoginModal();
+            return;
+          }
+
           const open = form.style.display !== 'none';
           form.style.display = open ? 'none' : 'block';
           form.setAttribute('aria-hidden', String(open));
@@ -712,7 +829,9 @@
           const val = parseInt(input.value);
           $$('.amz-star-pick').forEach((l, idx) => {
             const svg = l.querySelector('.amz-star-svg polygon');
-            if (svg) svg.setAttribute('fill', idx < val ? '#ff9900' : 'none');
+            /* row-reverse flips DOM order visually: DOM[0]=★5, DOM[4]=★1
+               So fill the LAST `val` DOM elements = idx >= (5 - val) */
+            if (svg) svg.style.fill = idx >= (5 - val) ? '#ff9900' : 'none';
           });
         }
       });
@@ -726,7 +845,7 @@
         });
       }
 
-      // Form submit
+      // Form submit — SAVE to localStorage
       document.addEventListener('submit', (e) => {
         const form = e.target.closest('#CustomerReviewForm');
         if (!form) return;
@@ -735,18 +854,40 @@
         const rating = form.querySelector('[name="review_rating"]:checked');
         if (!rating) { showToast('⚠ Please select a star rating.', 'error'); return; }
 
-        const successEl = document.getElementById('ReviewSuccess');
-        if (successEl) successEl.style.display = 'flex';
+        const titleInput = form.querySelector('[name="review_title"]');
+        const bodyInput = form.querySelector('[name="review_body"]');
+        const nameInput = form.querySelector('[name="review_author"]');
+        const emailInput = form.querySelector('[name="review_email"]');
 
-        setTimeout(() => {
-          form.reset();
-          $$('.amz-star-svg polygon', form).forEach(p => p.setAttribute('fill', 'none'));
-          if (successEl) successEl.style.display = 'none';
-          const writeForm = document.getElementById('WriteReviewForm');
-          if (writeForm) writeForm.style.display = 'none';
-        }, 3000);
+        const review = {
+          rating: parseInt(rating.value),
+          title: titleInput ? titleInput.value.trim() : '',
+          body: bodyInput ? bodyInput.value.trim() : '',
+          author: nameInput ? nameInput.value.trim() : 'Anonymous',
+          email: emailInput ? emailInput.value.trim() : ''
+        };
 
-        showToast('✓ Review submitted! Thank you.', 'success');
+        const saved = this.saveReview(productId, review);
+        if (saved) {
+          // Render the new review
+          this.renderUserReviews(productId);
+
+          // Show success
+          const successEl = document.getElementById('ReviewSuccess');
+          if (successEl) successEl.style.display = 'flex';
+
+          setTimeout(() => {
+            form.reset();
+            $$('.amz-star-svg polygon', form).forEach(p => { p.style.fill = 'none'; });
+            if (successEl) successEl.style.display = 'none';
+            const writeForm = document.getElementById('WriteReviewForm');
+            if (writeForm) writeForm.style.display = 'none';
+          }, 3000);
+
+          showToast('✓ Review submitted! Thank you.', 'success');
+        } else {
+          showToast('⚠ Could not save your review. Please try again.', 'error');
+        }
       });
     }
   };

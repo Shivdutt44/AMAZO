@@ -59,9 +59,33 @@
     </div>
   </div>
 
-  <!-- ── WRITE REVIEW FORM ── -->
+  <!-- ── WRITE REVIEW / LOGIN PROMPT ── -->
   {%- if settings.enable_reviews -%}
-  <div id="WriteReviewForm" class="amz-write-review" style="display:none;" aria-hidden="true">
+
+  {%- assign require_login = settings.reviews_require_login | default: false -%}
+  {%- assign is_logged_in = false -%}
+  {%- if customer -%}
+    {%- assign is_logged_in = true -%}
+  {%- endif -%}
+
+  <!-- Login required placeholder (shown when login required + user not logged in) -->
+  {%- if require_login and is_logged_in == false -%}
+  <div id="ReviewLoginPrompt" class="amz-review-login-prompt">
+    <div class="amz-review-login-icon">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ff9900" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 016-6h4a6 6 0 016 6v1"/></svg>
+    </div>
+    <h3 style="font-size:16px;font-weight:600;margin:0 0 6px;color:#0f1111;">Want to write a review?</h3>
+    <p style="font-size:13px;color:#565959;margin:0 0 12px;">Sign in to share your thoughts with other customers.</p>
+    <button type="button" class="amz-btn amz-btn--login-prompt" id="LoginPromptBtn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+      Sign in to write a review
+    </button>
+  </div>
+  {%- endif -%}
+
+  <div id="WriteReviewForm" class="amz-write-review" style="display:none;" aria-hidden="true"
+       data-require-login="{{ require_login }}"
+       data-customer-logged-in="{{ is_logged_in }}">
     <h3 class="amz-write-review__title">Write a Review</h3>
     <form class="amz-review-form" id="CustomerReviewForm" data-product-id="{{ product.id }}">
       <!-- Star Picker -->
@@ -121,6 +145,11 @@
     </form>
   </div>
   {%- endif -%}
+
+  <!-- ── USER-SUBMITTED REVIEWS (from localStorage) ── -->
+  <div class="amz-reviews__list" id="UserReviewsList" style="margin-bottom:16px;">
+    <!-- Dynamically populated by JS from localStorage -->
+  </div>
 
   <!-- ── REVIEW ITEMS (Demo + Metafield based) ── -->
   <div class="amz-reviews__list" id="ReviewsList">

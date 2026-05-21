@@ -95,8 +95,9 @@
           <label for="is-gift" style="cursor:pointer;">This order contains a gift</label>
         </div>
 
-        <a href="{{ routes.checkout_url }}" class="cart-page__checkout-btn" aria-label="Proceed to checkout">
-          Proceed to checkout ({{ cart.item_count }} item{{ cart.item_count | pluralize: '', 's' }})
+        <a href="{{ routes.checkout_url }}" class="cart-page__checkout-btn" data-checkout aria-label="Proceed to checkout">
+          <span>Proceed to checkout</span>
+          <span class="cart-page__checkout-sub">({{ cart.item_count }} item{{ cart.item_count | pluralize: '', 's' }})</span>
         </a>
 
         <div style="text-align:center; font-size:13px; margin-top:10px;">
@@ -124,6 +125,45 @@
 
 <style>
 .cart-page__columns { display: grid; grid-template-columns: 1fr 320px; gap: 20px; align-items: start; grid-column: 1 / -1; }
+
+/* ── Amazon-style Proceed to Checkout Button ── */
+.cart-page__checkout-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  width: 100%;
+  padding: 14px 12px;
+  background: linear-gradient(to bottom, #f7dfa5, #f0c14b);
+  border: 1px solid #a88734;
+  border-radius: 8px;
+  color: #111;
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+.cart-page__checkout-btn:hover {
+  background: linear-gradient(to bottom, #f5d78e, #eeb933);
+  border-color: #8c6d2f;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+}
+
+.cart-page__checkout-btn:active {
+  transform: scale(0.99);
+  background: #eeb933;
+}
+
+.cart-page__checkout-btn .cart-page__checkout-sub {
+  font-size: 12px;
+  font-weight: 400;
+  color: #555;
+}
+
 @media (max-width: 900px) { .cart-page__columns { grid-template-columns: 1fr !important; } .cart-page__summary { position: static !important; } }
 @media (max-width: 768px) { .cart-page__item { flex-wrap: wrap !important; } .cart-page__item > a img { width: 90px !important; height: 90px !important; } }
 </style>

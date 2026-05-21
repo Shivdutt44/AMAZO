@@ -24,6 +24,7 @@
     "enable_add_to_cart_card": true,
     "enable_buy_now": true,
     "enable_reviews": true,
+    "reviews_require_login": false,
     "show_rating": true,
     "show_review_count": true,
     "enable_cro_social_proof": true,

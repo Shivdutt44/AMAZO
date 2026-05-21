@@ -1404,16 +1404,19 @@ button[name="add"] {
 /* Star Picker */
 .amz-star-picker {
   display: flex;
+  flex-direction: row-reverse;
+  justify-content: flex-end;
   gap: 4px;
 }
 
 .amz-star-pick {
   cursor: pointer;
+  padding: 2px;
   transition: transform .1s;
 }
 
 .amz-star-pick:hover {
-  transform: scale(1.15);
+  transform: scale(1.2);
 }
 
 .amz-star-svg polygon {
@@ -1421,6 +1424,15 @@ button[name="add"] {
   stroke: #ff9900;
   stroke-width: 1.5;
   transition: fill .1s;
+}
+
+/* Hover fill logic: parent hover fills all, sibling selectors unfill previous */
+.amz-star-picker:hover .amz-star-pick polygon {
+  fill: #ff9900;
+}
+
+.amz-star-picker .amz-star-pick:hover ~ .amz-star-pick polygon {
+  fill: none !important;
 }
 
 /* Review Success */
@@ -1996,7 +2008,210 @@ button[name="add"] {
 }
 
 /* ══════════════════════════════════════════
-   13. MODAL OPEN STATE
+   13. LOGIN MODAL
+══════════════════════════════════════════ */
+.amz-login-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 9500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.amz-login-modal.is-open {
+  pointer-events: auto;
+}
+
+.amz-login-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.amz-login-modal.is-open .amz-login-overlay {
+  opacity: 1;
+}
+
+.amz-login-container {
+  background: #fff;
+  border-radius: 8px;
+  max-width: 400px;
+  width: calc(100% - 32px);
+  position: relative;
+  z-index: 1;
+  padding: 36px 28px 24px;
+  text-align: center;
+  transform: scale(0.95) translateY(20px);
+  opacity: 0;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.2);
+}
+
+.amz-login-modal.is-open .amz-login-container {
+  transform: scale(1) translateY(0);
+  opacity: 1;
+}
+
+.amz-login-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #565959;
+  transition: background 0.1s, color 0.1s;
+}
+
+.amz-login-close:hover {
+  background: #f3f3f3;
+  color: #0f1111;
+}
+
+.amz-login-icon {
+  margin-bottom: 12px;
+}
+
+.amz-login-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #0f1111;
+  margin: 0 0 8px;
+}
+
+.amz-login-desc {
+  font-size: 14px;
+  color: #565959;
+  margin: 0 0 20px;
+  line-height: 1.5;
+}
+
+.amz-login-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.amz-btn--login {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px 20px;
+  background: linear-gradient(to bottom, #f7dfa5, #f0c14b);
+  border: 1px solid #a88734;
+  border-radius: var(--btn-radius, 3px);
+  font-size: 14px;
+  font-weight: 600;
+  color: #0f1111;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s, box-shadow 0.15s;
+}
+
+.amz-btn--login:hover {
+  background: linear-gradient(to bottom, #f5d78e, #e8b523);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  text-decoration: none;
+  color: #0f1111;
+}
+
+.amz-btn--create-account {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 10px 20px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: var(--btn-radius, 3px);
+  font-size: 14px;
+  font-weight: 500;
+  color: #0f1111;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s;
+}
+
+.amz-btn--create-account:hover {
+  background: #f7f7f7;
+  text-decoration: none;
+  color: #0f1111;
+}
+
+.amz-login-footer {
+  font-size: 11px;
+  color: #565959;
+}
+
+.amz-login-footer a {
+  color: #007185;
+  text-decoration: none;
+}
+
+.amz-login-footer a:hover {
+  color: #c45500;
+  text-decoration: underline;
+}
+
+/* Login Prompt (shown on product page instead of form) */
+.amz-review-login-prompt {
+  background: #f9f9f9;
+  border: 1px solid #e7e7e7;
+  border-radius: 6px;
+  padding: 24px 20px;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.amz-review-login-icon {
+  margin-bottom: 10px;
+}
+
+.amz-btn--login-prompt {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 9px 24px;
+  background: linear-gradient(to bottom, #f7dfa5, #f0c14b);
+  border: 1px solid #a88734;
+  border-radius: var(--btn-radius, 3px);
+  font-size: 14px;
+  font-weight: 600;
+  color: #0f1111;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.amz-btn--login-prompt:hover {
+  background: linear-gradient(to bottom, #f5d78e, #e8b523);
+}
+
+/* User review badge */
+.amz-user-review-badge {
+  font-size: 11px;
+  color: #007185;
+  background: #e8f4fd;
+  border: 1px solid #007185;
+  padding: 2px 6px;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+/* ══════════════════════════════════════════
+   14. MODAL OPEN STATE
 ══════════════════════════════════════════ */
 body.modal-open {
   overflow: hidden;
