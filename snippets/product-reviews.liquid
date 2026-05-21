@@ -24,8 +24,9 @@
       <div class="amz-reviews__big-stars" style="color:#ff9900;font-size:24px;">
         {%- assign full = review_rating | floor -%}
         {%- assign dec  = review_rating | minus: full -%}
+        {%- assign half_star = full | plus: 1 -%}
         {%- for s in (1..5) -%}
-          {%- if s <= full -%}★{%- elsif dec >= 0.3 and dec <= 0.7 and s == full | plus: 1 -%}★{%- else -%}☆{%- endif -%}
+          {%- if s <= full -%}★{%- elsif dec >= 0.3 and dec <= 0.7 and s == half_star -%}½{%- else -%}☆{%- endif -%}
         {%- endfor -%}
       </div>
       <div style="font-size:13px;color:#007185;">out of 5</div>
