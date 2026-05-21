@@ -47,6 +47,22 @@
                   {%- else -%}
                     {{ 'product-' | append: forloop.index | modulo: 6 | plus: 1 | placeholder_svg_tag: 'amz-deals__img-placeholder' }}
                   {%- endif -%}
+
+                  <!-- Wishlist -->
+                  {%- if settings.enable_wishlist -%}
+                  <button class="amz-wishlist-btn amz-deals-wish-btn"
+                    aria-label="Save to wishlist"
+                    data-product-id="{{ product.id }}"
+                    data-product-title="{{ product.title | escape }}"
+                    data-product-url="{{ product.url }}"
+                    data-product-image="{{ product.featured_image | image_url: width: 150 }}"
+                    data-product-price="{{ product.price }}"
+                    data-variant-id="{{ product.selected_or_first_available_variant.id }}">
+                    <svg class="amz-heart-icon" viewBox="0 0 24 24" width="14" height="14">
+                      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                    </svg>
+                  </button>
+                  {%- endif -%}
                 </div>
                 <div class="amz-deals__progress-bar">
                   <div class="amz-deals__progress-fill" style="width: {{ deal_pct | plus: 20 | at_most: 90 }}%;"></div>
@@ -92,6 +108,18 @@
 
   </div>
 </div>
+
+<style>
+.amz-deals__card-img-wrap { position: relative; }
+.amz-deals-wish-btn {
+  position: absolute; top: 8px; right: 8px; background: rgba(255,255,255,0.9); border: 1px solid #ddd;
+  border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;
+  cursor: pointer; z-index: 10; transition: all 0.2s;
+}
+.amz-deals-wish-btn .amz-heart-icon { stroke: #565959; fill: none; }
+.amz-deals-wish-btn.is-wishlisted .amz-heart-icon { stroke: #cc0c39; fill: #cc0c39; }
+@media (max-width: 768px) { .amz-deals-wish-btn { width: 24px; height: 24px; } }
+</style>
 
 {% schema %}
 {

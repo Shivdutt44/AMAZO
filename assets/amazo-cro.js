@@ -47,26 +47,32 @@
       localStorage.setItem(this.KEY, JSON.stringify(list));
     },
 
-    has(id) {
+    has(id, variantId) {
+      if (variantId) return this.getAll().some(p => String(p.variantId) === String(variantId));
       return this.getAll().some(p => String(p.id) === String(id));
     },
 
     add(item) {
       const list = this.getAll();
-      if (!this.has(item.id)) {
+      if (!this.has(item.id, item.variantId)) {
         list.push(item);
         this.save(list);
       }
     },
 
-    remove(id) {
-      const list = this.getAll().filter(p => String(p.id) !== String(id));
+    remove(id, variantId) {
+      let list = [];
+      if (variantId) {
+        list = this.getAll().filter(p => String(p.variantId) !== String(variantId));
+      } else {
+        list = this.getAll().filter(p => String(p.id) !== String(id));
+      }
       this.save(list);
     },
 
     toggle(item) {
-      if (this.has(item.id)) {
-        this.remove(item.id);
+      if (this.has(item.id, item.variantId)) {
+        this.remove(item.id, item.variantId);
         return false;
       } else {
         this.add(item);
@@ -79,8 +85,9 @@
     updateAllButtons() {
       $$('.amz-wishlist-btn').forEach(btn => {
         const id = btn.dataset.productId;
+        const variantId = btn.dataset.variantId;
         if (!id) return;
-        const active = this.has(id);
+        const active = this.has(id, variantId);
         btn.classList.toggle('is-wishlisted', active);
         const heart = btn.querySelector('.amz-heart-icon');
         if (heart) heart.style.fill = active ? '#cc0c39' : 'none';
@@ -111,11 +118,14 @@
           id: btn.dataset.productId,
           title: btn.dataset.productTitle,
           url: btn.dataset.productUrl,
-          image: btn.dataset.productImage
+          image: btn.dataset.productImage,
+          price: btn.dataset.productPrice || '',
+          variantId: btn.dataset.variantId
         };
 
         const added = this.toggle(item);
         this.updateAllButtons();
+        document.dispatchEvent(new Event('wishlist:update'));
 
         showToast(
           added
@@ -123,6 +133,10 @@
             : `Removed from wishlist`,
           added ? 'success' : 'info'
         );
+
+        if (typeof WishlistDrawer !== 'undefined') {
+          WishlistDrawer.open();
+        }
       });
 
       // Wishlist Page
@@ -164,6 +178,7 @@
                 </button>
                 <button class="amz-btn amz-wl-remove amz-wishlist-btn"
                   data-product-id="${item.id}"
+                  data-variant-id="${item.variantId || ''}"
                   data-product-title="${item.title}"
                   aria-label="Remove from wishlist">
                   <svg viewBox="0 0 24 24" width="14" height="14" fill="#cc0c39"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
@@ -222,6 +237,209 @@
       }
     }
   };
+
+  /* ══════════════════════════════════════════
+     1.1 WISHLIST DRAWER
+  ══════════════════════════════════════════ */
+  const WishlistDrawer = {
+    open() {
+      const d = document.getElementById('wishlistDrawer');
+      const o = document.getElementById('wishlistDrawerOverlay');
+      if (!d) return;
+      d.classList.add('is-open');
+      if (o) o.classList.add('active');
+      document.body.classList.add('wishlist-is-open');
+      this.render();
+    },
+
+    close() {
+      const d = document.getElementById('wishlistDrawer');
+      const o = document.getElementById('wishlistDrawerOverlay');
+      if (!d) return;
+      d.classList.remove('is-open');
+      if (o) o.classList.remove('active');
+      document.body.classList.remove('wishlist-is-open');
+    },
+
+    render() {
+      const itmEl = document.getElementById('wishlistDrawerItems');
+      const empEl = document.getElementById('wishlistDrawerEmpty');
+      const ftEl = document.getElementById('wishlistDrawerFooter');
+      if (!itmEl) return;
+
+      const items = Wishlist.getAll();
+      if (items.length === 0) {
+        itmEl.innerHTML = '';
+        if (empEl) empEl.style.display = 'flex';
+        if (ftEl) ftEl.style.display = 'none';
+        return;
+      }
+
+      if (empEl) empEl.style.display = 'none';
+      if (ftEl) ftEl.style.display = 'block';
+
+      itmEl.innerHTML = items.map(item => {
+        const priceHtml = item.price
+          ? `<div class="wishlist-drawer-item__price">${formatMoney(Number(item.price))}</div>`
+          : '';
+        const noVariant = !item.variantId || item.variantId === 'undefined' || !parseInt(item.variantId, 10);
+        return `
+        <div class="wishlist-drawer-item" data-id="${item.id}" data-variant-id="${item.variantId || ''}">
+          <a href="${item.url || '#'}" class="wishlist-drawer-item__img-link">
+            <img src="${item.image}" alt="${item.title}" class="wishlist-drawer-item__img" width="70" height="70">
+          </a>
+          <div class="wishlist-drawer-item__info">
+            <a href="${item.url || '#'}" class="wishlist-drawer-item__title">${item.title}</a>
+            ${priceHtml}
+            <div class="wishlist-drawer-item__actions">
+              <button class="wishlist-drawer-item__atc" data-variant-id="${item.variantId || ''}" data-id="${item.id}"${noVariant ? ' disabled title="Select a variant on the product page"' : ''}>
+                <span class="btn-text">Add to Cart</span>
+                <span class="btn-loading" style="display:none;">Adding…</span>
+              </button>
+              <button class="wishlist-drawer-item__buy" data-variant-id="${item.variantId || ''}" data-id="${item.id}"${noVariant ? ' disabled title="Select a variant on the product page"' : ''}>
+                <span class="btn-text">Buy Now</span>
+                <span class="btn-loading" style="display:none;">Processing…</span>
+              </button>
+              <button class="wishlist-drawer-item__remove" data-id="${item.id}" data-variant-id="${item.variantId || ''}">Remove</button>
+            </div>
+          </div>
+        </div>`;
+      }).join('');
+    },
+
+    init() {
+      document.addEventListener('click', (e) => {
+        // Toggle from header
+        if (e.target.closest('.amz-header__wishlist-link')) {
+          e.preventDefault();
+          this.open();
+        }
+
+        // Close
+        if (e.target.closest('#wishlistDrawerClose') || e.target.closest('#wishlistDrawerOverlay')) {
+          this.close();
+        }
+
+        // Item Actions
+        const removeBtn = e.target.closest('.wishlist-drawer-item__remove');
+        if (removeBtn) {
+          Wishlist.remove(removeBtn.dataset.id, removeBtn.dataset.variantId);
+          Wishlist.updateAllButtons();
+          document.dispatchEvent(new Event('wishlist:update'));
+        }
+
+        const atcBtn = e.target.closest('.wishlist-drawer-item__atc');
+        if (atcBtn) {
+          const vid = parseInt(atcBtn.dataset.variantId, 10);
+          if (!vid) { showToast('⚠ Variant not found. Open the product page and re-save.', 'error'); return; }
+          if (atcBtn.dataset.inFlight === '1') return;
+          atcBtn.dataset.inFlight = '1';
+          const tEl = atcBtn.querySelector('.btn-text');
+          const lEl = atcBtn.querySelector('.btn-loading');
+          atcBtn.disabled = true;
+          if (tEl) tEl.style.display = 'none';
+          if (lEl) lEl.style.display = '';
+          fetch('/cart/add.js', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            body: JSON.stringify({ id: vid, quantity: 1 })
+          })
+            .then(r => r.ok ? r.json() : r.json().then(e => Promise.reject(e)))
+            .then(() => {
+              atcBtn.disabled = false;
+              atcBtn.dataset.inFlight = '';
+              if (tEl) { tEl.textContent = '✓ Added!'; tEl.style.display = ''; }
+              if (lEl) lEl.style.display = 'none';
+              setTimeout(() => { if (tEl) tEl.textContent = 'Add to Cart'; }, 2000);
+              showToast('<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Added to cart!', 'success');
+              // Refresh cart badge count
+              fetch('/cart.js').then(r => r.json()).then(cart => {
+                document.querySelectorAll('#amz-cart-count, .amz-cart-count, .cart-count').forEach(el => {
+                  el.textContent = cart.item_count;
+                  el.style.display = cart.item_count > 0 ? 'flex' : 'none';
+                });
+                if (window.AmazoDrw) { window.AmazoDrw.loadCart(); window.AmazoDrw.open(); }
+              });
+            })
+            .catch(err => {
+              atcBtn.disabled = false;
+              atcBtn.dataset.inFlight = '';
+              if (tEl) tEl.style.display = '';
+              if (lEl) lEl.style.display = 'none';
+              showToast('⚠ ' + (err.description || err.message || 'Could not add to cart.'), 'error');
+            });
+        }
+
+        const buyBtn = e.target.closest('.wishlist-drawer-item__buy');
+        if (buyBtn) {
+          const vid = parseInt(buyBtn.dataset.variantId, 10);
+          if (!vid) { showToast('⚠ Variant not found. Open the product page and re-save.', 'error'); return; }
+          if (buyBtn.dataset.inFlight === '1') return;
+          buyBtn.dataset.inFlight = '1';
+          const tEl = buyBtn.querySelector('.btn-text');
+          const lEl = buyBtn.querySelector('.btn-loading');
+          buyBtn.disabled = true;
+          if (tEl) tEl.style.display = 'none';
+          if (lEl) lEl.style.display = '';
+          fetch('/cart/add.js', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            body: JSON.stringify({ id: vid, quantity: 1 })
+          })
+            .then(r => r.ok ? r.json() : r.json().then(e => Promise.reject(e)))
+            .then(() => { window.location.href = '/checkout'; })
+            .catch(err => {
+              buyBtn.disabled = false;
+              buyBtn.dataset.inFlight = '';
+              if (tEl) tEl.style.display = '';
+              if (lEl) lEl.style.display = 'none';
+              showToast('⚠ ' + (err.description || err.message || 'Could not proceed to checkout.'), 'error');
+            });
+        }
+      });
+
+      // Add All
+      const addAll = document.getElementById('AddAllWishlistToCart');
+      if (addAll) {
+        addAll.addEventListener('click', async () => {
+          const items = Wishlist.getAll().filter(i => i.variantId && parseInt(i.variantId, 10));
+          if (!items.length) { showToast('⚠ No items with a valid variant to add.', 'error'); return; }
+          addAll.disabled = true;
+          addAll.textContent = 'Adding…';
+          for (const item of items) {
+            await fetch('/cart/add.js', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+              body: JSON.stringify({ id: parseInt(item.variantId, 10), quantity: 1 })
+            }).catch(() => {});
+          }
+          addAll.disabled = false;
+          addAll.textContent = 'Add All to Cart';
+          showToast('✓ All wishlist items added to cart!', 'success');
+          fetch('/cart.js').then(r => r.json()).then(cart => {
+            document.querySelectorAll('#amz-cart-count, .amz-cart-count, .cart-count').forEach(el => {
+              el.textContent = cart.item_count;
+              el.style.display = cart.item_count > 0 ? 'flex' : 'none';
+            });
+            if (window.AmazoDrw) { window.AmazoDrw.loadCart(); }
+          });
+          this.close();
+          if (window.AmazoDrw) window.AmazoDrw.open();
+        });
+      }
+
+      // ESC close
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') this.close();
+      });
+
+      // Auto re-render whenever wishlist data changes
+      document.addEventListener('wishlist:update', () => this.render());
+    }
+  };
+
+  // Expose WishlistDrawer globally so amazo-main.js can open/close it
+  window.AmazWL = WishlistDrawer;
 
   /* ══════════════════════════════════════════
      2. CART MANAGER (AJAX)
@@ -727,6 +945,7 @@
   ══════════════════════════════════════════ */
   function init() {
     Wishlist.init();
+    WishlistDrawer.init();
     CartManager.init();
     BuyNow.init();
     QuickView.init();
@@ -753,6 +972,10 @@
     });
     // Watch only direct children of body, NOT subtree of all nodes
     observer.observe(document.body, { childList: true, subtree: false });
+
+    // Expose modules to window for header/etc access
+    window.Wishlist = Wishlist;
+    window.WishlistDrawer = WishlistDrawer;
   }
 
   if (document.readyState === 'loading') {

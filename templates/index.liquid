@@ -6,7 +6,7 @@
 <!-- ── HERO CAROUSEL (full-width, no padding) ── -->
 {% section 'hero-banner' %}
 
-<!-- ── 4-COLUMN FEATURE CARDS ── -->
+<!-- ── 4-COLUMN FEATURE CARDS (consolidated from 3 duplicated sections → 1 reusable) ── -->
 <div class="amz-homepage-cards">
   <div class="amz-homepage-cards__grid">
 
@@ -15,11 +15,11 @@
     </div>
 
     <div class="amz-homepage-cards__card">
-      {% section 'featured-collection-2' %}
+      {% section 'featured-products' %}
     </div>
 
     <div class="amz-homepage-cards__card">
-      {% section 'featured-collection-3' %}
+      {% section 'featured-products' %}
     </div>
 
     <div class="amz-homepage-cards__card">
@@ -46,4 +46,4 @@
 <!-- ── NEWSLETTER ── -->
 {% section 'newsletter' %}
 
-{{ content_for_index }}
+<!-- content_for_index intentionally removed — sections are included manually with custom layout wrappers above -->

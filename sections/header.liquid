@@ -195,6 +195,21 @@
         </a>
       </div>
 
+      <!-- WISHLIST (Automated) -->
+      <div class="amz-header__wishlist">
+        <a href="/pages/wishlist" class="amz-header__wishlist-link" aria-label="View Wishlist" onclick="if(window.WishlistDrawer){ WishlistDrawer.open(); return false; }">
+          <div class="amz-wishlist-wrap">
+            <div class="amz-wishlist-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" aria-hidden="true">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+              </svg>
+              <span class="amz-wishlist-counter" style="display:none;">0</span>
+            </div>
+            <span class="amz-cart-label">Wishlist</span>
+          </div>
+        </a>
+      </div>
+
     </div><!-- /.amz-header__inner -->
   </div>
 
@@ -418,6 +433,44 @@
 }
 .amz-mobile-menu-btn:hover { border-color: #fff; }
 .amz-logo-img { width: 110px; height: auto; object-fit: contain; }
+.amz-header__wishlist {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  margin-left: 10px;
+}
+.amz-header__wishlist-link {
+  display: flex;
+  align-items: center;
+  padding: 6px 8px;
+  border: 2px solid transparent;
+  border-radius: 3px;
+  color: #fff;
+  text-decoration: none;
+  transition: border-color 0.15s;
+}
+.amz-header__wishlist-link:hover {
+  border-color: #fff;
+}
+.amz-wishlist-wrap {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.amz-wishlist-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.amz-wishlist-counter {
+  left: 18px !important;
+  top: -2px !important;
+}
+@media (max-width: 768px) {
+  .amz-cart-label { display: none; }
+  .amz-header__wishlist { margin-left: 5px; }
+  .amz-header__wishlist-link { padding: 4px; }
+}
 
 /* Nav link active */
 .amz-nav-link--active {

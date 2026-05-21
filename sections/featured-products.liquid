@@ -1,11 +1,12 @@
-{% comment %} Amazo Featured Products Card v2 — with price, rating, hover zoom {% endcomment %}
+{% comment %} Amazo Featured Products Grid — single reusable section (consolidated from featured-collection-2/3) {% endcomment %}
 <div class="amz-fc">
   <div class="amz-fc__inner">
     <h2 class="amz-fc__title">{{ section.settings.title | default: "Top Picks For You" }}</h2>
 
     <div class="amz-fc__grid">
       {%- assign fc_products = section.settings.collection.products | default: collections.all.products -%}
-      {%- for product in fc_products limit: 4 -%}
+      {%- assign limit_count = section.settings.product_count | default: 4 -%}
+      {%- for product in fc_products limit: limit_count -%}
         {%- assign fv = product.selected_or_first_available_variant -%}
         {%- assign frating = product.metafields.reviews.rating.value | default: 0 -%}
         {%- if frating == 0 -%}
@@ -24,6 +25,22 @@
               {%- else -%}
                 {{ 'product-' | append: forloop.index | placeholder_svg_tag: 'amz-fc__grid-img amz-placeholder-svg' }}
               {%- endif -%}
+
+              <!-- Wishlist -->
+              {%- if settings.enable_wishlist -%}
+              <button class="amz-wishlist-btn amz-fc-wish-btn"
+                aria-label="Save to wishlist"
+                data-product-id="{{ product.id }}"
+                data-product-title="{{ product.title | escape }}"
+                data-product-url="{{ product.url }}"
+                data-product-image="{{ product.featured_image | image_url: width: 150 }}"
+                data-product-price="{{ fv.price }}"
+                data-variant-id="{{ fv.id }}">
+                <svg class="amz-heart-icon" viewBox="0 0 24 24" width="14" height="14">
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                </svg>
+              </button>
+              {%- endif -%}
             </div>
             <p class="amz-fc__product-title">{{ product.title | truncate: 30 }}</p>
             <div class="amz-fc__stars" aria-label="{{ frating }} stars">
@@ -41,7 +58,7 @@
           </a>
         </div>
       {%- else -%}
-        {%- for i in (1..4) -%}
+        {%- for i in (1..limit_count) -%}
           <div class="amz-fc__grid-item">
             {{ 'product-' | append: i | placeholder_svg_tag: 'amz-fc__grid-img amz-placeholder-svg' }}
             <p class="amz-fc__product-title" style="color:#565959;">Sample Product {{ i }}</p>
@@ -56,15 +73,29 @@
   </div>
 </div>
 
+<style>
+.amz-fc__img-wrap { position: relative; }
+.amz-fc-wish-btn {
+  position: absolute; top: 5px; right: 5px; background: rgba(255,255,255,0.9); border: 1px solid #ddd;
+  border-radius: 50%; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center;
+  cursor: pointer; z-index: 5; opacity: 0; transition: opacity 0.2s;
+}
+.amz-fc__grid-item:hover .amz-fc-wish-btn { opacity: 1; }
+.amz-fc-wish-btn .amz-heart-icon { stroke: #565959; fill: none; }
+.amz-fc-wish-btn.is-wishlisted .amz-heart-icon { stroke: #cc0c39; fill: #cc0c39; }
+@media (max-width: 768px) { .amz-fc-wish-btn { opacity: 1; } }
+</style>
+
 {% schema %}
 {
-  "name": "Amazon Featured Products",
+  "name": "Featured Grid",
   "settings": [
     { "type": "text", "id": "title", "label": "Title", "default": "Top Picks For You" },
     { "type": "collection", "id": "collection", "label": "Collection" },
+    { "type": "range", "id": "product_count", "label": "Products to show", "min": 2, "max": 8, "step": 1, "default": 4 },
     { "type": "text", "id": "link_text", "label": "View All Text", "default": "See all recommendations" },
     { "type": "url", "id": "view_all_url", "label": "View All URL" }
   ],
-  "presets": [{ "name": "Amazon Featured Products" }]
+  "presets": [{ "name": "Featured Grid" }]
 }
 {% endschema %}

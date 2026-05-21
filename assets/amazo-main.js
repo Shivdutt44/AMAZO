@@ -37,8 +37,10 @@ window.AmazoDrw = (function () {
   /* ── Open / Close ── */
   function openDrawer() {
     var d = drawer(); var o = overlay();
+    console.log('[Cart] openDrawer called. drawer el:', d, 'overlay el:', o);
     if (!d) return;
     d.classList.add('is-open');
+    console.log('[Cart] is-open added. drawer classes:', d.className);
     d.setAttribute('aria-hidden', 'false');
     if (o) { o.classList.add('active'); o.setAttribute('aria-hidden', 'false'); }
     document.body.classList.add('cart-is-open');
@@ -131,7 +133,10 @@ window.AmazoDrw = (function () {
   var _atcInflight = false;
 
   function addToCart(variantId, qty, btn, afterAdd) {
-    if (_atcInflight) return;
+    if (_atcInflight) {
+      console.warn('[Amazo] ATC already in-flight, skipping duplicate.');
+      return;
+    }
 
     var id = parseInt(variantId, 10);
     if (!id || isNaN(id)) {
@@ -144,9 +149,18 @@ window.AmazoDrw = (function () {
 
     var textEl = btn && btn.querySelector('.btn-text');
     var loadEl = btn && btn.querySelector('.btn-loading');
+    var btnOrigDisabled = btn && btn.disabled;
     if (btn) btn.disabled = true;
     if (textEl) textEl.style.display = 'none';
     if (loadEl) loadEl.style.display = '';
+
+    /* ── Safe reset helper (always call on completion or error) ── */
+    function resetBtn() {
+      _atcInflight = false;
+      if (btn && !btnOrigDisabled) btn.disabled = false;
+      if (textEl) textEl.style.display = '';
+      if (loadEl) loadEl.style.display = 'none';
+    }
 
     return fetch('/cart/add.js', {
       method: 'POST',
@@ -163,10 +177,7 @@ window.AmazoDrw = (function () {
         return r.json();
       })
       .then(function () {
-        _atcInflight = false;
-        if (btn) btn.disabled = false;
-        if (textEl) textEl.style.display = '';
-        if (loadEl) loadEl.style.display = 'none';
+        resetBtn();
         showToast('<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Added to cart!', 'success');
         /* Fetch fresh cart data */
         return fetch('/cart.js').then(function (r) { return r.json(); });
@@ -183,10 +194,7 @@ window.AmazoDrw = (function () {
         return cart;
       })
       .catch(function (err) {
-        _atcInflight = false;
-        if (btn) btn.disabled = false;
-        if (textEl) textEl.style.display = '';
-        if (loadEl) loadEl.style.display = 'none';
+        resetBtn();
         var msg = (err && err.message && err.message !== 'add failed')
           ? '⚠ ' + err.message
           : '⚠ Could not add to cart. Please try again.';
@@ -277,7 +285,7 @@ window.AmazoDrw = (function () {
       var atcBtn = e.target.closest('.amz-add-to-cart, [data-add-to-cart], .product-card__add-btn');
       if (atcBtn) {
         e.preventDefault();
-        e.stopPropagation();
+        e.stopImmediatePropagation();
 
         var variantId = atcBtn.dataset.variantId;
         if (!variantId) {
@@ -731,6 +739,10 @@ window.AmazQV = (function () {
       buyBtn.disabled = !variant.available;
     }
 
+    /* Update Wishlist button variant */
+    var wlBtn = document.getElementById('QvWishlist') || document.querySelector('.amz-qv-wishlist');
+    if (wlBtn) wlBtn.dataset.variantId = variant.id;
+
     /* Update hidden variant ID */
     var hiddenId = document.getElementById('QuickViewVariantId');
     if (hiddenId) hiddenId.value = variant.id;
@@ -1061,10 +1073,12 @@ window.AmazQV = (function () {
     if (hiddenId) hiddenId.value = variant.id;
 
     /* 2. All ATC + Buy Now buttons — update variant ID + availability */
-    document.querySelectorAll('.amz-add-to-cart, .amz-buy-now').forEach(function (btn) {
+    document.querySelectorAll('.amz-add-to-cart, .amz-buy-now, .amz-wishlist-btn').forEach(function (btn) {
       btn.dataset.variantId = variant.id;
-      btn.disabled = !variant.available;
-      btn.classList.toggle('is-unavailable', !variant.available);
+      if (!btn.classList.contains('amz-wishlist-btn')) {
+        btn.disabled = !variant.available;
+        btn.classList.toggle('is-unavailable', !variant.available);
+      }
     });
 
     /* 3. ATC button text (main product form only) */

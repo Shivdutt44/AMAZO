@@ -122,6 +122,9 @@
   <!-- Cart Drawer -->
   {% render 'cart-drawer' %}
 
+  <!-- Wishlist Drawer -->
+  {% render 'wishlist-drawer' %}
+
   <!-- Quick View Modal -->
   {%- if settings.enable_quick_view -%}
     {% render 'quick-view-modal' %}
@@ -245,23 +248,24 @@
       /* ── Event delegation ── */
       document.addEventListener('click', function(e) {
         /* 1. Cart icon or any /cart link → open drawer */
-        var trigger = e.target.closest(
+        var target = e.target;
+        if (!target || typeof target.closest !== 'function') return;
+        var trigger = target.closest(
           '.amz-header__cart-link, [data-cart-drawer-trigger], a[href="/cart"], a[href^="/cart?"]'
         );
         if (trigger && !trigger.closest('#cartDrawer')) {
           e.preventDefault();
-          e.stopPropagation();
           openCart();
           return;
         }
 
         /* 2. Overlay click → close */
-        if (e.target === cartOverlay || (cartOverlay && cartOverlay.contains(e.target) && e.target === cartOverlay)) {
+        if (target === cartOverlay || (cartOverlay && cartOverlay.contains(target) && target === cartOverlay)) {
           closeCart(); return;
         }
 
         /* 3. Close button */
-        if (cartClose && (e.target === cartClose || cartClose.contains(e.target))) {
+        if (cartClose && (target === cartClose || cartClose.contains(target))) {
           closeCart(); return;
         }
       }, true); /* ← useCapture:true so we run BEFORE any other handler */

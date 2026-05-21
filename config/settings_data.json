@@ -151,19 +151,21 @@
         }
       },
       "featured-collection-2": {
-        "type": "featured-collection-2",
+        "type": "featured-products",
         "settings": {
           "title": "Best Sellers in Beauty",
           "collection": "b-1",
+          "product_count": 4,
           "link_text": "See more",
           "view_all_url": ""
         }
       },
       "featured-collection-3": {
-        "type": "featured-collection-3",
+        "type": "featured-products",
         "settings": {
           "title": "Best Sellers in Clothing & Accessories",
           "collection": "",
+          "product_count": 4,
           "link_text": "See more",
           "view_all_url": ""
         }
@@ -330,16 +332,49 @@
         }
       }
     },
+    "main-product": {
+      "type": "main-product",
+      "settings": {
+        "show_prime": true,
+        "enable_sticky_buy": true,
+        "animate_buttons": true,
+        "atc_button_text": "Add to Cart",
+        "buy_now_text": "Buy Now"
+      }
+    },
+    "main-collection": {
+      "type": "main-collection",
+      "settings": {}
+    },
+    "main-search": {
+      "type": "main-search",
+      "settings": {
+        "placeholder": "Search for products..."
+      }
+    },
+    "main-cart": {
+      "type": "main-cart",
+      "settings": {
+        "free_shipping_threshold": 35
+      }
+    },
+    "main-page": {
+      "type": "main-page",
+      "settings": {
+        "show_title": true
+      }
+    },
     "content_for_index": [
+      "announcement-bar",
       "hero-banner",
-      "category-grid",
-      "deals-of-the-day",
       "featured-products",
-      "promo-banners",
-      "amazon-product-slider",
       "featured-collection-2",
       "featured-collection-3",
+      "deals-of-the-day",
+      "amazon-product-slider",
       "trust-badges",
+      "category-grid",
+      "promo-banners",
       "newsletter"
     ]
   }

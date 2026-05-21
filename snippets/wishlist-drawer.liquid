@@ -1,0 +1,148 @@
+{% comment %} Amazo - Wishlist Drawer Snippet {% endcomment %}
+
+<!-- Wishlist Drawer Overlay -->
+<div class="wishlist-drawer-overlay" id="wishlistDrawerOverlay" aria-hidden="true"></div>
+
+<!-- Wishlist Drawer -->
+<div class="wishlist-drawer" id="wishlistDrawer" role="dialog" aria-modal="true" aria-label="Your Wishlist" aria-hidden="true" tabindex="-1">
+
+  <div class="wishlist-drawer__header">
+    <h3>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="white" style="vertical-align:middle;margin-right:6px;" aria-hidden="true">
+        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+      </svg>
+      Your Wishlist
+    </h3>
+    <button class="wishlist-drawer__close" id="wishlistDrawerClose" aria-label="Close wishlist">✕</button>
+  </div>
+
+  <!-- Items -->
+  <div class="wishlist-drawer__body" id="wishlistDrawerBody">
+    <div class="wishlist-drawer__empty" id="wishlistDrawerEmpty">
+      <svg width="60" height="60" viewBox="0 0 24 24" fill="#ccc" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+      <p class="wishlist-drawer__empty-title">Your wishlist is empty</p>
+      <p class="wishlist-drawer__empty-sub">Save items you love to find them later.</p>
+      <a href="/collections" class="wishlist-drawer__shop-btn">Continue Shopping</a>
+    </div>
+    <div class="wishlist-drawer__items" id="wishlistDrawerItems"></div>
+  </div>
+
+  <!-- Footer -->
+  <div class="wishlist-drawer__footer" id="wishlistDrawerFooter" style="display:none;">
+    <div class="wishlist-drawer__actions">
+      <button id="AddAllWishlistToCart" class="wishlist-drawer__add-all">Add All to Cart</button>
+      <a href="/pages/wishlist" class="wishlist-drawer__view-full">View Full Wishlist</a>
+    </div>
+  </div>
+
+</div>
+
+<style>
+/* ── WISHLIST DRAWER ─────────────────────────────────────── */
+.wishlist-drawer-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 9998;
+  backdrop-filter: blur(1px);
+}
+.wishlist-drawer-overlay.active { display: block; }
+
+.wishlist-drawer {
+  position: fixed;
+  top: 0; right: -420px;
+  width: 400px; max-width: 100vw;
+  height: 100vh;
+  background: #fff;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  box-shadow: -4px 0 24px rgba(0,0,0,0.18);
+  transition: right 0.3s cubic-bezier(0.4,0,0.2,1);
+  font-family: inherit;
+}
+.wishlist-drawer.is-open { right: 0; }
+
+.wishlist-drawer__header {
+  background: #232f3e;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  flex-shrink: 0;
+}
+.wishlist-drawer__header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+}
+.wishlist-drawer__close {
+  background: none; border: none; color: #fff; font-size: 20px; cursor: pointer; padding: 4px 8px; line-height: 1;
+}
+
+.wishlist-drawer__body { flex: 1; overflow-y: auto; }
+
+.wishlist-drawer__empty {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 20px; text-align: center; height: 100%;
+}
+.wishlist-drawer__empty-title { margin-top: 15px; font-size: 18px; font-weight: 700; color: #0f1111; }
+.wishlist-drawer__empty-sub { color: #565959; font-size: 13px; margin: 8px 0 20px; }
+.wishlist-drawer__shop-btn {
+  display: inline-block; background: #FFD814; border: 1px solid #FCD200; border-radius: 8px; padding: 10px 24px; font-size: 14px; font-weight: 600; color: #0f1111; text-decoration: none;
+}
+
+/* Wishlist Items */
+.wishlist-drawer-item {
+  display: flex; gap: 12px; padding: 14px 16px; border-bottom: 1px solid #f0f0f0; align-items: center;
+}
+.wishlist-drawer-item__img {
+  width: 70px; height: 70px; object-fit: contain; border: 1px solid #eee; border-radius: 4px; flex-shrink: 0;
+}
+.wishlist-drawer-item__info { flex: 1; min-width: 0; }
+.wishlist-drawer-item__img-link { display: block; flex-shrink: 0; }
+.wishlist-drawer-item__title {
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  font-size: 13px; color: #0f1111; line-height: 1.4; margin-bottom: 2px; text-decoration: none;
+}
+.wishlist-drawer-item__title:hover { color: #c45500; text-decoration: underline; }
+.wishlist-drawer-item__price { font-size: 14px; font-weight: 700; color: #0f1111; margin-bottom: 4px; }
+.wishlist-drawer-item__actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; align-items: center; }
+
+.wishlist-drawer-item__atc {
+  font-size: 11px; background: #FFD814; border: 1px solid #FCD200; border-radius: 6px;
+  padding: 5px 10px; font-weight: 700; color: #0f1111; cursor: pointer; white-space: nowrap;
+  transition: background 0.15s;
+}
+.wishlist-drawer-item__atc:hover:not(:disabled) { background: #F7CA00; }
+.wishlist-drawer-item__atc:disabled { opacity: 0.6; cursor: default; }
+
+.wishlist-drawer-item__buy {
+  font-size: 11px; background: #FF9900; border: 1px solid #e68a00; border-radius: 6px;
+  padding: 5px 10px; font-weight: 700; color: #0f1111; cursor: pointer; white-space: nowrap;
+  transition: background 0.15s;
+}
+.wishlist-drawer-item__buy:hover:not(:disabled) { background: #e68a00; }
+.wishlist-drawer-item__buy:disabled { opacity: 0.6; cursor: default; }
+
+.wishlist-drawer-item__remove {
+  font-size: 11px; color: #cc0c39; cursor: pointer; background: none; border: none; padding: 0; text-decoration: underline;
+  align-self: center;
+}
+
+/* Footer */
+.wishlist-drawer__footer { border-top: 2px solid #eee; padding: 14px 18px; background: #fff; }
+.wishlist-drawer__actions { display: flex; flex-direction: column; gap: 8px; }
+.wishlist-drawer__add-all {
+  display: block; text-align: center; padding: 10px; background: #FFD814; border: 1px solid #FCD200; border-radius: 8px; font-size: 14px; font-weight: 700; color: #0f1111; cursor: pointer;
+}
+.wishlist-drawer__view-full {
+  display: block; text-align: center; padding: 9px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; font-weight: 600; color: #0f1111; text-decoration: none; background: #f7f8f8;
+}
+
+body.wishlist-is-open { overflow: hidden; }
+
+</style>

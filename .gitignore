@@ -1,0 +1,22 @@
+# OS files
+nul
+Thumbs.db
+.DS_Store
+Desktop.ini
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Shopify
+.shopify/
+config.yml
+.env
+node_modules/
+
+# Temp
+*.log
+tmp/
+temp/

@@ -77,6 +77,22 @@
               {%- else -%}
                 {{ 'product-' | append: forloop.index | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}
               {%- endif -%}
+
+              <!-- Wishlist mini button -->
+              {%- if settings.enable_wishlist -%}
+              <button class="amz-wishlist-btn amz-cat-wish-btn"
+                 aria-label="Save to wishlist"
+                 data-product-id="{{ prod.id }}"
+                 data-product-title="{{ prod.title | escape }}"
+                 data-product-url="{{ prod.url }}"
+                 data-product-image="{{ prod.featured_image | image_url: width: 150 }}"
+                 data-product-price="{{ prod.price }}"
+                 data-variant-id="{{ prod.selected_or_first_available_variant.id }}">
+                 <svg class="amz-heart-icon" viewBox="0 0 24 24" width="10" height="10">
+                   <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                 </svg>
+              </button>
+              {%- endif -%}
               <p>{{ prod.title | truncate: 18 }}</p>
             </div>
           {%- else -%}
@@ -244,6 +260,19 @@
     {%- endfor -%}
   </div>
 </div>
+
+<style>
+.amz-cats__4grid-item { position: relative; }
+.amz-cat-wish-btn {
+  position: absolute; top: 2px; right: 2px; background: rgba(255,255,255,0.9); border: 1px solid #ddd;
+  border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center;
+  cursor: pointer; z-index: 5; opacity: 0; transition: opacity 0.2s; padding: 0;
+}
+.amz-cats__4grid-item:hover .amz-cat-wish-btn { opacity: 1; }
+.amz-cat-wish-btn .amz-heart-icon { stroke: #565959; fill: none; }
+.amz-cat-wish-btn.is-wishlisted .amz-heart-icon { stroke: #cc0c39; fill: #cc0c39; }
+@media (max-width: 768px) { .amz-cat-wish-btn { opacity: 1; } }
+</style>
 
 {% schema %}
 {

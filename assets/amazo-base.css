@@ -2,23 +2,7 @@
    AMAZO BASE CSS - Critical Reset & Foundation
    ============================================================ */
 
-/* Base */
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-
-body {
-  font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-  color: #0f1111;
-  background: #fff;
-  -webkit-text-size-adjust: 100%;
-  overflow-x: hidden;
-}
-
+/* Base resets handled in theme.liquid inline <style> — only utilities here */
 body.cart-is-open,
 body.menu-open {
   overflow: hidden;
@@ -54,31 +38,9 @@ body.menu-open {
   background: rgba(255, 153, 0, 0.2);
 }
 
-/* Images */
-img {
-  max-width: 100%;
-  height: auto;
-  display: block;
-}
-
+/* Images — lazy attribute only (base img handled in inline style) */
 img[loading="lazy"] {
   content-visibility: auto;
-}
-
-/* Links */
-a {
-  color: #007185;
-  text-decoration: none;
-}
-
-a:hover {
-  color: #c45500;
-  text-decoration: underline;
-}
-
-/* Prevent FOUC */
-html {
-  visibility: visible;
 }
 
 /* ── SCROLL TO TOP BUTTON ───────────────────────────────── */
@@ -154,13 +116,7 @@ html {
   background: #007185;
 }
 
-/* ── PAGE WIDTH ─────────────────────────────────────────── */
-.page-width {
-  max-width: 1440px;
-  margin: 0 auto;
-  padding-left: 16px;
-  padding-right: 16px;
-}
+
 
 /* ── KEYFRAMES ──────────────────────────────────────────── */
 @keyframes fadeInUp {

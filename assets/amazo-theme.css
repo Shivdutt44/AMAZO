@@ -27,24 +27,9 @@
   --amz-nav-hover:     rgba(255,255,255,0.12);
 }
 
-/* === RESET & BASE === */
-*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-html { scroll-behavior: smooth; }
-body {
-  font-family: "Amazon Ember", Arial, sans-serif;
-  font-size: 14px;
-  line-height: 1.5;
-  color: var(--amz-text);
-  background: var(--amz-bg);
-  -webkit-font-smoothing: antialiased;
-}
-a { color: inherit; text-decoration: none; }
-a:hover { text-decoration: underline; color: var(--amz-link-hover); }
-img { max-width: 100%; height: auto; display: block; }
+/* === RESET & BASE (handled in theme.liquid inline <style>) === */
 button { cursor: pointer; border: none; background: none; font-family: inherit; }
 ul { list-style: none; }
-
-.page-width { max-width: 1500px; margin: 0 auto; padding: 0 10px; }
 
 /* ============================================================
    HEADER - Amazon Top Bar
