@@ -121,6 +121,54 @@
 @media (max-width: 768px) { .amz-deals-wish-btn { width: 24px; height: 24px; } }
 </style>
 
+<script>
+(function () {
+  var track = document.getElementById('amz-deals-track');
+  if (!track) return;
+  var wrap = track.closest('.amz-deals__slider-wrap');
+  if (!wrap) return;
+  var prevBtn = wrap.querySelector('.amz-deals__prev');
+  var nextBtn = wrap.querySelector('.amz-deals__next');
+  var items = track.querySelectorAll('.amz-deals__item');
+  var cur = 0;
+
+  function getItemWidth() {
+    if (!items[0]) return 200;
+    return items[0].offsetWidth + parseInt(getComputedStyle(track).gap || 12, 10);
+  }
+
+  function getVisible() {
+    return Math.max(1, Math.floor(track.parentElement.offsetWidth / getItemWidth()));
+  }
+
+  function maxIndex() {
+    return Math.max(0, items.length - getVisible());
+  }
+
+  function update() {
+    track.style.transform = 'translateX(-' + (cur * getItemWidth()) + 'px)';
+    if (prevBtn) prevBtn.style.opacity = cur > 0 ? '1' : '0.3';
+    if (nextBtn) nextBtn.style.opacity = cur < maxIndex() ? '1' : '0.3';
+  }
+
+  if (prevBtn) prevBtn.addEventListener('click', function () {
+    cur = Math.max(0, cur - getVisible());
+    update();
+  });
+  if (nextBtn) nextBtn.addEventListener('click', function () {
+    cur = Math.min(maxIndex(), cur + getVisible());
+    update();
+  });
+
+  window.addEventListener('resize', function () {
+    cur = Math.min(cur, maxIndex());
+    update();
+  });
+
+  update();
+})();
+</script>
+
 {% schema %}
 {
   "name": "Amazon Deals of the Day",
