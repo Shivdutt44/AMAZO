@@ -1401,38 +1401,70 @@ button[name="add"] {
   accent-color: #ff9900;
 }
 
+/* Star Picker — Half-star support */
+.amz-star-position {
+  position: relative;
+  width: 28px;
+  height: 28px;
+}
+
+.amz-star-input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.amz-star-click {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50%;
+  z-index: 2;
+  cursor: pointer;
+}
+
+.amz-star-click--left {
+  left: 0;
+}
+
+.amz-star-click--right {
+  right: 0;
+}
+
+.amz-star-svg {
+  display: block;
+  width: 28px;
+  height: 28px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+
+.amz-star-fill {
+  transition: clip-path 0.08s ease;
+}
+
+/* Hover: highlight effect on entire star position */
+.amz-star-position:hover .amz-star-svg .amz-star-bg {
+  stroke: #ff9900;
+}
+
+.amz-star-position:hover {
+  transform: scale(1.15);
+  z-index: 3;
+}
+
+.amz-star-position {
+  transition: transform 0.1s ease;
+}
+
 /* Star Picker */
 .amz-star-picker {
   display: flex;
-  flex-direction: row-reverse;
-  justify-content: flex-end;
-  gap: 4px;
-}
-
-.amz-star-pick {
-  cursor: pointer;
-  padding: 2px;
-  transition: transform .1s;
-}
-
-.amz-star-pick:hover {
-  transform: scale(1.2);
-}
-
-.amz-star-svg polygon {
-  fill: none;
-  stroke: #ff9900;
-  stroke-width: 1.5;
-  transition: fill .1s;
-}
-
-/* Hover fill logic: parent hover fills all, sibling selectors unfill previous */
-.amz-star-picker:hover .amz-star-pick polygon {
-  fill: #ff9900;
-}
-
-.amz-star-picker .amz-star-pick:hover ~ .amz-star-pick polygon {
-  fill: none !important;
+  flex-direction: row;
+  gap: 2px;
+  align-items: center;
 }
 
 /* Review Success */

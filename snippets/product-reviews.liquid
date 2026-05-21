@@ -91,12 +91,21 @@
       <!-- Star Picker -->
       <div class="amz-form-row">
         <label class="amz-form-label">Overall Rating <span style="color:#cc0c39;">*</span></label>
-        <div class="amz-star-picker" role="radiogroup" aria-label="Select star rating">
+        <div class="amz-star-picker" id="StarPicker" role="radiogroup" aria-label="Select star rating">
           {%- for s in (1..5) -%}
-          <label class="amz-star-pick" aria-label="{{ s }} star{% if s > 1 %}s{% endif %}">
-            <input type="radio" name="review_rating" value="{{ s }}" required style="position:absolute;opacity:0;pointer-events:none;">
-            <svg viewBox="0 0 24 24" width="28" height="28" class="amz-star-svg"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" fill="none" stroke="#ff9900" stroke-width="1.5"/></svg>
-          </label>
+          <div class="amz-star-position" data-pos="{{ s }}">
+            <!-- Half radio (left half) -->
+            <input type="radio" name="review_rating" value="{{ s | minus: 0.5 }}" id="star-h{{ s }}" class="amz-star-input" required>
+            <label class="amz-star-click amz-star-click--left" for="star-h{{ s }}" aria-label="{{ s | minus: 0.5 }} stars" title="{{ s | minus: 0.5 }} stars"></label>
+            <!-- Full radio (right half) -->
+            <input type="radio" name="review_rating" value="{{ s }}" id="star-f{{ s }}" class="amz-star-input">
+            <label class="amz-star-click amz-star-click--right" for="star-f{{ s }}" aria-label="{{ s }} stars" title="{{ s }} stars"></label>
+            <!-- Visual star SVG -->
+            <svg viewBox="0 0 24 24" width="28" height="28" class="amz-star-svg" aria-hidden="true">
+              <polygon class="amz-star-bg" points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" fill="none" stroke="#ddd" stroke-width="1.5"/>
+              <polygon class="amz-star-fill" points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" fill="#ff9900" style="clip-path:inset(0 100% 0 0)"/>
+            </svg>
+          </div>
           {%- endfor -%}
         </div>
       </div>

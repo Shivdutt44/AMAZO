@@ -819,22 +819,50 @@
         }
       });
 
-      // Star picker
-      document.addEventListener('click', (e) => {
-        const label = e.target.closest('.amz-star-pick');
-        if (!label) return;
-        const input = label.querySelector('input[type="radio"]');
-        if (input) {
-          input.checked = true;
-          const val = parseInt(input.value);
-          $$('.amz-star-pick').forEach((l, idx) => {
-            const svg = l.querySelector('.amz-star-svg polygon');
-            /* row-reverse flips DOM order visually: DOM[0]=★5, DOM[4]=★1
-               So fill the LAST `val` DOM elements = idx >= (5 - val) */
-            if (svg) svg.style.fill = idx >= (5 - val) ? '#ff9900' : 'none';
-          });
-        }
+      /* ── Star Picker — Half/Full star support ── */
+      function fillStars(val) {
+        $$('.amz-star-position').forEach(pos => {
+          const posNum = parseInt(pos.dataset.pos);
+          const fillEl = pos.querySelector('.amz-star-fill');
+          if (!fillEl) return;
+          if (val >= posNum) {
+            fillEl.style.clipPath = 'inset(0 0 0 0)';
+          } else if (val >= posNum - 0.5) {
+            fillEl.style.clipPath = 'inset(0 50% 0 0)';
+          } else {
+            fillEl.style.clipPath = 'inset(0 100% 0 0)';
+          }
+        });
+      }
+
+      // Click handler — radio change
+      document.addEventListener('change', (e) => {
+        const input = e.target.closest('.amz-star-input');
+        if (!input) return;
+        const val = parseFloat(input.value);
+        fillStars(val);
       });
+
+      // Hover preview
+      const starPicker = document.getElementById('StarPicker');
+      if (starPicker) {
+        starPicker.addEventListener('mouseover', (e) => {
+          const clickEl = e.target.closest('.amz-star-click');
+          if (!clickEl) return;
+          const pos = clickEl.closest('.amz-star-position');
+          if (!pos) return;
+          const posNum = parseInt(pos.dataset.pos);
+          const isHalf = clickEl.classList.contains('amz-star-click--left');
+          const val = isHalf ? posNum - 0.5 : posNum;
+          fillStars(val);
+        });
+
+        starPicker.addEventListener('mouseleave', () => {
+          // Restore to current selection
+          const selected = document.querySelector('.amz-star-input:checked');
+          fillStars(selected ? parseFloat(selected.value) : 0);
+        });
+      }
 
       // Char counter
       const reviewBody = document.getElementById('ReviewBody');
@@ -878,7 +906,7 @@
 
           setTimeout(() => {
             form.reset();
-            $$('.amz-star-svg polygon', form).forEach(p => { p.style.fill = 'none'; });
+            fillStars(0);
             if (successEl) successEl.style.display = 'none';
             const writeForm = document.getElementById('WriteReviewForm');
             if (writeForm) writeForm.style.display = 'none';
