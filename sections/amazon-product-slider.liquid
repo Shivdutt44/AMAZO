@@ -96,6 +96,22 @@
                   </div>
                 </a>
 
+                <!-- Wishlist Button -->
+                {%- if settings.enable_wishlist -%}
+                <button class="amz-card-wish-btn amz-wishlist-btn"
+                  aria-label="Save {{ product.title | escape }} to wishlist"
+                  data-product-id="{{ product.id }}"
+                  data-product-title="{{ product.title | escape }}"
+                  data-product-url="{{ product.url }}"
+                  data-product-image="{{ product.featured_image | image_url: width: 150 }}"
+                  data-product-price="{{ product.price }}"
+                  data-variant-id="{{ product.selected_or_first_available_variant.id }}">
+                  <svg class="amz-heart-icon" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                  </svg>
+                </button>
+                {%- endif -%}
+
                 <!-- Quick Add (shown on card hover) -->
                 {%- if product.available -%}
                   <button
