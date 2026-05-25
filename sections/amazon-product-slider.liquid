@@ -50,7 +50,8 @@
                         loading="lazy"
                         width="600" height="600">
                     {%- else -%}
-                      {{ 'product-' | append: forloop.index | modulo: 3 | plus: 1 | placeholder_svg_tag: 'amz-prod-card__img amz-placeholder-svg' }}
+                      {%- assign ph_num = forloop.index | modulo: 3 | plus: 1 -%}
+                      {{ 'product-' | append: ph_num | placeholder_svg_tag: 'amz-prod-card__img amz-placeholder-svg' }}
                     {%- endif -%}
 
                   </div>
@@ -171,6 +172,7 @@
 {
   "name": "Amazon Product Slider",
   "tag": "section",
+  "templates": ["index"],
   "settings": [
     { "type": "text", "id": "title", "label": "Section Title", "default": "Best Sellers" },
     { "type": "collection", "id": "collection", "label": "Collection" },

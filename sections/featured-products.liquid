@@ -27,20 +27,8 @@
                   class="amz-fc__grid-img"
                   width="600" height="600">
               {%- else -%}
-                {{ 'product-' | append: forloop.index | modulo: 3 | plus: 1 | placeholder_svg_tag: 'amz-fc__grid-img amz-placeholder-svg' }}
-              {%- endif -%}
-
-              <!-- Wishlist -->
-              {%- if settings.enable_wishlist -%}
-              <button class="amz-wishlist-btn amz-fc-wish-btn"
-                aria-label="Save to wishlist"
-                data-product-id="{{ product.id }}"
-                data-product-title="{{ product.title | escape }}"
-                data-product-url="{{ product.url }}"
-                data-product-image="{{ product.featured_image | image_url: width: 150 }}"
-                data-product-price="{{ fv.price }}"
-                data-variant-id="{{ fv.id }}">
-                <svg class="amz-heart-icon" viewBox="0 0 24 24" width="14" height="14">
+                {%- assign ph_num = forloop.index | modulo: 3 | plus: 1 -%}
+                {{ 'product-' | append: ph_num | placeholder_svg_tag: 'amz-fc__grid-img amz-placeholder-svg' }}
                   <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
                 </svg>
               </button>
@@ -72,7 +60,8 @@
         {%- for i in (1..limit_count) -%}
           <div class="amz-fc__grid-item">
             <div class="amz-fc__img-wrap">
-              {{ 'product-' | append: i | modulo: 3 | plus: 1 | placeholder_svg_tag: 'amz-fc__grid-img amz-placeholder-svg' }}
+              {%- assign ph_num = i | modulo: 3 | plus: 1 -%}
+              {{ 'product-' | append: ph_num | placeholder_svg_tag: 'amz-fc__grid-img amz-placeholder-svg' }}
             </div>
             <p class="amz-fc__product-title" style="color:#565959;">Sample Product {{ i }}</p>
             <div class="amz-fc__stars">
@@ -265,6 +254,7 @@
 {
   "name": "Featured Grid",
   "tag": "section",
+  "templates": ["index"],
   "settings": [
     { "type": "text", "id": "title", "label": "Title", "default": "Top Picks For You" },
     { "type": "collection", "id": "collection", "label": "Collection" },

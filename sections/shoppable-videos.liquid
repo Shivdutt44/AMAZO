@@ -1242,7 +1242,8 @@
                and sample badge/views text.
           ============================================== -->
           {%- for i in (1..8) -%}
-            {%- assign ph_icon = 'product-' | append: i | modulo: 3 | plus: 1 -%}
+            {%- assign ph_num = i | modulo: 3 | plus: 1 -%}
+            {%- assign ph_icon = 'product-' | append: ph_num -%}
             <div class="ks-carousel-slide">
               <div class="ks-shoppable-videos-card" data-is-playing="false" data-index="{{ forloop.index0 }}">
                 <div class="ks-shoppable-videos-video-wrapper">
@@ -1299,6 +1300,7 @@
   "name": "KS - Shoppable videos",
   "tag": "section",
   "class": "section",
+  "templates": ["index"],
   "settings": [
     {
       "type": "header",

@@ -23,7 +23,8 @@
                 >
               {%- else -%}
                 <div class="amz-cats__img-placeholder" style="background: {{ block.settings.bg_color | default: '#f3f3f3' }};overflow:hidden;">
-                  {{ 'collection-' | append: forloop.index | modulo: 3 | plus: 1 | placeholder_svg_tag: 'amz-cats__img amz-placeholder-svg' }}
+                  {%- assign ph_num = forloop.index | modulo: 3 | plus: 1 -%}
+                  {{ 'collection-' | append: ph_num | placeholder_svg_tag: 'amz-cats__img amz-placeholder-svg' }}
                 </div>
               {%- endif -%}
             </div>
@@ -54,7 +55,8 @@
                   {%- if fp != blank and fp.featured_image != blank -%}
                     <img src="{{ fp.featured_image | image_url: width: 370 }}" alt="{{ fp.title | escape }}" loading="lazy" width="370" height="370">
                   {%- else -%}
-                    {{ 'collection-' | append: forloop.index | modulo: 3 | plus: 1 | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}
+                      {%- assign ph_num = forloop.index | modulo: 3 | plus: 1 -%}
+                      {{ 'collection-' | append: ph_num | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}
                   {%- endif -%}
                 {%- endif -%}
                 <p>{{ col.title | truncate: 20 }}</p>
@@ -84,7 +86,8 @@
                 {%- if prod.featured_image != blank -%}
                   <img src="{{ prod.featured_image | image_url: width: 370 }}" alt="{{ prod.title | escape }}" loading="lazy" width="370" height="370">
                 {%- else -%}
-                  {{ 'product-' | append: forloop.index | modulo: 3 | plus: 1 | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}
+                  {%- assign ph_num = forloop.index | modulo: 3 | plus: 1 -%}
+                  {{ 'product-' | append: ph_num | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}
                 {%- endif -%}
                 <p>{{ prod.title | truncate: 18 }}</p>
               </a>
@@ -121,7 +124,8 @@
                 {%- if prod.featured_image != blank -%}
                   <img src="{{ prod.featured_image | image_url: width: 370 }}" alt="{{ prod.title | escape }}" loading="lazy" width="370" height="370">
                 {%- else -%}
-                  {{ 'product-' | append: forloop.index | modulo: 3 | plus: 1 | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}
+                  {%- assign ph_num = forloop.index | modulo: 3 | plus: 1 -%}
+                  {{ 'product-' | append: ph_num | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}
                 {%- endif -%}
                 <p>{{ prod.title | truncate: 18 }}</p>
               </a>
@@ -157,7 +161,8 @@
                 {%- if prod.featured_image != blank -%}
                   <img src="{{ prod.featured_image | image_url: width: 370 }}" alt="{{ prod.title | escape }}" loading="lazy" width="370" height="370">
                 {%- else -%}
-                  {{ 'product-' | append: forloop.index | modulo: 3 | plus: 1 | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}
+                  {%- assign ph_num = forloop.index | modulo: 3 | plus: 1 -%}
+                  {{ 'product-' | append: ph_num | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}
                 {%- endif -%}
                 <p>{{ prod.title | truncate: 18 }}</p>
               </a>
@@ -193,7 +198,8 @@
                 {%- if prod.featured_image != blank -%}
                   <img src="{{ prod.featured_image | image_url: width: 370 }}" alt="{{ prod.title | escape }}" loading="lazy" width="370" height="370">
                 {%- else -%}
-                  {{ 'product-' | append: forloop.index | modulo: 3 | plus: 1 | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}
+                  {%- assign ph_num = forloop.index | modulo: 3 | plus: 1 -%}
+                  {{ 'product-' | append: ph_num | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}
                 {%- endif -%}
                 <p>{{ prod.title | truncate: 18 }}</p>
               </a>
@@ -229,7 +235,8 @@
                 {%- if prod.featured_image != blank -%}
                   <img src="{{ prod.featured_image | image_url: width: 370 }}" alt="{{ prod.title | escape }}" loading="lazy" width="370" height="370">
                 {%- else -%}
-                  {{ 'product-' | append: forloop.index | modulo: 3 | plus: 1 | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}
+                  {%- assign ph_num = forloop.index | modulo: 3 | plus: 1 -%}
+                  {{ 'product-' | append: ph_num | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}
                 {%- endif -%}
                 <p>{{ prod.title | truncate: 18 }}</p>
               </a>
@@ -265,7 +272,8 @@
                 {%- if prod.featured_image != blank -%}
                   <img src="{{ prod.featured_image | image_url: width: 370 }}" alt="{{ prod.title | escape }}" loading="lazy" width="370" height="370">
                 {%- else -%}
-                  {{ 'product-' | append: forloop.index | modulo: 3 | plus: 1 | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}
+                  {%- assign ph_num = forloop.index | modulo: 3 | plus: 1 -%}
+                  {{ 'product-' | append: ph_num | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}
                 {%- endif -%}
                 <p>{{ prod.title | truncate: 18 }}</p>
               </a>
@@ -301,7 +309,8 @@
                 {%- if prod.featured_image != blank -%}
                   <img src="{{ prod.featured_image | image_url: width: 370 }}" alt="{{ prod.title | escape }}" loading="lazy" width="370" height="370">
                 {%- else -%}
-                  {{ 'product-' | append: forloop.index | modulo: 3 | plus: 1 | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}
+                  {%- assign ph_num = forloop.index | modulo: 3 | plus: 1 -%}
+                  {{ 'product-' | append: ph_num | placeholder_svg_tag: 'amz-cats__4grid-placeholder amz-placeholder-svg' }}
                 {%- endif -%}
                 <p>{{ prod.title | truncate: 18 }}</p>
               </a>
@@ -357,6 +366,7 @@
 {
   "name": "Amazon Category Grid",
   "tag": "section",
+  "templates": ["index"],
   "max_blocks": 12,
   "settings": [],
   "blocks": [
