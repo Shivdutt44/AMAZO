@@ -11,31 +11,68 @@
   "sections": {
     "announcement-bar": {
       "type": "announcement-bar",
-      "settings": {}
+      "settings": {
+        "rotation_speed": 4000,
+        "animation": "fade",
+        "show_arrows": false,
+        "show_dots": false
+      }
     },
     "hero-banner": {
       "type": "hero-banner",
-      "settings": {}
+      "settings": {
+        "autoplay_speed": 5,
+        "banner_height_desktop": 600,
+        "banner_height_mobile": 350
+      }
     },
     "featured-products": {
       "type": "featured-products",
-      "settings": {}
+      "settings": {
+        "title": "Top Picks For You",
+        "collection": "3-products-999-build-your-box",
+        "product_count": 4,
+        "link_text": "See all recommendations",
+        "view_all_url": ""
+      }
     },
     "featured-products-2": {
       "type": "featured-products",
-      "settings": {}
+      "settings": {
+        "title": "Top Picks For You",
+        "collection": "2-sunscreens-699",
+        "product_count": 4,
+        "link_text": "See all recommendations",
+        "view_all_url": ""
+      }
     },
     "featured-products-3": {
       "type": "featured-products",
-      "settings": {}
+      "settings": {
+        "title": "Top Picks For You",
+        "collection": "3-999",
+        "product_count": 4,
+        "link_text": "See all recommendations",
+        "view_all_url": ""
+      }
     },
     "deals-of-the-day": {
       "type": "deals-of-the-day",
-      "settings": {}
+      "settings": {
+        "title": "Deals of the Day",
+        "deals_collection": "20-off-products",
+        "view_all_link": ""
+      }
     },
     "amazon-product-slider": {
       "type": "amazon-product-slider",
-      "settings": {}
+      "settings": {
+        "title": "Best Sellers",
+        "collection": "essential-oils",
+        "product_count": 12,
+        "view_all_text": "See all best sellers",
+        "view_all_link": ""
+      }
     },
     "trust-badges": {
       "type": "trust-badges",
@@ -51,7 +88,12 @@
     },
     "newsletter": {
       "type": "newsletter",
-      "settings": {}
+      "settings": {
+        "title": "Stay Updated",
+        "subtitle": "Get deals, new arrivals, and exclusive offers",
+        "placeholder": "Enter your email address",
+        "button_text": "Subscribe"
+      }
     }
   },
   "order": [
