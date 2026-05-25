@@ -1,0 +1,202 @@
+<div class="cro-countdown page-width" style="padding:{{ section.settings.padding_top }}px 16px {{ section.settings.padding_bottom }}px;background:{{ section.settings.bg_color }};">
+  <div class="cro-countdown__inner" style="text-align:center;background:linear-gradient(135deg,{{ section.settings.gradient_start }},{{ section.settings.gradient_end }});border-radius:12px;padding:48px 24px;position:relative;overflow:hidden;">
+    {%- if section.settings.badge_text != blank -%}
+      <span style="display:inline-block;background:{{ section.settings.badge_bg }};color:{{ section.settings.badge_text_color }};font-size:12px;font-weight:700;padding:4px 14px;border-radius:20px;margin-bottom:12px;text-transform:uppercase;letter-spacing:1px;">{{ section.settings.badge_text }}</span>
+    {%- endif -%}
+    <h2 style="font-size:28px;font-weight:700;margin:0 0 8px;color:{{ section.settings.heading_color }};">{{ section.settings.heading }}</h2>
+    <p style="font-size:15px;color:{{ section.settings.subheading_color }};margin:0 0 24px;">{{ section.settings.subheading }}</p>
+    <div class="cro-countdown__timer" style="display:flex;align-items:center;justify-content:center;gap:12px;font-size:36px;font-weight:700;color:#fff;margin-bottom:24px;" data-target="{{ section.settings.target_date }}" data-expired-text="{{ section.settings.expired_text }}">
+      <div class="cro-cd-block" style="background:rgba(0,0,0,0.2);border-radius:8px;padding:12px 16px;min-width:70px;">
+        <div class="cro-cd-num" id="cro-cd-days-{{ section.id }}">00</div>
+        <div style="font-size:11px;font-weight:400;opacity:0.8;text-transform:uppercase;">Days</div>
+      </div>
+      <span style="font-size:30px;opacity:0.6;">:</span>
+      <div class="cro-cd-block" style="background:rgba(0,0,0,0.2);border-radius:8px;padding:12px 16px;min-width:70px;">
+        <div class="cro-cd-num" id="cro-cd-hours-{{ section.id }}">00</div>
+        <div style="font-size:11px;font-weight:400;opacity:0.8;text-transform:uppercase;">Hours</div>
+      </div>
+      <span style="font-size:30px;opacity:0.6;">:</span>
+      <div class="cro-cd-block" style="background:rgba(0,0,0,0.2);border-radius:8px;padding:12px 16px;min-width:70px;">
+        <div class="cro-cd-num" id="cro-cd-mins-{{ section.id }}">00</div>
+        <div style="font-size:11px;font-weight:400;opacity:0.8;text-transform:uppercase;">Mins</div>
+      </div>
+      <span style="font-size:30px;opacity:0.6;">:</span>
+      <div class="cro-cd-block" style="background:rgba(0,0,0,0.2);border-radius:8px;padding:12px 16px;min-width:70px;">
+        <div class="cro-cd-num" id="cro-cd-secs-{{ section.id }}">00</div>
+        <div style="font-size:11px;font-weight:400;opacity:0.8;text-transform:uppercase;">Secs</div>
+      </div>
+    </div>
+    {%- if section.settings.button_text != blank and section.settings.button_url != blank -%}
+      <a href="{{ section.settings.button_url }}" class="cro-countdown__btn" style="display:inline-block;padding:12px 40px;background:{{ section.settings.btn_bg }};color:{{ section.settings.btn_text }};border-radius:var(--btn-radius,3px);font-size:16px;font-weight:700;text-decoration:none;transition:transform .1s;box-shadow:0 4px 15px rgba(0,0,0,0.15);" onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform='none'">{{ section.settings.button_text }}</a>
+    {%- endif -%}
+  </div>
+</div>
+<style>
+@media(max-width:600px){
+  .cro-countdown__inner{padding:32px 16px!important;}
+  .cro-countdown__inner h2{font-size:22px!important;}
+  .cro-countdown__timer{font-size:24px!important;}
+  .cro-cd-block{padding:8px 10px!important;min-width:50px!important;}
+}
+</style>
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+  var timer=document.querySelector('.cro-countdown__timer[data-target]');
+  if(!timer)return;
+  var target=new Date(timer.dataset.target).getTime();
+  var expiredText=timer.dataset.expiredText||'Sale Ended';
+  function tick(){
+    var now=new Date().getTime();
+    var diff=target-now;
+    if(diff<=0){
+      timer.innerHTML=expiredText;
+      return;
+    }
+    var d=Math.floor(diff/(1000*60*60*24));
+    var h=Math.floor((diff%(1000*60*60*24))/(1000*60*60));
+    var m=Math.floor((diff%(1000*60*60))/(1000*60));
+    var s=Math.floor((diff%(1000*60))/1000);
+    var id=timer.closest('[id]')?timer.closest('[id]').id:'';
+    var daysEl=document.getElementById('cro-cd-days-'+id);
+    if(daysEl)daysEl.textContent=String(d).padStart(2,'0');
+    var hoursEl=document.getElementById('cro-cd-hours-'+id);
+    if(hoursEl)hoursEl.textContent=String(h).padStart(2,'0');
+    var minsEl=document.getElementById('cro-cd-mins-'+id);
+    if(minsEl)minsEl.textContent=String(m).padStart(2,'0');
+    var secsEl=document.getElementById('cro-cd-secs-'+id);
+    if(secsEl)secsEl.textContent=String(s).padStart(2,'0');
+  }
+  tick();
+  setInterval(tick,1000);
+});
+</script>
+
+{% schema %}
+{
+  "name": "CRO - Countdown Timer",
+  "tag": "section",
+  "class": "cro-section cro-countdown-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "badge_text",
+      "label": "Badge Text",
+      "default": "Limited Time Offer"
+    },
+    {
+      "type": "color",
+      "id": "badge_bg",
+      "label": "Badge Background",
+      "default": "#ff9900"
+    },
+    {
+      "type": "color",
+      "id": "badge_text_color",
+      "label": "Badge Text Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Flash Sale Ends In"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Don't miss out on these amazing deals!"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "subheading_color",
+      "label": "Subheading Color",
+      "default": "rgba(255,255,255,0.8)"
+    },
+    {
+      "type": "color",
+      "id": "gradient_start",
+      "label": "Gradient Start",
+      "default": "#cc0c39"
+    },
+    {
+      "type": "color",
+      "id": "gradient_end",
+      "label": "Gradient End",
+      "default": "#e47911"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Section Background",
+      "default": "#eaeded"
+    },
+    {
+      "type": "text",
+      "id": "target_date",
+      "label": "Target Date (ISO)",
+      "default": "2026-06-15T23:59:59",
+      "info": "Format: YYYY-MM-DDTHH:MM:SS"
+    },
+    {
+      "type": "text",
+      "id": "expired_text",
+      "label": "Expired Text",
+      "default": "Sale Ended"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button Text",
+      "default": "Shop Now"
+    },
+    {
+      "type": "url",
+      "id": "button_url",
+      "label": "Button URL"
+    },
+    {
+      "type": "color",
+      "id": "btn_bg",
+      "label": "Button Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "btn_text",
+      "label": "Button Text Color",
+      "default": "#cc0c39"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding Top",
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding Bottom",
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "default": 40
+    }
+  ],
+  "presets": [
+    {
+      "name": "CRO - Countdown Timer",
+      "category": "CRO"
+    }
+  ]
+}
+{% endschema %}

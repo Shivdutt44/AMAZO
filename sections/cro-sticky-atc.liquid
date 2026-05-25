@@ -1,0 +1,155 @@
+<div class="cro-sticky-atc" style="position:fixed;bottom:0;left:0;right:0;z-index:900;background:{{ section.settings.bg_color }};border-top:1px solid #e7e7e7;padding:10px 16px;box-shadow:0 -4px 20px rgba(0,0,0,0.1);transform:translateY(100%);transition:transform .3s ease;display:none;" data-show-at="{{ section.settings.show_at_scroll }}">
+  <div class="page-width" style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+    <div style="display:flex;align-items:center;gap:12px;flex:1;min-width:150px;">
+      {%- if section.settings.show_image and section.settings.product_image != blank -%}
+        <img src="{{ section.settings.product_image | image_url: width: 60 }}" alt="" style="width:40px;height:40px;object-fit:contain;border-radius:4px;display:block;">
+      {%- endif -%}
+      <div>
+        <div style="font-size:14px;font-weight:600;color:{{ section.settings.title_color }};max-width:300px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ section.settings.product_title }}</div>
+        {%- if section.settings.price != blank -%}
+          <div style="font-size:13px;color:{{ section.settings.price_color }};">{{ section.settings.price }}</div>
+        {%- endif -%}
+      </div>
+    </div>
+    {%- if section.settings.button_text != blank -%}
+      <button type="button" class="cro-sticky-atc__btn" style="display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 24px;background:{{ section.settings.btn_bg }};color:{{ section.settings.btn_text }};border:none;border-radius:var(--btn-radius,3px);font-size:14px;font-weight:600;cursor:pointer;white-space:nowrap;transition:opacity .2s;flex-shrink:0;" onclick="{{ section.settings.button_action }}" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+        {{ section.settings.button_text }}
+      </button>
+    {%- endif -%}
+  </div>
+</div>
+<style>
+.cro-sticky-atc.is-visible{transform:translateY(0);display:block!important;}
+@media(min-width:769px){
+  .cro-sticky-atc{display:none!important;}
+  .cro-sticky-atc.is-visible{display:block!important;}
+}
+</style>
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+  var bar=document.querySelector('.cro-sticky-atc');
+  if(!bar)return;
+  var scrollThreshold=parseInt(bar.dataset.showAt)||400;
+  function checkScroll(){
+    if(window.scrollY>scrollThreshold){bar.classList.add('is-visible');}
+    else{bar.classList.remove('is-visible');}
+  }
+  window.addEventListener('scroll',checkScroll,{passive:true});
+  checkScroll();
+});
+</script>
+
+{% schema %}
+{
+  "name": "CRO - Sticky ATC Bar",
+  "tag": "section",
+  "class": "cro-section cro-sticky-atc-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Product Info"
+    },
+    {
+      "type": "text",
+      "id": "product_title",
+      "label": "Product Title",
+      "default": "Featured Product"
+    },
+    {
+      "type": "text",
+      "id": "price",
+      "label": "Price Text",
+      "default": "₹499"
+    },
+    {
+      "type": "image_picker",
+      "id": "product_image",
+      "label": "Product Image"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_image",
+      "label": "Show Product Image",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Appearance"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Bar Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title Color",
+      "default": "#0f1111"
+    },
+    {
+      "type": "color",
+      "id": "price_color",
+      "label": "Price Color",
+      "default": "#b12704"
+    },
+    {
+      "type": "header",
+      "content": "Button"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button Text",
+      "default": "Add to Cart"
+    },
+    {
+      "type": "color",
+      "id": "btn_bg",
+      "label": "Button Background",
+      "default": "#ffd814"
+    },
+    {
+      "type": "color",
+      "id": "btn_text",
+      "label": "Button Text Color",
+      "default": "#0f1111"
+    },
+    {
+      "type": "textarea",
+      "id": "button_action",
+      "label": "Button Click Action (JS)",
+      "default": "document.querySelector('button[name=\"add\"],.amz-btn--atc')?.click()",
+      "info": "JavaScript code to run when clicked. Default clicks the page's ATC button."
+    },
+    {
+      "type": "header",
+      "content": "Behavior"
+    },
+    {
+      "type": "range",
+      "id": "show_at_scroll",
+      "label": "Show After Scroll (px)",
+      "min": 0,
+      "max": 2000,
+      "step": 50,
+      "default": 400
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_on_desktop",
+      "label": "Hide on Desktop",
+      "default": true,
+      "info": "Only show on mobile/tablet"
+    }
+  ],
+  "presets": [
+    {
+      "name": "CRO - Sticky ATC Bar",
+      "category": "CRO"
+    }
+  ]
+}
+{% endschema %}

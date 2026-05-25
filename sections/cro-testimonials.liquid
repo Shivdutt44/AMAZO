@@ -1,0 +1,149 @@
+<div class="cro-testimonials page-width" style="padding:{{ section.settings.padding_top }}px 16px {{ section.settings.padding_bottom }}px;background:{{ section.settings.bg_color }};">
+  {%- if section.settings.heading != blank -%}
+    <h2 class="cro-section-title" style="text-align:center;font-size:22px;font-weight:700;margin-bottom:8px;color:{{ section.settings.heading_color }};">{{ section.settings.heading }}</h2>
+  {%- endif -%}
+  {%- if section.settings.subheading != blank -%}
+    <p style="text-align:center;font-size:14px;color:var(--amz-gray,#565959);margin:0 0 28px;">{{ section.settings.subheading }}</p>
+  {%- endif -%}
+  <div class="cro-testimonials__grid" style="display:grid;grid-template-columns:repeat({{ section.settings.columns }},1fr);gap:24px;">
+    {%- for block in section.blocks -%}
+      <div class="cro-testimonial-card" style="background:#fff;border-radius:8px;padding:24px;border:1px solid #e7e7e7;text-align:center;transition:transform .2s,box-shadow .2s;" onmouseover="this.style.boxShadow='0 4px 20px rgba(0,0,0,.08)';this.style.transform='translateY(-2px)'" onmouseout="this.style.boxShadow='none';this.style.transform='none'">
+        {%- if block.settings.avatar != blank -%}
+          <img src="{{ block.settings.avatar | image_url: width: 80 }}" alt="{{ block.settings.author }}" loading="lazy" style="width:56px;height:56px;border-radius:50%;object-fit:cover;margin:0 auto 12px;display:block;">
+        {%- else -%}
+          <div style="width:56px;height:56px;border-radius:50%;background:var(--amz-orange,#ff9900);margin:0 auto 12px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:#fff;">{{ block.settings.author | slice: 0 | upcase }}</div>
+        {%- endif -%}
+        <div class="cro-stars" style="color:#ff9900;font-size:18px;margin-bottom:8px;">{{ block.settings.rating }}</div>
+        <p style="font-size:14px;color:var(--amz-text,#0f1111);line-height:1.6;margin:0 0 12px;font-style:italic;">"{{ block.settings.quote }}"</p>
+        <div style="font-size:14px;font-weight:600;color:{{ section.settings.author_color }};">{{ block.settings.author }}</div>
+        {%- if block.settings.role != blank -%}
+          <div style="font-size:12px;color:var(--amz-gray,#565959);margin-top:2px;">{{ block.settings.role }}</div>
+        {%- endif -%}
+      </div>
+    {%- endfor -%}
+  </div>
+</div>
+<style>
+@media(max-width:900px){
+  .cro-testimonials__grid{grid-template-columns:repeat(2,1fr)!important;}
+}
+@media(max-width:600px){
+  .cro-testimonials__grid{grid-template-columns:1fr!important;}
+}
+</style>
+
+{% schema %}
+{
+  "name": "CRO - Testimonials",
+  "tag": "section",
+  "class": "cro-section cro-testimonials-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "What Our Customers Say"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Join thousands of happy customers"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading Color",
+      "default": "#0f1111"
+    },
+    {
+      "type": "color",
+      "id": "author_color",
+      "label": "Author Name Color",
+      "default": "#0f1111"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#eaeded"
+    },
+    {
+      "type": "range",
+      "id": "columns",
+      "label": "Columns",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding Top",
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding Bottom",
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "default": 40
+    }
+  ],
+  "blocks": [
+    {
+      "type": "testimonial",
+      "name": "Testimonial",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "avatar",
+          "label": "Customer Avatar"
+        },
+        {
+          "type": "text",
+          "id": "author",
+          "label": "Customer Name",
+          "default": "Priya S."
+        },
+        {
+          "type": "text",
+          "id": "role",
+          "label": "Role/Location",
+          "default": "Verified Buyer"
+        },
+        {
+          "type": "text",
+          "id": "rating",
+          "label": "Star Rating (HTML)",
+          "default": "★★★★★",
+          "info": "Use ★ and ☆ characters"
+        },
+        {
+          "type": "textarea",
+          "id": "quote",
+          "label": "Testimonial Quote",
+          "default": "Amazing quality! The product exceeded my expectations. Fast delivery too."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "CRO - Testimonials",
+      "category": "CRO",
+      "blocks": [
+        { "type": "testimonial", "settings": { "author": "Priya S.", "rating": "★★★★★", "quote": "Amazing quality! The product exceeded my expectations." } },
+        { "type": "testimonial", "settings": { "author": "Rahul K.", "rating": "★★★★★", "quote": "Great customer service and lightning fast shipping." } },
+        { "type": "testimonial", "settings": { "author": "Anita M.", "rating": "★★★★☆", "quote": "Love the product! Will definitely buy again." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

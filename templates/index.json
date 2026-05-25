@@ -28,8 +28,8 @@
       "type": "amazon-product-slider",
       "settings": {}
     },
-    "trust-badges": {
-      "type": "trust-badges",
+    "cro-trust-badges-grid": {
+      "type": "cro-trust-badges-grid",
       "settings": {}
     },
     "category-grid": {
@@ -40,8 +40,64 @@
       "type": "promo-banners",
       "settings": {}
     },
-    "newsletter": {
-      "type": "newsletter",
+    "cro-testimonials": {
+      "type": "cro-testimonials",
+      "settings": {}
+    },
+    "cro-brand-logos": {
+      "type": "cro-brand-logos",
+      "settings": {}
+    },
+    "cro-guarantee-badge": {
+      "type": "cro-guarantee-badge",
+      "settings": {}
+    },
+    "cro-why-choose-us": {
+      "type": "cro-why-choose-us",
+      "settings": {}
+    },
+    "cro-countdown-timer": {
+      "type": "cro-countdown-timer",
+      "settings": {}
+    },
+    "cro-low-stock": {
+      "type": "cro-low-stock",
+      "settings": {}
+    },
+    "cro-social-proof-bar": {
+      "type": "cro-social-proof-bar",
+      "settings": {}
+    },
+    "cro-limited-offer": {
+      "type": "cro-limited-offer",
+      "settings": {}
+    },
+    "cro-shipping-bar": {
+      "type": "cro-shipping-bar",
+      "settings": {}
+    },
+    "cro-bundle-deals": {
+      "type": "cro-bundle-deals",
+      "settings": {}
+    },
+    "cro-comparison-table": {
+      "type": "cro-comparison-table",
+      "settings": {}
+    },
+    "cro-how-it-works": {
+      "type": "cro-how-it-works",
+      "settings": {}
+    },
+    "cro-faq-accordion": {
+      "type": "cro-faq-accordion",
+      "settings": {}
+    },
+    "cro-reviews-carousel": {
+      "type": "cro-reviews-carousel",
+      "settings": {}
+    },
+    "cro-newsletter-popup": {
+      "type": "cro-newsletter-popup",
       "settings": {}
     }
   },
@@ -53,9 +109,23 @@
     "featured-products-3",
     "deals-of-the-day",
     "amazon-product-slider",
-    "trust-badges",
+    "cro-trust-badges-grid",
     "category-grid",
     "promo-banners",
-    "newsletter"
+    "cro-testimonials",
+    "cro-brand-logos",
+    "cro-guarantee-badge",
+    "cro-why-choose-us",
+    "cro-countdown-timer",
+    "cro-low-stock",
+    "cro-social-proof-bar",
+    "cro-limited-offer",
+    "cro-shipping-bar",
+    "cro-bundle-deals",
+    "cro-comparison-table",
+    "cro-how-it-works",
+    "cro-faq-accordion",
+    "cro-reviews-carousel",
+    "cro-newsletter-popup"
   ]
 }

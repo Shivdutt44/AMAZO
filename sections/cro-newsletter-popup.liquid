@@ -1,0 +1,223 @@
+{{ 'amazo-cro.css' | asset_url | stylesheet_tag }}
+{{ 'amazo-cro.js' | asset_url | script_tag }}
+
+{%- style -%}
+  #cro-newsletter-popup-{{ section.id }} {
+    --popup-bg: {{ section.settings.bg_color }};
+    --popup-overlay: {{ section.settings.overlay_color }};
+    --popup-text: {{ section.settings.text_color }};
+    --popup-accent: {{ section.settings.accent_color }};
+    --popup-btn-bg: {{ section.settings.btn_bg }};
+    --popup-btn-text: {{ section.settings.btn_text_color }};
+    --popup-radius: {{ section.settings.border_radius }}px;
+  }
+{%- endstyle -%}
+
+<div id="cro-newsletter-popup-{{ section.id }}" class="cro-newsletter-popup" data-delay="{{ section.settings.delay_seconds }}" data-exit-intent="{{ section.settings.exit_intent }}" data-frequency="{{ section.settings.frequency }}">
+  <div class="cro-newsletter-popup__overlay"></div>
+  <div class="cro-newsletter-popup__modal">
+    <button class="cro-newsletter-popup__close" aria-label="{{ 'accessibility.close' | t }}" type="button">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <div class="cro-newsletter-popup__content">
+      {%- if section.settings.image != blank -%}
+        <div class="cro-newsletter-popup__image">
+          <img src="{{ section.settings.image | img_url: '400x' }}" alt="{{ section.settings.heading | escape }}" loading="lazy" width="400" height="300">
+        </div>
+      {%- endif -%}
+      <div class="cro-newsletter-popup__form-wrap"{% if section.settings.image == blank %} style="width:100%;"{% endif %}>
+        {%- if section.settings.discount_badge != blank -%}
+          <div class="cro-newsletter-popup__badge">{{ section.settings.discount_badge }}</div>
+        {%- endif -%}
+        {%- if section.settings.heading != blank -%}
+          <h2 class="cro-newsletter-popup__heading">{{ section.settings.heading }}</h2>
+        {%- endif -%}
+        {%- if section.settings.subtext != blank -%}
+          <p class="cro-newsletter-popup__text">{{ section.settings.subtext }}</p>
+        {%- endif -%}
+        {%- form 'customer', id: 'newsletter-popup-form', class: 'cro-newsletter-popup__form' -%}
+          {{ form.errors | default_errors }}
+          {%- if form.posted_successfully? -%}
+            <div class="cro-newsletter-popup__success">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--popup-accent)" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              <p>{{ section.settings.success_message }}</p>
+            </div>
+          {%- else -%}
+            <input type="hidden" name="contact[tags]" value="newsletter">
+            <div class="cro-newsletter-popup__input-group">
+              <input type="email" name="contact[email]" class="cro-newsletter-popup__input" value="{% if customer %}{{ customer.email }}{% endif %}" placeholder="{{ section.settings.placeholder_text }}" aria-label="{{ section.settings.placeholder_text }}" autocorrect="off" autocapitalize="off" required>
+              <button type="submit" class="cro-newsletter-popup__btn">{{ section.settings.btn_text }}</button>
+            </div>
+            <label class="cro-newsletter-popup__dismiss">
+              <input type="checkbox" class="cro-newsletter-popup__dismiss-input"> {{ section.settings.dismiss_text }}
+            </label>
+          {%- endif -%}
+        {%- endform -%}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "CRO - Newsletter Popup",
+  "tag": "section",
+  "class": "cro-section cro-newsletter-popup-section",
+  "limit": 1,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "discount_badge",
+      "label": "Discount badge text",
+      "default": "🎉 GET 10% OFF"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Don't Miss Out!"
+    },
+    {
+      "type": "textarea",
+      "id": "subtext",
+      "label": "Subtext",
+      "default": "Subscribe to our newsletter and get 10% off your first order. Be the first to know about new arrivals and exclusive deals."
+    },
+    {
+      "type": "text",
+      "id": "placeholder_text",
+      "label": "Email placeholder",
+      "default": "Enter your email"
+    },
+    {
+      "type": "text",
+      "id": "btn_text",
+      "label": "Button text",
+      "default": "Get My Discount"
+    },
+    {
+      "type": "text",
+      "id": "success_message",
+      "label": "Success message",
+      "default": "Thanks! Check your inbox for your discount code."
+    },
+    {
+      "type": "text",
+      "id": "dismiss_text",
+      "label": "Dismiss checkbox text",
+      "default": "Don't show this again"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "header",
+      "content": "Behavior"
+    },
+    {
+      "type": "range",
+      "id": "delay_seconds",
+      "label": "Delay (seconds)",
+      "default": 5,
+      "min": 0,
+      "max": 60,
+      "step": 1,
+      "unit": "s"
+    },
+    {
+      "type": "checkbox",
+      "id": "exit_intent",
+      "label": "Show on exit intent",
+      "default": true,
+      "info": "Shows popup when mouse leaves the page"
+    },
+    {
+      "type": "select",
+      "id": "frequency",
+      "label": "Show frequency",
+      "default": "once",
+      "options": [
+        { "value": "once", "label": "Once per session" },
+        { "value": "daily", "label": "Once per day" },
+        { "value": "always", "label": "Every page load" }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "overlay_color",
+      "label": "Overlay",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "default": "#1a1a2e"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent",
+      "default": "#e74c3c"
+    },
+    {
+      "type": "color",
+      "id": "btn_bg",
+      "label": "Button background",
+      "default": "#e74c3c"
+    },
+    {
+      "type": "color",
+      "id": "btn_text_color",
+      "label": "Button text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "Border radius",
+      "default": 12,
+      "min": 0,
+      "max": 30,
+      "step": 1,
+      "unit": "px"
+    }
+  ],
+  "presets": [
+    {
+      "name": "CRO - Newsletter Popup",
+      "settings": {
+        "heading": "Don't Miss Out!",
+        "subtext": "Subscribe to our newsletter and get 10% off your first order.",
+        "btn_text": "Get My Discount",
+        "bg_color": "#ffffff",
+        "overlay_color": "#000000",
+        "text_color": "#1a1a2e",
+        "accent_color": "#e74c3c",
+        "btn_bg": "#e74c3c",
+        "btn_text_color": "#ffffff"
+      }
+    }
+  ]
+}
+{% endschema %}

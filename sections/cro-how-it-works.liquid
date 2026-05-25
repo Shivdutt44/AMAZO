@@ -1,0 +1,166 @@
+<div class="cro-howitworks page-width" style="padding:{{ section.settings.padding_top }}px 16px {{ section.settings.padding_bottom }}px;background:{{ section.settings.bg_color }};">
+  {%- if section.settings.heading != blank -%}
+    <h2 class="cro-section-title" style="text-align:center;font-size:26px;font-weight:700;margin-bottom:8px;color:{{ section.settings.heading_color }};">{{ section.settings.heading }}</h2>
+  {%- endif -%}
+  {%- if section.settings.subheading != blank -%}
+    <p style="text-align:center;font-size:15px;color:var(--amz-gray,#565959);margin:0 0 36px;">{{ section.settings.subheading }}</p>
+  {%- endif -%}
+  <div class="cro-hiw__steps" style="display:flex;align-items:flex-start;justify-content:center;gap:24px;flex-wrap:wrap;counter-reset:step;">
+    {%- for block in section.blocks -%}
+      <div class="cro-hiw__step" style="flex:1;min-width:200px;max-width:300px;text-align:center;position:relative;">
+        {%- if section.settings.show_numbers -%}
+          <div style="width:48px;height:48px;border-radius:50%;background:{{ section.settings.number_bg }};color:{{ section.settings.number_color }};display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;margin:0 auto 16px;">{{ forloop.index }}</div>
+        {%- endif -%}
+        {%- if block.settings.icon_image != blank -%}
+          <img src="{{ block.settings.icon_image | image_url: width: 80 }}" alt="{{ block.settings.title }}" loading="lazy" style="width:56px;height:56px;object-fit:contain;margin-bottom:12px;display:block;margin-left:auto;margin-right:auto;">
+        {%- else -%}
+          <div style="width:56px;height:56px;border-radius:12px;background:{{ section.settings.icon_bg }};display:flex;align-items:center;justify-content:center;margin:0 auto 12px;">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="{{ section.settings.icon_color }}" stroke-width="1.5"><path d="{{ block.settings.icon_path | default: 'M22 11.08V12a10 10 0 1 1-5.93-9.14' }}"/><polyline points="{{ block.settings.icon_polyline | default: '22 4 12 14.01 9 11.01' }}"/></svg>
+          </div>
+        {%- endif -%}
+        <h3 style="font-size:16px;font-weight:600;margin:0 0 8px;color:{{ section.settings.text_color }};">{{ block.settings.title }}</h3>
+        <p style="font-size:14px;color:var(--amz-gray,#565959);line-height:1.6;margin:0;">{{ block.settings.description }}</p>
+      </div>
+    {%- endfor -%}
+  </div>
+</div>
+<style>
+@media(max-width:768px){
+  .cro-hiw__steps{gap:32px!important;}
+  .cro-hiw__step{max-width:100%!important;min-width:150px!important;}
+}
+</style>
+
+{% schema %}
+{
+  "name": "CRO - How It Works",
+  "tag": "section",
+  "class": "cro-section cro-hiw-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "How It Works"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Get started in 3 simple steps"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading Color",
+      "default": "#0f1111"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#0f1111"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "icon_bg",
+      "label": "Icon Background",
+      "default": "#fef0c7"
+    },
+    {
+      "type": "color",
+      "id": "icon_color",
+      "label": "Icon Color",
+      "default": "#ff9900"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_numbers",
+      "label": "Show Step Numbers",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "number_bg",
+      "label": "Number Background",
+      "default": "#ff9900"
+    },
+    {
+      "type": "color",
+      "id": "number_color",
+      "label": "Number Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding Top",
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding Bottom",
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "default": 40
+    }
+  ],
+  "blocks": [
+    {
+      "type": "step",
+      "name": "Step",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "icon_image",
+          "label": "Icon Image"
+        },
+        {
+          "type": "textarea",
+          "id": "icon_path",
+          "label": "SVG Path (optional)"
+        },
+        {
+          "type": "text",
+          "id": "icon_polyline",
+          "label": "SVG Polyline (optional)"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Step 1"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description",
+          "default": "Choose your favorite products from our extensive collection."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "CRO - How It Works",
+      "category": "CRO",
+      "blocks": [
+        { "type": "step", "settings": { "title": "Browse", "description": "Choose your favorite products from our collection." } },
+        { "type": "step", "settings": { "title": "Order", "description": "Add to cart and checkout securely." } },
+        { "type": "step", "settings": { "title": "Enjoy", "description": "Get fast delivery and enjoy your purchase!" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

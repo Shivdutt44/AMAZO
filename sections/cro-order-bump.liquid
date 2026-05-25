@@ -1,0 +1,292 @@
+{{ 'amazo-cro.css' | asset_url | stylesheet_tag }}
+{{ 'amazo-cro.js' | asset_url | script_tag }}
+
+{%- style -%}
+  #cro-order-bump-{{ section.id }} {
+    --ob-bg: {{ section.settings.bg_color }};
+    --ob-text: {{ section.settings.text_color }};
+    --ob-accent: {{ section.settings.accent_color }};
+    --ob-card-bg: {{ section.settings.card_bg }};
+    --ob-border: {{ section.settings.border_color }};
+    --ob-btn-bg: {{ section.settings.btn_bg }};
+    --ob-btn-text: {{ section.settings.btn_text }};
+    --ob-savings: {{ section.settings.savings_color }};
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+  }
+{%- endstyle -%}
+
+<div id="cro-order-bump-{{ section.id }}" class="cro-order-bump page-width">
+  {%- if section.settings.heading != blank -%}
+    <div class="cro-section-header">
+      <h2 class="cro-section-title">{{ section.settings.heading }}</h2>
+      {%- if section.settings.subheading != blank -%}
+        <p class="cro-section-subtitle">{{ section.settings.subheading }}</p>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+
+  <div class="cro-order-bump__offers">
+    {%- for block in section.blocks -%}
+      <div class="cro-order-bump__offer" {{ block.shopify_attributes }}>
+        <div class="cro-order-bump__inner" style="border-color: var(--ob-border); background: var(--ob-card-bg); {% if block.settings.recommended %}border-color: var(--ob-accent);{% endif %}">
+          {%- if block.settings.recommended -%}
+            <div class="cro-order-bump__badge" style="background: var(--ob-accent); color: #fff;">
+              {{ block.settings.badge_text | default: 'Best Seller' }}
+            </div>
+          {%- endif -%}
+          <div class="cro-order-bump__main">
+            <div class="cro-order-bump__media">
+              {%- if block.settings.product_image != blank -%}
+                <img src="{{ block.settings.product_image | img_url: '120x120' }}" alt="{{ block.settings.title | escape }}" loading="lazy" width="120" height="120">
+              {%- else -%}
+                <div class="cro-order-bump__placeholder" style="width:80px;height:80px;background:#f5f5f5;border-radius:8px;"></div>
+              {%- endif -%}
+            </div>
+            <div class="cro-order-bump__info">
+              <h3 class="cro-order-bump__title">{{ block.settings.title }}</h3>
+              <p class="cro-order-bump__desc">{{ block.settings.description }}</p>
+              <div class="cro-order-bump__pricing">
+                <span class="cro-order-bump__price">{{ block.settings.price }}</span>
+                {%- if block.settings.compare_at != blank -%}
+                  <span class="cro-order-bump__compare">{{ block.settings.compare_at }}</span>
+                {%- endif -%}
+                {%- if block.settings.savings != blank -%}
+                  <span class="cro-order-bump__savings" style="background: var(--ob-savings);">{{ block.settings.savings }}</span>
+                {%- endif -%}
+              </div>
+            </div>
+            <div class="cro-order-bump__action">
+              <label class="cro-order-bump__checkbox-label" data-variant-id="{{ block.settings.variant_id }}">
+                <input type="checkbox" class="cro-order-bump__checkbox" {% if block.settings.checked_default %}checked{% endif %}>
+                <span class="cro-order-bump__checkmark"></span>
+                <span>{{ block.settings.checkbox_label | default: 'Add to cart' }}</span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+    {%- endfor -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "CRO - Order Bump",
+  "tag": "section",
+  "class": "cro-section cro-order-bump-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Frequently Bought Together"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Complete your purchase with these popular add-ons"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background",
+      "default": "#f8f9fa"
+    },
+    {
+      "type": "color",
+      "id": "card_bg",
+      "label": "Card background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "default": "#1a1a2e"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent",
+      "default": "#e74c3c"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Border",
+      "default": "#e8e8e8"
+    },
+    {
+      "type": "color",
+      "id": "btn_bg",
+      "label": "Button background",
+      "default": "#2ecc71"
+    },
+    {
+      "type": "color",
+      "id": "btn_text",
+      "label": "Button text",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "savings_color",
+      "label": "Savings badge color",
+      "default": "#2ecc71"
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "default": 40,
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "default": 40,
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "offer",
+      "name": "Offer",
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "recommended",
+          "label": "Mark as recommended",
+          "default": false
+        },
+        {
+          "type": "text",
+          "id": "badge_text",
+          "label": "Badge text",
+          "default": "Best Seller"
+        },
+        {
+          "type": "image_picker",
+          "id": "product_image",
+          "label": "Product image"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Product Name"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description",
+          "default": "Add this product to your order and save!"
+        },
+        {
+          "type": "text",
+          "id": "price",
+          "label": "Price",
+          "default": "$19.99"
+        },
+        {
+          "type": "text",
+          "id": "compare_at",
+          "label": "Compare at price",
+          "default": "$29.99"
+        },
+        {
+          "type": "text",
+          "id": "savings",
+          "label": "Savings badge",
+          "default": "Save 33%"
+        },
+        {
+          "type": "number",
+          "id": "variant_id",
+          "label": "Variant ID",
+          "info": "Product variant ID to add to cart"
+        },
+        {
+          "type": "checkbox",
+          "id": "checked_default",
+          "label": "Pre-checked by default",
+          "default": true
+        },
+        {
+          "type": "text",
+          "id": "checkbox_label",
+          "label": "Checkbox label",
+          "default": "Add to cart"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "CRO - Order Bump",
+      "settings": {
+        "heading": "Frequently Bought Together",
+        "subheading": "Complete your purchase with these popular add-ons",
+        "bg_color": "#f8f9fa",
+        "card_bg": "#ffffff",
+        "text_color": "#1a1a2e",
+        "accent_color": "#e74c3c",
+        "border_color": "#e8e8e8",
+        "btn_bg": "#2ecc71",
+        "btn_text": "#ffffff",
+        "savings_color": "#2ecc71"
+      },
+      "blocks": [
+        {
+          "type": "offer",
+          "settings": {
+            "recommended": true,
+            "badge_text": "Best Seller",
+            "title": "Premium Leather Wallet",
+            "description": "Handcrafted genuine leather wallet — perfect gift for any occasion.",
+            "price": "$19.99",
+            "compare_at": "$29.99",
+            "savings": "Save 33%",
+            "checked_default": true,
+            "checkbox_label": "Add to cart"
+          }
+        },
+        {
+          "type": "offer",
+          "settings": {
+            "recommended": false,
+            "title": "Matching Keychain",
+            "description": "Complete the set with our matching premium keychain.",
+            "price": "$9.99",
+            "compare_at": "$14.99",
+            "savings": "Save 33%",
+            "checked_default": false,
+            "checkbox_label": "Add to cart"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

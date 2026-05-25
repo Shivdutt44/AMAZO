@@ -1,0 +1,197 @@
+<div class="cro-social-proof page-width" style="padding:{{ section.settings.padding_top }}px 16px {{ section.settings.padding_bottom }}px;background:{{ section.settings.bg_color }};">
+  <div class="cro-sp__inner" style="display:flex;align-items:center;justify-content:center;gap:32px;flex-wrap:wrap;background:#fff;border:1px solid #e7e7e7;border-radius:8px;padding:16px 24px;">
+    {%- if section.settings.show_viewers -%}
+      <div class="cro-sp__stat" style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--amz-text,#0f1111);">
+        <span class="cro-sp__dot" style="width:8px;height:8px;border-radius:50%;background:{{ section.settings.dot_color }};display:inline-block;animation:cro-pulse 2s infinite;"></span>
+        <span><strong class="cro-sp__count" data-min="{{ section.settings.viewer_min }}" data-max="{{ section.settings.viewer_max }}">{{ section.settings.viewer_min }}</strong> {{ section.settings.viewer_label }}</span>
+      </div>
+    {%- endif -%}
+    {%- if section.settings.show_sales -%}
+      <div class="cro-sp__stat" style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--amz-text,#0f1111);">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="{{ section.settings.cart_color }}" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+        <span><strong>X</strong> {{ section.settings.sales_label }}</span>
+      </div>
+    {%- endif -%}
+    {%- if section.settings.show_reviews -%}
+      <div class="cro-sp__stat" style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--amz-text,#0f1111);">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="{{ section.settings.star_color }}" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        <span><strong>{{ section.settings.star_rating }}</strong> {{ section.settings.rating_label }}</span>
+      </div>
+    {%- endif -%}
+    {%- if section.settings.show_secure -%}
+      <div class="cro-sp__stat" style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--amz-text,#0f1111);">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="{{ section.settings.shield_color }}" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+        <span>{{ section.settings.secure_label }}</span>
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+<style>
+@keyframes cro-pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+@media(max-width:600px){
+  .cro-sp__inner{gap:12px!important;flex-direction:column;text-align:center;padding:12px 16px!important;}
+}
+</style>
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+  var countEl=document.querySelector('.cro-sp__count');
+  if(!countEl)return;
+  var min=parseInt(countEl.dataset.min)||12;
+  var max=parseInt(countEl.dataset.max)||min+20;
+  function randomCount(){return Math.floor(Math.random()*(max-min+1))+min;}
+  countEl.textContent=randomCount();
+  setInterval(function(){countEl.textContent=randomCount();},4000);
+});
+</script>
+
+{% schema %}
+{
+  "name": "CRO - Social Proof Bar",
+  "tag": "section",
+  "class": "cro-section cro-sp-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Live Viewers"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_viewers",
+      "label": "Show Live Viewer Count",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "viewer_min",
+      "label": "Min Viewers",
+      "min": 1,
+      "max": 100,
+      "step": 1,
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "viewer_max",
+      "label": "Max Viewers",
+      "min": 10,
+      "max": 200,
+      "step": 5,
+      "default": 50
+    },
+    {
+      "type": "text",
+      "id": "viewer_label",
+      "label": "Viewer Label",
+      "default": "people are viewing this right now"
+    },
+    {
+      "type": "color",
+      "id": "dot_color",
+      "label": "Live Dot Color",
+      "default": "#007600"
+    },
+    {
+      "type": "header",
+      "content": "Recent Sales"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_sales",
+      "label": "Show Recent Sales",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "sales_label",
+      "label": "Sales Label",
+      "default": "orders in the last 24 hours"
+    },
+    {
+      "type": "color",
+      "id": "cart_color",
+      "label": "Cart Icon Color",
+      "default": "#007600"
+    },
+    {
+      "type": "header",
+      "content": "Rating"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_reviews",
+      "label": "Show Star Rating",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "star_rating",
+      "label": "Star Rating Text",
+      "default": "★★★★★"
+    },
+    {
+      "type": "text",
+      "id": "rating_label",
+      "label": "Rating Label",
+      "default": "from 10,000+ reviews"
+    },
+    {
+      "type": "color",
+      "id": "star_color",
+      "label": "Star Color",
+      "default": "#ff9900"
+    },
+    {
+      "type": "header",
+      "content": "Security"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_secure",
+      "label": "Show Secure Badge",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "secure_label",
+      "label": "Secure Label",
+      "default": "Secure & Trusted Checkout"
+    },
+    {
+      "type": "color",
+      "id": "shield_color",
+      "label": "Shield Color",
+      "default": "#007600"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Section Background",
+      "default": "#eaeded"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding Top",
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding Bottom",
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "default": 16
+    }
+  ],
+  "presets": [
+    {
+      "name": "CRO - Social Proof Bar",
+      "category": "CRO"
+    }
+  ]
+}
+{% endschema %}

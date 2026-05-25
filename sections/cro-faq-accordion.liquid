@@ -1,0 +1,122 @@
+<div class="cro-faq page-width" style="padding:{{ section.settings.padding_top }}px 16px {{ section.settings.padding_bottom }}px;background:{{ section.settings.bg_color }};">
+  {%- if section.settings.heading != blank -%}
+    <h2 class="cro-section-title" style="text-align:center;font-size:24px;font-weight:700;margin-bottom:8px;color:{{ section.settings.heading_color }};">{{ section.settings.heading }}</h2>
+  {%- endif -%}
+  {%- if section.settings.subheading != blank -%}
+    <p style="text-align:center;font-size:14px;color:var(--amz-gray,#565959);margin:0 0 28px;">{{ section.settings.subheading }}</p>
+  {%- endif -%}
+  <div class="cro-faq__list" style="max-width:700px;margin:0 auto;">
+    {%- for block in section.blocks -%}
+      <div class="cro-faq__item" style="border-bottom:1px solid #e7e7e7;">
+        <button type="button" class="cro-faq__q" style="width:100%;padding:16px 0;display:flex;align-items:center;justify-content:space-between;gap:12px;background:none;border:none;cursor:pointer;font-size:15px;font-weight:600;color:{{ section.settings.question_color }};text-align:left;" onclick="this.nextElementSibling.classList.toggle('is-open');this.querySelector('.cro-faq__icon').textContent=this.nextElementSibling.classList.contains('is-open')?'−':'+';this.setAttribute('aria-expanded',this.nextElementSibling.classList.contains('is-open'))" aria-expanded="false">
+          <span>{{ block.settings.question }}</span>
+          <span class="cro-faq__icon" style="font-size:20px;flex-shrink:0;color:{{ section.settings.icon_color }};">+</span>
+        </button>
+        <div class="cro-faq__a" style="max-height:0;overflow:hidden;transition:max-height .3s ease,padding .3s ease;padding:0;color:var(--amz-gray,#565959);font-size:14px;line-height:1.7;">
+          <div style="padding-bottom:16px;">{{ block.settings.answer }}</div>
+        </div>
+      </div>
+    {%- endfor -%}
+  </div>
+</div>
+<style>
+.cro-faq__a.is-open{max-height:500px!important;padding:0 0 4px!important;}
+@media(max-width:600px){
+  .cro-faq__q{font-size:14px!important;padding:14px 0!important;}
+}
+</style>
+
+{% schema %}
+{
+  "name": "CRO - FAQ Accordion",
+  "tag": "section",
+  "class": "cro-section cro-faq-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Frequently Asked Questions"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Everything you need to know before buying"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading Color",
+      "default": "#0f1111"
+    },
+    {
+      "type": "color",
+      "id": "question_color",
+      "label": "Question Color",
+      "default": "#0f1111"
+    },
+    {
+      "type": "color",
+      "id": "icon_color",
+      "label": "Icon Color",
+      "default": "#007185"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding Top",
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding Bottom",
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "default": 40
+    }
+  ],
+  "blocks": [
+    {
+      "type": "question",
+      "name": "FAQ Item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Question",
+          "default": "What is your return policy?"
+        },
+        {
+          "type": "textarea",
+          "id": "answer",
+          "label": "Answer",
+          "default": "We offer a 30-day hassle-free return policy. If you're not satisfied, simply contact our support team and we'll help you with the process."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "CRO - FAQ Accordion",
+      "category": "CRO",
+      "blocks": [
+        { "type": "question", "settings": { "question": "What is your return policy?", "answer": "We offer a 30-day hassle-free return policy." } },
+        { "type": "question", "settings": { "question": "How long does shipping take?", "answer": "Standard shipping takes 3-7 business days." } },
+        { "type": "question", "settings": { "question": "Do you ship internationally?", "answer": "Yes, we ship to over 50 countries worldwide." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

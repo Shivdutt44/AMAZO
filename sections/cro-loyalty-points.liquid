@@ -1,0 +1,290 @@
+{{ 'amazo-cro.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  #cro-loyalty-{{ section.id }} {
+    --loyalty-bg: {{ section.settings.bg_color }};
+    --loyalty-card-bg: {{ section.settings.card_bg }};
+    --loyalty-text: {{ section.settings.text_color }};
+    --loyalty-accent: {{ section.settings.accent_color }};
+    --loyalty-btn-bg: {{ section.settings.btn_bg }};
+    --loyalty-btn-text: {{ section.settings.btn_text }};
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+  }
+{%- endstyle -%}
+
+<div id="cro-loyalty-{{ section.id }}" class="cro-loyalty page-width">
+  {%- if section.settings.heading != blank -%}
+    <div class="cro-section-header">
+      <h2 class="cro-section-title">{{ section.settings.heading }}</h2>
+      {%- if section.settings.subheading != blank -%}
+        <p class="cro-section-subtitle">{{ section.settings.subheading }}</p>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+
+  <div class="cro-loyalty__grid" style="grid-template-columns: repeat({{ section.settings.tiers_per_row }}, 1fr);">
+    {%- for block in section.blocks -%}
+      <div class="cro-loyalty__tier" {{ block.shopify_attributes }}>
+        <div class="cro-loyalty__icon">
+          {%- if block.settings.icon != blank -%}
+            <img src="{{ block.settings.icon | img_url: '60x60' }}" alt="{{ block.settings.title | escape }}" loading="lazy" width="60" height="60">
+          {%- else -%}
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--loyalty-accent)" stroke-width="1.5">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+            </svg>
+          {%- endif -%}
+        </div>
+        <h3 class="cro-loyalty__tier-title">{{ block.settings.title }}</h3>
+        <div class="cro-loyalty__points">{{ block.settings.points_label }}</div>
+        <ul class="cro-loyalty__benefits">
+          {%- for i in (1..5) -%}
+            {%- capture benefit_key -%}benefit_{{ i }}{%- endcapture -%}
+            {%- assign benefit = block.settings[benefit_key] -%}
+            {%- if benefit != blank -%}
+              <li>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--loyalty-accent)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                {{ benefit }}
+              </li>
+            {%- endif -%}
+          {%- endfor -%}
+        </ul>
+      </div>
+    {%- endfor -%}
+  </div>
+
+  {%- if section.settings.show_cta -%}
+    <div class="cro-loyalty__cta">
+      <p class="cro-loyalty__cta-text">{{ section.settings.cta_text }}</p>
+      <a href="{{ section.settings.cta_link }}" class="cro-loyalty__cta-btn">{{ section.settings.cta_label }}</a>
+    </div>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "CRO - Loyalty Program",
+  "tag": "section",
+  "class": "cro-section cro-loyalty-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Our Rewards Program"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Earn points with every purchase and unlock exclusive benefits"
+    },
+    {
+      "type": "range",
+      "id": "tiers_per_row",
+      "label": "Tiers per row",
+      "default": 3,
+      "min": 1,
+      "max": 4,
+      "step": 1
+    },
+    {
+      "type": "header",
+      "content": "Call to Action"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_cta",
+      "label": "Show CTA",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "CTA text",
+      "default": "Ready to start earning rewards?"
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "CTA button label",
+      "default": "Join Now — It's Free"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "CTA link"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background",
+      "default": "#f8f9fa"
+    },
+    {
+      "type": "color",
+      "id": "card_bg",
+      "label": "Card background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "default": "#1a1a2e"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent",
+      "default": "#f39c12"
+    },
+    {
+      "type": "color",
+      "id": "btn_bg",
+      "label": "Button background",
+      "default": "#f39c12"
+    },
+    {
+      "type": "color",
+      "id": "btn_text",
+      "label": "Button text",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "default": 40,
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "default": 40,
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "tier",
+      "name": "Tier",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "icon",
+          "label": "Icon image"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Tier name",
+          "default": "Gold"
+        },
+        {
+          "type": "text",
+          "id": "points_label",
+          "label": "Points label",
+          "default": "Earn 2x Points"
+        },
+        {
+          "type": "text",
+          "id": "benefit_1",
+          "label": "Benefit 1",
+          "default": "Free shipping on all orders"
+        },
+        {
+          "type": "text",
+          "id": "benefit_2",
+          "label": "Benefit 2",
+          "default": "Exclusive early access"
+        },
+        {
+          "type": "text",
+          "id": "benefit_3",
+          "label": "Benefit 3"
+        },
+        {
+          "type": "text",
+          "id": "benefit_4",
+          "label": "Benefit 4"
+        },
+        {
+          "type": "text",
+          "id": "benefit_5",
+          "label": "Benefit 5"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "CRO - Loyalty Program",
+      "settings": {
+        "heading": "Our Rewards Program",
+        "subheading": "Earn points with every purchase and unlock exclusive benefits",
+        "show_cta": true,
+        "cta_text": "Ready to start earning rewards?",
+        "cta_label": "Join Now — It's Free",
+        "bg_color": "#f8f9fa",
+        "card_bg": "#ffffff",
+        "text_color": "#1a1a2e",
+        "accent_color": "#f39c12",
+        "btn_bg": "#f39c12",
+        "btn_text": "#ffffff"
+      },
+      "blocks": [
+        {
+          "type": "tier",
+          "settings": {
+            "title": "Silver",
+            "points_label": "Earn 1x Points",
+            "benefit_1": "Free standard shipping",
+            "benefit_2": "Birthday reward"
+          }
+        },
+        {
+          "type": "tier",
+          "settings": {
+            "title": "Gold",
+            "points_label": "Earn 2x Points",
+            "benefit_1": "Free shipping on all orders",
+            "benefit_2": "Exclusive early access",
+            "benefit_3": "Double points weekends"
+          }
+        },
+        {
+          "type": "tier",
+          "settings": {
+            "title": "Platinum",
+            "points_label": "Earn 3x Points",
+            "benefit_1": "Free express shipping",
+            "benefit_2": "VIP early access",
+            "benefit_3": "Triple points weekends",
+            "benefit_4": "Exclusive gifts"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
