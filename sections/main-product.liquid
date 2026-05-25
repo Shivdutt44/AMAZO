@@ -560,11 +560,78 @@
 ───────────────────────────────────────────────── -->
 {%- if settings.enable_cro_recently_viewed -%}
 <div class="amz-recently-viewed page-width" id="recently-viewed">
-  <h2 class="amz-section-title">Recently Viewed Items</h2>
+  <h2 class="amz-section-title">{{ section.settings.recently_viewed_heading | default: 'Recently Viewed Items' }}</h2>
   <div class="amz-rv-grid" id="RecentlyViewedGrid">
-    <!-- Populated by JavaScript -->
+    <!-- Populated by JavaScript - placeholder shown when no history -->
+    <div class="amz-rv-placeholder" id="RecentlyViewedPlaceholder">
+      {%- for i in (0..3) -%}
+      {%- assign ph_num = i | modulo: 3 | plus: 1 -%}
+      <div class="amz-rv-card amz-rv-card--placeholder">
+        <div class="amz-rv-img-placeholder">
+          {{ 'product-' | append: ph_num | placeholder_svg_tag: 'amz-rv-placeholder-svg' }}
+        </div>
+        <div class="amz-rv-info-placeholder">
+          <div class="amz-rv-line amz-rv-line--title"></div>
+          <div class="amz-rv-line amz-rv-line--price"></div>
+          <div class="amz-rv-line amz-rv-line--rating"></div>
+        </div>
+      </div>
+      {%- endfor -%}
+    </div>
   </div>
 </div>
+
+<style>
+  .amz-rv-placeholder {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+  @media (max-width: 768px) {
+    .amz-rv-placeholder { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 480px) {
+    .amz-rv-placeholder { grid-template-columns: repeat(1, 1fr); }
+  }
+  .amz-rv-card--placeholder {
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+  .amz-rv-img-placeholder {
+    width: 100%;
+    aspect-ratio: 1;
+    background: #f5f5f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .amz-rv-img-placeholder svg {
+    width: 100%;
+    height: 100%;
+    opacity: 0.6;
+  }
+  .amz-rv-info-placeholder {
+    padding: 12px 14px 16px;
+  }
+  .amz-rv-line {
+    height: 12px;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    border-radius: 4px;
+    margin-bottom: 8px;
+    animation: amz-shimmer 1.5s infinite;
+  }
+  .amz-rv-line--title { width: 80%; }
+  .amz-rv-line--price { width: 40%; height: 14px; }
+  .amz-rv-line--rating { width: 55%; height: 10px; }
+  @keyframes amz-shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+</style>
 {%- endif -%}
 
 <script>
@@ -673,6 +740,16 @@
       "id": "buy_now_text",
       "label": "Buy Now Text",
       "default": "Buy Now"
+    },
+    {
+      "type": "header",
+      "content": "Recently Viewed"
+    },
+    {
+      "type": "text",
+      "id": "recently_viewed_heading",
+      "label": "Recently Viewed Heading",
+      "default": "Recently Viewed Items"
     }
   ],
   "presets": [

@@ -49,6 +49,14 @@
       "type": "promo-banners",
       "settings": {}
     },
+    "instagram-feed": {
+      "type": "instagram-feed",
+      "settings": {}
+    },
+    "shoppable-videos": {
+      "type": "shoppable-videos",
+      "settings": {}
+    },
     "newsletter": {
       "type": "newsletter",
       "settings": {}
@@ -65,6 +73,8 @@
     "trust-badges",
     "category-grid",
     "promo-banners",
+    "instagram-feed",
+    "shoppable-videos",
     "newsletter"
   ]
 }

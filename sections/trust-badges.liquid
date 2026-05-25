@@ -1,72 +1,202 @@
-{% comment %} Amazon Trust Badges — v4.1 with inline SVG icons {% endcomment %}
+{% comment %} Amazon Trust Badges — v5.0 Block-based with placeholders & default blocks {% endcomment %}
 <div class="amz-trust">
   <div class="amz-trust__grid">
-
-    <div class="amz-trust__item">
-      <span class="amz-trust__icon" aria-hidden="true">
-        <!-- Free Delivery Truck SVG -->
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="1" y="3" width="15" height="13" rx="1"/>
-          <path d="M16 8h4l3 3v5h-7V8z"/>
-          <circle cx="5.5" cy="18.5" r="2.5"/>
-          <circle cx="18.5" cy="18.5" r="2.5"/>
-        </svg>
-      </span>
-      <div class="amz-trust__text">
-        <strong>FREE Delivery</strong>
-        <span>On orders over $35</span>
+    {%- for block in section.blocks -%}
+      {%- if block.type == 'badge' -%}
+        <div class="amz-trust__item" {{ block.shopify_attributes }}>
+          <span class="amz-trust__icon" aria-hidden="true">
+            {%- if block.settings.icon_svg != blank -%}
+              {{ block.settings.icon_svg }}
+            {%- else -%}
+              <!-- Default icon based on position -->
+              {%- assign icon_map = 'delivery,secure,returns,star,heart,globe,headphones,shield' | split: ',' -%}
+              {%- assign icon_idx = forloop.index0 | modulo: 8 -%}
+              {%- assign icon_name = icon_map[icon_idx] -%}
+              {%- case icon_name -%}
+                {%- when 'delivery' -%}
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="1" y="3" width="15" height="13" rx="1"/>
+                  <path d="M16 8h4l3 3v5h-7V8z"/>
+                  <circle cx="5.5" cy="18.5" r="2.5"/>
+                  <circle cx="18.5" cy="18.5" r="2.5"/>
+                </svg>
+                {%- when 'secure' -%}
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                  <path d="M7 11V7a5 5 0 0110 0v4"/>
+                  <circle cx="12" cy="16" r="1" fill="currentColor"/>
+                </svg>
+                {%- when 'returns' -%}
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="1 4 1 10 7 10"/>
+                  <path d="M3.51 15a9 9 0 102.13-9.36L1 10"/>
+                </svg>
+                {%- when 'star' -%}
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="32" height="32" fill="currentColor">
+                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                </svg>
+                {%- when 'heart' -%}
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                </svg>
+                {%- when 'globe' -%}
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"/>
+                  <line x1="2" y1="12" x2="22" y2="12"/>
+                  <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+                </svg>
+                {%- when 'headphones' -%}
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 18v-6a9 9 0 0 1 18 0v6"/>
+                  <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/>
+                </svg>
+                {%- when 'shield' -%}
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                  <polyline points="9 12 11 14 15 10"/>
+                </svg>
+              {%- endcase -%}
+            {%- endif -%}
+          </span>
+          <div class="amz-trust__text">
+            <strong>{{ block.settings.title | default: 'Trust Badge' }}</strong>
+            <span>{{ block.settings.subtitle | default: 'Your benefit here' }}</span>
+          </div>
+        </div>
+      {%- endif -%}
+    {%- else -%}
+      <!-- No blocks configured — show nothing or message -->
+      <div class="amz-trust__empty" style="text-align:center;padding:20px;color:#999;font-size:13px;grid-column:1/-1;">
+        Add trust badges in the theme editor to display them here.
       </div>
-    </div>
-
-    <div class="amz-trust__item">
-      <span class="amz-trust__icon" aria-hidden="true">
-        <!-- Secure / Lock SVG -->
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-          <path d="M7 11V7a5 5 0 0110 0v4"/>
-          <circle cx="12" cy="16" r="1" fill="currentColor"/>
-        </svg>
-      </span>
-      <div class="amz-trust__text">
-        <strong>Secure Shopping</strong>
-        <span>SSL encrypted checkout</span>
-      </div>
-    </div>
-
-    <div class="amz-trust__item">
-      <span class="amz-trust__icon" aria-hidden="true">
-        <!-- Easy Returns / Refresh Arrow SVG -->
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="1 4 1 10 7 10"/>
-          <path d="M3.51 15a9 9 0 102.13-9.36L1 10"/>
-        </svg>
-      </span>
-      <div class="amz-trust__text">
-        <strong>Easy Returns</strong>
-        <span>30-day return policy</span>
-      </div>
-    </div>
-
-    <div class="amz-trust__item">
-      <span class="amz-trust__icon" aria-hidden="true">
-        <!-- Top Rated / Star SVG -->
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="32" height="32" fill="currentColor">
-          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-        </svg>
-      </span>
-      <div class="amz-trust__text">
-        <strong>Top Rated</strong>
-        <span>Millions of 5-star reviews</span>
-      </div>
-    </div>
-
+    {%- endfor -%}
   </div>
 </div>
+
+<style>
+.amz-trust__item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border-radius: 6px;
+}
+.amz-trust__item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.amz-trust__icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  background: #f5f5f5;
+  border-radius: 50%;
+  transition: background 0.2s;
+}
+.amz-trust__item:hover .amz-trust__icon {
+  background: #fff3e0;
+}
+.amz-trust__text {
+  display: flex;
+  flex-direction: column;
+}
+.amz-trust__text strong {
+  font-size: 14px;
+  color: #0f1111;
+  line-height: 1.3;
+}
+.amz-trust__text span {
+  font-size: 12px;
+  color: #565959;
+  line-height: 1.2;
+}
+</style>
+
 {% schema %}
 {
   "name": "Amazon Trust Badges",
   "tag": "section",
+  "max_blocks": 12,
   "settings": [],
-  "presets": [{ "name": "Amazon Trust Badges" }]
+  "blocks": [
+    {
+      "type": "badge",
+      "name": "Trust Badge",
+      "settings": [
+        {
+          "type": "header",
+          "content": "Icon"
+        },
+        {
+          "type": "textarea",
+          "id": "icon_svg",
+          "label": "Custom SVG Icon",
+          "info": "Paste inline SVG code here. Leave empty to use auto-generated icon."
+        },
+        {
+          "type": "header",
+          "content": "Text Content"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "FREE Delivery",
+          "placeholder": "e.g. FREE Delivery"
+        },
+        {
+          "type": "text",
+          "id": "subtitle",
+          "label": "Subtitle",
+          "default": "On orders over $35",
+          "placeholder": "e.g. On orders over $35"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link (optional)"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Amazon Trust Badges",
+      "blocks": [
+        {
+          "type": "badge",
+          "settings": {
+            "title": "FREE Delivery",
+            "subtitle": "On orders over $35"
+          }
+        },
+        {
+          "type": "badge",
+          "settings": {
+            "title": "Secure Shopping",
+            "subtitle": "SSL encrypted checkout"
+          }
+        },
+        {
+          "type": "badge",
+          "settings": {
+            "title": "Easy Returns",
+            "subtitle": "30-day return policy"
+          }
+        },
+        {
+          "type": "badge",
+          "settings": {
+            "title": "Top Rated",
+            "subtitle": "Millions of 5-star reviews"
+          }
+        }
+      ]
+    }
+  ]
 }
 {% endschema %}

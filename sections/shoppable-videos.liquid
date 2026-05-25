@@ -1,0 +1,1647 @@
+{%- style -%}
+  #ks-shoppable-videos-{{ section.id }} {
+    --color-background: {{ section.settings.color_background.red }}, {{ section.settings.color_background.green }}, {{ section.settings.color_background.blue }};
+    --color-foreground: {{ section.settings.color_foreground.red }}, {{ section.settings.color_foreground.green }}, {{ section.settings.color_foreground.blue }};
+    --card-height: {{ section.settings.card_height }}px;
+    --card-width: calc(var(--card-height) * 0.75); /* 4:3 aspect ratio */
+    --font-size-base: calc(var(--card-height) / 25); /* Base font size relative to card height */
+    --spacing-unit: calc(var(--card-height) / 50); /* Spacing unit relative to card height */
+    --border-radius: {{ section.settings.card_border_radius }}px;
+    --icon-size: calc(var(--card-height) / 12.5); /* Icon size relative to card height */
+    --gap: {{ section.settings.card_gap }}px;
+
+    display: block;
+    overflow: hidden;
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+    background-color: rgb(var(--color-background));
+    color: rgb(var(--color-foreground));
+  }
+
+  #ks-shoppable-videos-{{ section.id }} .ks-carousel {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+  }
+
+  #ks-shoppable-videos-{{ section.id }} .ks-carousel-wrapper {
+    display: flex;
+    transition: transform {{ section.settings.slider_speed | divided_by: 1000.0 }}s cubic-bezier(0.25, 0.1, 0.25, 1);
+    will-change: transform;
+    gap: var(--gap);
+  }
+
+  .ks-shoppable-videos .section-header .title {
+    margin: 0 0 .25rem;
+    color: rgb(var(--color-foreground));
+  }
+
+  .ks-shoppable-videos .section-header .description {
+    margin-bottom: 1rem;
+    color: rgb(var(--color-foreground));
+    opacity: 0.8;
+  }
+
+  @media (min-width: 750px) {
+    #ks-shoppable-videos-{{ section.id }} {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+    .ks-shoppable-videos .section-header .title {
+      margin: 0 0 .5rem;
+    }
+    .ks-shoppable-videos .section-header .description {
+      margin-bottom: 1.5rem;
+    }
+  }
+
+  .ks-shoppable-videos .section-header {
+    text-align: center;
+  }
+
+  .ks-shoppable-videos .ks-carousel-slide {
+    flex-shrink: 0;
+    width: var(--card-width);
+    opacity: .25;
+    transform: scale(.9);
+    transition: all .3s ease-out;
+  }
+
+  .ks-shoppable-videos .ks-carousel-slide.active {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .ks-shoppable-videos .ks-carousel-pagination {
+    text-align: center;
+    margin-top: 24px;
+    display: none;
+  }
+
+  #ks-shoppable-videos-{{ section.id }}[data-slider-pagination="true"] .ks-carousel-pagination {
+    display: block;
+  }
+
+  @media (min-width: 750px) {
+    .ks-shoppable-videos .ks-carousel-pagination {
+      margin-top: 30px;
+    }
+  }
+
+  .ks-shoppable-videos .ks-carousel-bullets {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .ks-shoppable-videos .ks-carousel-bullet {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(var(--color-foreground), 0.25);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+    padding: 0;
+  }
+
+  .ks-shoppable-videos .ks-carousel-bullet.active {
+    background: rgba(var(--color-foreground), 0.75);
+    transform: scale(1.2);
+  }
+
+  .ks-shoppable-videos .ks-carousel-fraction {
+    font-size: 14px;
+    color: rgba(var(--color-foreground), 0.75);
+  }
+
+  .ks-shoppable-videos .ks-carousel-scrollbar {
+    margin-top: 40px;
+    height: 4px;
+    background: rgba(var(--color-foreground), 0.1);
+    border-radius: 2px;
+    position: relative;
+    max-width: 600px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: none;
+  }
+
+  #ks-shoppable-videos-{{ section.id }}[data-slider-scrollbar="true"] .ks-carousel-scrollbar {
+    display: block;
+  }
+
+  @media (min-width: 750px) {
+    .ks-shoppable-videos .ks-carousel-scrollbar {
+      margin-top: 46px;
+    }
+  }
+
+  @media (max-width: 575px) {
+    .ks-shoppable-videos .ks-carousel-scrollbar {
+      max-width: 70vw;
+    }
+  }
+
+  .ks-shoppable-videos .ks-carousel-scrollbar-drag {
+    height: 100%;
+    background: rgba(var(--color-foreground), 0.75);
+    border-radius: 2px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    cursor: grab;
+    transition: width 0.2s ease, left 0.2s ease;
+  }
+
+  .ks-shoppable-videos .ks-carousel-scrollbar-drag:active {
+    cursor: grabbing;
+  }
+
+  .ks-shoppable-videos .ks-carousel-button-prev,
+  .ks-shoppable-videos .ks-carousel-button-next {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50rem;
+    background-color: rgba(var(--color-foreground, 1));
+    color: rgba(var(--color-background));
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    cursor: pointer;
+    border: none;
+    transition: all 0.3s ease;
+    display: none;
+  }
+
+  #ks-shoppable-videos-{{ section.id }}[data-slider-nav="true"] .ks-carousel-button-prev,
+  #ks-shoppable-videos-{{ section.id }}[data-slider-nav="true"] .ks-carousel-button-next {
+    display: flex;
+  }
+
+  .ks-shoppable-videos .ks-carousel-button-prev:hover,
+  .ks-shoppable-videos .ks-carousel-button-next:hover {
+    background-color: rgba(var(--color-foreground), 0.8);
+  }
+
+  .ks-shoppable-videos .ks-carousel-button-prev {
+    left: 10px;
+  }
+
+  .ks-shoppable-videos .ks-carousel-button-next {
+    right: 10px;
+  }
+
+  @media (max-width: 575px) {
+    #ks-shoppable-videos-{{ section.id }}[data-partial-slides-mobile="true"] .ks-carousel-button-prev,
+    #ks-shoppable-videos-{{ section.id }}[data-partial-slides-mobile="true"] .ks-carousel-button-next {
+      display: none !important;
+    }
+  }
+
+  .ks-shoppable-videos-container {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+
+  @media (min-width: 750px) {
+    .ks-shoppable-videos-container {
+      padding: 0 3rem;
+    }
+  }
+
+  .ks-shoppable-videos-card {
+    width: var(--card-width);
+    height: var(--card-height);
+    position: relative;
+    overflow: hidden;
+    border-style: solid;
+    border-color: rgb(var(--color-foreground));
+  }
+
+  #ks-shoppable-videos-{{ section.id }} .ks-shoppable-videos-card {
+    border-width: {{ section.settings.card_border_width }}px;
+    border-radius: var(--border-radius);
+    margin: 0;
+
+    {% if section.settings.card_box_shadow %}
+      box-shadow: 0 0 1rem rgba(var(--color-foreground), .25);
+    {% endif %}
+  }
+
+  @media (min-width: 750px) {
+    #ks-shoppable-videos-{{ section.id }} .ks-shoppable-videos-card {
+      margin: 0;
+    }
+  }
+
+  .ks-shoppable-videos-video-wrapper {
+    height: 100%;
+  }
+
+  .ks-shoppable-videos-card video {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: relative;
+    cursor: pointer;
+  }
+
+  .ks-shoppable-videos .ks-carousel.is-changing .ks-shoppable-videos-card video {
+    z-index: -1;
+  }
+
+  .ks-shoppable-videos [data-is-playing="true"] video {
+    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'%3E%3C/circle%3E%3Cline x1='10' y1='15' x2='10' y2='9'%3E%3C/line%3E%3Cline x1='14' y1='15' x2='14' y2='9'%3E%3C/line%3E%3C/svg%3E"), auto;
+  }
+
+  .ks-shoppable-videos-btn-play {
+    width: var(--icon-size);
+    height: var(--icon-size);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(var(--color-foreground), .5);
+    color: rgba(var(--color-background), 1);
+    border: none;
+    backdrop-filter: blur(6px);
+    border-radius: 50rem;
+    padding: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -40%);
+    z-index: 99;
+    cursor: pointer;
+    transition: all .2s ease-out;
+  }
+
+  .ks-shoppable-videos-btn-play:hover,
+  .ks-shoppable-videos-btn-play:focus {
+    background: rgba(var(--color-foreground), .75);
+  }
+
+  [data-is-playing="true"] .ks-shoppable-videos-btn-play {
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  .ks-shoppable-videos-card-views {
+    position: absolute;
+    top: calc(var(--spacing-unit) * 2);
+    right: calc(var(--spacing-unit) * 2);
+    background: rgba(var(--color-foreground), .75);
+    color: white;
+    backdrop-filter: blur(6px);
+    padding: calc(var(--spacing-unit) * 0.25) calc(var(--spacing-unit) * 0.8) calc(var(--spacing-unit) * 0.4);
+    line-height: normal;
+    font-size: calc(var(--font-size-base) * 0.8);
+    font-weight: bold;
+    -webkit-font-smoothing: antialiased;
+    display: inline-flex;
+    align-items: center;
+    border-radius: calc(var(--border-radius) * 0.5);
+  }
+
+  .ks-shoppable-videos-card-views svg {
+    margin-right: calc(var(--spacing-unit) * 0.25);
+    transform: translateY(1px);
+    width: calc(var(--icon-size) * 0.4);
+    height: calc(var(--icon-size) * 0.4);
+  }
+
+  .ks-shoppable-videos-card-badge {
+    position: absolute;
+    top: calc(var(--spacing-unit) * 2);
+    left: calc(var(--spacing-unit) * 2);
+    background: rgba(var(--color-foreground), .75);
+    color: white;
+    padding: calc(var(--spacing-unit) * 0.25) calc(var(--spacing-unit) * 0.8) calc(var(--spacing-unit) * 0.4);
+    line-height: normal;
+    font-size: calc(var(--font-size-base) * 0.8);
+    font-weight: bold;
+    -webkit-font-smoothing: antialiased;
+    display: inline-flex;
+    align-items: center;
+    border-radius: calc(var(--border-radius) * 0.5);
+  }
+
+  .ks-shoppable-videos-card-product {
+    position: absolute;
+    bottom: calc(var(--spacing-unit) * 1.5);
+    left: calc(var(--spacing-unit) * 1.5);
+    width: calc(100% - calc(var(--spacing-unit) * 3));
+    box-sizing: border-box;
+    background: rgba(var(--color-background), .75);
+    color: rgba(var(--color-foreground), 1);
+    backdrop-filter: blur(8px);
+    padding: calc(var(--spacing-unit) * 0.6) calc(var(--spacing-unit) * 0.8);
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    opacity: .9;
+    transition: all .2s ease-out;
+    border-radius: var(--border-radius);
+  }
+
+  [data-is-playing="true"] .ks-shoppable-videos-card-product {
+    bottom: calc(var(--spacing-unit) * 2);
+    opacity: 1;
+  }
+
+  .ks-shoppable-videos-card-product:hover,
+  .ks-shoppable-videos-card-product:focus {
+    opacity: 1;
+  }
+
+  .ks-shoppable-videos-card-product img {
+    margin-right: calc(var(--spacing-unit) * 0.8);
+    flex-shrink: 0;
+    width: calc(var(--card-height) * 0.15);
+    height: calc(var(--card-height) * 0.15);
+    border-radius: calc(var(--border-radius) * 0.6);
+  }
+
+  .ks-shoppable-videos-card-product-content {
+    line-height: normal;
+    flex: 1;
+    min-width: 0; /* Allows text truncation */
+  }
+
+  .ks-shoppable-videos-card-product-title {
+    font-size: calc(var(--font-size-base) * 0.9);
+    line-height: 1.2;
+    margin: 0 0 calc(var(--spacing-unit) * 0.25);
+    color: inherit;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .ks-shoppable-videos-card-product-title span {
+    display: inline-block;
+    transition: all .2s ease-out;
+  }
+
+  .ks-shoppable-videos-card-product:hover .ks-shoppable-videos-card-product-title span {
+    transform: translateX(calc(var(--spacing-unit) * 0.15));
+  }
+
+  .ks-shoppable-videos-card-product-price {
+    font-size: calc(var(--font-size-base) * 0.85);
+  }
+
+  .ks-shoppable-videos-card-product-price s {
+    opacity: .5;
+  }
+
+  #ks-shoppable-videos-{{ section.id }} .ks-shoppable-videos-card-views,
+  #ks-shoppable-videos-{{ section.id }} .ks-shoppable-videos-card-badge,
+  #ks-shoppable-videos-{{ section.id }} .ks-shoppable-videos-card-product {
+    border-radius: var(--border-radius);
+  }
+
+  /* Placeholder default items when no blocks configured */
+  #ks-shoppable-videos-{{ section.id }} .ks-shoppable-videos-card-placeholder-bg {
+    background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%);
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #ks-shoppable-videos-{{ section.id }} .ks-shoppable-videos-card-placeholder-bg svg {
+    width: 48px;
+    height: 48px;
+    color: rgba(var(--color-foreground), 0.15);
+  }
+
+  #ks-shoppable-videos-{{ section.id }} .ks-shoppable-videos-card-placeholder-product {
+    background: rgba(var(--color-background), .5);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    padding: calc(var(--spacing-unit) * 0.6) calc(var(--spacing-unit) * 0.8);
+    gap: calc(var(--spacing-unit) * 0.6);
+  }
+
+  #ks-shoppable-videos-{{ section.id }} .ks-shoppable-videos-card-placeholder-product-icon {
+    width: calc(var(--card-height) * 0.15);
+    height: calc(var(--card-height) * 0.15);
+    background: rgba(var(--color-foreground), 0.08);
+    border-radius: calc(var(--border-radius) * 0.6);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #ks-shoppable-videos-{{ section.id }} .ks-shoppable-videos-card-placeholder-product-icon svg {
+    width: 40%;
+    height: 40%;
+    color: rgba(var(--color-foreground), 0.2);
+  }
+
+  #ks-shoppable-videos-{{ section.id }} .ks-shoppable-videos-card-placeholder-text {
+    flex: 1;
+  }
+
+  #ks-shoppable-videos-{{ section.id }} .ks-shoppable-videos-card-placeholder-text-line {
+    height: calc(var(--font-size-base) * 0.8);
+    background: rgba(var(--color-foreground), 0.1);
+    border-radius: 4px;
+    margin-bottom: calc(var(--spacing-unit) * 0.25);
+    width: 70%;
+  }
+
+  #ks-shoppable-videos-{{ section.id }} .ks-shoppable-videos-card-placeholder-text-line:last-child {
+    width: 40%;
+    margin-bottom: 0;
+  }
+
+  #ks-shoppable-videos-{{ section.id }} .ks-shoppable-videos-card-placeholder-badge {
+    position: absolute;
+    top: calc(var(--spacing-unit) * 2);
+    left: calc(var(--spacing-unit) * 2);
+    background: rgba(var(--color-foreground), 0.12);
+    padding: calc(var(--spacing-unit) * 0.3) calc(var(--spacing-unit) * 0.8);
+    line-height: normal;
+    font-size: calc(var(--font-size-base) * 0.8);
+    border-radius: calc(var(--border-radius) * 0.5);
+    height: calc(var(--font-size-base) * 0.8);
+    width: 50px;
+  }
+
+  #ks-shoppable-videos-{{ section.id }} .ks-shoppable-videos-card-placeholder-views {
+    position: absolute;
+    top: calc(var(--spacing-unit) * 2);
+    right: calc(var(--spacing-unit) * 2);
+    background: rgba(var(--color-foreground), 0.12);
+    padding: calc(var(--spacing-unit) * 0.3) calc(var(--spacing-unit) * 0.8);
+    line-height: normal;
+    font-size: calc(var(--font-size-base) * 0.8);
+    border-radius: calc(var(--border-radius) * 0.5);
+    height: calc(var(--font-size-base) * 0.8);
+    width: 60px;
+  }
+
+  /* Animation for placeholder shimmer */
+  @keyframes ks-shimmer-{{ section.id }} {
+    0% { opacity: 0.6; }
+    50% { opacity: 1; }
+    100% { opacity: 0.6; }
+  }
+
+  #ks-shoppable-videos-{{ section.id }} .ks-shoppable-videos-default-item {
+    animation: ks-shimmer-{{ section.id }} 2s ease-in-out infinite;
+  }
+
+  #ks-shoppable-videos-{{ section.id }} .ks-shoppable-videos-default-item .ks-carousel-slide {
+    opacity: 0.5;
+  }
+
+  #ks-shoppable-videos-{{ section.id }} .ks-shoppable-videos-default-item .ks-carousel-slide.active {
+    opacity: 0.8;
+  }
+
+  /* Adjustments for smaller cards */
+  @media (max-width: 768px) {
+    #ks-shoppable-videos-{{ section.id }} {
+      --card-width: calc(var(--card-height) * 0.9); /* Slightly wider on mobile */
+    }
+
+    .ks-shoppable-videos-card-product-title {
+      font-size: calc(var(--font-size-base) * 0.8);
+    }
+
+    .ks-shoppable-videos-card-product-price {
+      font-size: calc(var(--font-size-base) * 0.75);
+    }
+  }
+{%- endstyle -%}
+
+{%- javascript -%}
+  class KsCarousel {
+    constructor(element, options = {}) {
+      this.element = element;
+      this.options = {
+        speed: 300,
+        navigation: true,
+        pagination: true,
+        paginationType: 'bullets',
+        scrollbar: true,
+        autoplay: 0,
+        partialSlidesMobile: true,
+        breakpoints: {
+          xs: 1,
+          sm: 2,
+          md: 2,
+          lg: 2,
+          xl: 3,
+          xxl: 4,
+        },
+        ...options,
+      };
+
+      this.currentIndex = 0;
+      this.slides = [];
+      this.autoplayInterval = null;
+      this.isTransitioning = false;
+      this.isDragging = false;
+
+      this.init();
+    }
+
+    init() {
+      this.setupElements();
+      this.setupSlides();
+      this.setupNavigation();
+      this.setupPagination();
+      this.setupScrollbar();
+      this.setupAutoplay();
+      this.setupTouchEvents();
+      this.setupKeyboardEvents();
+      this.setupResizeHandler();
+      this.updateSlideStates();
+      this.goToSlide(0, false);
+    }
+
+    setupElements() {
+      this.wrapper = this.element.querySelector('.ks-carousel-wrapper');
+      this.container = this.element.querySelector('.ks-shoppable-videos-container');
+    }
+
+    setupSlides() {
+      this.slides = Array.from(this.element.querySelectorAll('.ks-carousel-slide'));
+      this.totalSlides = this.slides.length;
+    }
+
+    setupNavigation() {
+      this.prevButton = this.element.querySelector('.ks-carousel-button-prev');
+      this.nextButton = this.element.querySelector('.ks-carousel-button-next');
+
+      if (this.options.navigation && this.prevButton && this.nextButton) {
+        this.prevButton.addEventListener('click', () => this.prev());
+        this.nextButton.addEventListener('click', () => this.next());
+      }
+    }
+
+    setupPagination() {
+      if (!this.options.pagination) return;
+
+      const paginationContainer = this.element.querySelector('.ks-carousel-pagination');
+      if (!paginationContainer) return;
+
+      if (this.options.paginationType === 'bullets') {
+        const bulletsContainer = document.createElement('div');
+        bulletsContainer.className = 'ks-carousel-bullets';
+
+        for (let i = 0; i < this.totalSlides; i++) {
+          const bullet = document.createElement('button');
+          bullet.className = 'ks-carousel-bullet';
+          bullet.setAttribute('aria-label', `Go to slide ${i + 1}`);
+          bullet.addEventListener('click', () => this.goToSlide(i));
+          bulletsContainer.appendChild(bullet);
+        }
+
+        paginationContainer.appendChild(bulletsContainer);
+        this.bullets = bulletsContainer.querySelectorAll('.ks-carousel-bullet');
+      } else if (this.options.paginationType === 'fraction') {
+        const fraction = document.createElement('div');
+        fraction.className = 'ks-carousel-fraction';
+        paginationContainer.appendChild(fraction);
+        this.fractionElement = fraction;
+      }
+    }
+
+    setupScrollbar() {
+      if (!this.options.scrollbar) return;
+
+      const scrollbarContainer = this.element.querySelector('.ks-carousel-scrollbar');
+      if (!scrollbarContainer) return;
+
+      const drag = document.createElement('div');
+      drag.className = 'ks-carousel-scrollbar-drag';
+      scrollbarContainer.appendChild(drag);
+      this.scrollbarDrag = drag;
+
+      let isDragging = false;
+      let startX = 0;
+      let startWidth = 0;
+      let startLeft = 0;
+
+      const handleMouseDown = (e) => {
+        isDragging = true;
+        startX = e.clientX;
+        startWidth = drag.offsetWidth;
+        startLeft = drag.offsetLeft;
+        drag.style.cursor = 'grabbing';
+        e.preventDefault();
+      };
+
+      const handleMouseMove = (e) => {
+        if (!isDragging) return;
+
+        const deltaX = e.clientX - startX;
+        const scrollbarWidth = scrollbarContainer.offsetWidth;
+        const dragWidth = scrollbarWidth / Math.ceil(this.totalSlides / this.getSlidesPerView());
+
+        let newLeft = startLeft + deltaX;
+        newLeft = Math.max(0, Math.min(newLeft, scrollbarWidth - dragWidth));
+
+        drag.style.left = `${newLeft}px`;
+
+        const progress = newLeft / (scrollbarWidth - dragWidth);
+        const targetIndex = Math.round(progress * (this.totalSlides - 1));
+        if (targetIndex !== this.currentIndex) {
+          this.goToSlide(targetIndex);
+        }
+      };
+
+      const handleMouseUp = () => {
+        isDragging = false;
+        drag.style.cursor = 'grab';
+      };
+
+      drag.addEventListener('mousedown', handleMouseDown);
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+
+      // Initialize scrollbar position
+      this.updateScrollbar();
+    }
+
+    setupAutoplay() {
+      if (this.options.autoplay > 0) {
+        this.startAutoplay();
+
+        this.element.addEventListener('mouseenter', () => this.stopAutoplay());
+        this.element.addEventListener('mouseleave', () => this.startAutoplay());
+      }
+    }
+
+    startAutoplay() {
+      if (this.options.autoplay > 0 && !this.autoplayInterval) {
+        this.autoplayInterval = setInterval(() => this.next(), this.options.autoplay * 1000);
+      }
+    }
+
+    stopAutoplay() {
+      if (this.autoplayInterval) {
+        clearInterval(this.autoplayInterval);
+        this.autoplayInterval = null;
+      }
+    }
+
+    setupTouchEvents() {
+      let startX = 0;
+      let currentX = 0;
+      let isDragging = false;
+
+      const handleTouchStart = (e) => {
+        startX = e.touches[0].clientX;
+        isDragging = true;
+        this.stopAutoplay();
+
+        // Add a class to enable smooth transitions during touch
+        this.wrapper.style.transition = 'none';
+      };
+
+      const handleTouchMove = (e) => {
+        if (!isDragging) return;
+        currentX = e.touches[0].clientX;
+        const diff = startX - currentX;
+
+        if (Math.abs(diff) > 10) {
+          e.preventDefault();
+
+          // Calculate the current offset and apply it directly for smooth dragging
+          const slideWidth = this.getSlideWidth();
+          const gap = this.getGap();
+          const baseOffset = this.currentIndex * (slideWidth + gap);
+          const touchOffset = -diff;
+
+          this.wrapper.style.transform = `translateX(-${baseOffset + touchOffset}px)`;
+        }
+      };
+
+      const handleTouchEnd = () => {
+        if (!isDragging) return;
+
+        // Restore the transition
+        this.wrapper.style.transition = `transform ${this.options.speed / 1000}s cubic-bezier(0.25, 0.1, 0.25, 1)`;
+
+        const diff = startX - currentX;
+        const threshold = 50;
+
+        if (Math.abs(diff) > threshold) {
+          if (diff > 0) {
+            this.next();
+          } else {
+            this.prev();
+          }
+        } else {
+          // If not swiped far enough, return to current position
+          this.goToSlide(this.currentIndex);
+        }
+
+        isDragging = false;
+        this.startAutoplay();
+      };
+
+      this.wrapper.addEventListener('touchstart', handleTouchStart, { passive: false });
+      this.wrapper.addEventListener('touchmove', handleTouchMove, { passive: false });
+      this.wrapper.addEventListener('touchend', handleTouchEnd);
+    }
+
+    setupKeyboardEvents() {
+      const handleKeyDown = (e) => {
+        if (e.key === 'ArrowLeft') {
+          this.prev();
+        } else if (e.key === 'ArrowRight') {
+          this.next();
+        }
+      };
+
+      document.addEventListener('keydown', handleKeyDown);
+      this.keyboardHandler = handleKeyDown;
+    }
+
+    setupResizeHandler() {
+      const handleResize = () => {
+        this.goToSlide(this.currentIndex, false);
+        this.updateSlideStates();
+        this.updateScrollbar();
+      };
+
+      window.addEventListener('resize', handleResize);
+      this.resizeHandler = handleResize;
+    }
+
+    getSlidesPerView() {
+      const width = window.innerWidth;
+
+      if (width >= 1400) return this.options.breakpoints.xxl;
+      if (width >= 1200) return this.options.breakpoints.xl;
+      if (width >= 992) return this.options.breakpoints.lg;
+      if (width >= 768) return this.options.breakpoints.md;
+      if (width >= 576) return this.options.breakpoints.sm;
+      return this.options.breakpoints.xs;
+    }
+
+    getGap() {
+      // Get the gap value from CSS
+      const computedStyle = window.getComputedStyle(this.wrapper);
+      return parseFloat(computedStyle.gap) || 0;
+    }
+
+    updateSlideStates() {
+      const slidesPerView = this.getSlidesPerView();
+      const partialSlidesMobile = this.options.partialSlidesMobile && window.innerWidth < 576 ? 1.2 : 1;
+      const effectiveSlidesPerView = slidesPerView * partialSlidesMobile;
+
+      this.slides.forEach((slide, index) => {
+        const isActive = index >= this.currentIndex && index < this.currentIndex + Math.ceil(effectiveSlidesPerView);
+        slide.classList.toggle('active', isActive);
+      });
+    }
+
+    goToSlide(index, animate = true) {
+      if (this.isTransitioning || index === this.currentIndex) return;
+
+      this.isTransitioning = true;
+      this.element.classList.add('is-changing');
+
+      const oldIndex = this.currentIndex;
+      this.currentIndex = Math.max(0, Math.min(index, this.totalSlides - 1));
+
+      // Calculate the maximum allowed index to prevent white space
+      const slidesPerView = this.getSlidesPerView();
+      const partialSlidesMobile = this.options.partialSlidesMobile && window.innerWidth < 576 ? 1.2 : 1;
+      const effectiveSlidesPerView = slidesPerView * partialSlidesMobile;
+      const maxIndex = Math.max(0, this.totalSlides - Math.ceil(effectiveSlidesPerView));
+
+      // Adjust the current index if it exceeds the maximum
+      if (this.currentIndex > maxIndex) {
+        this.currentIndex = maxIndex;
+      }
+
+      // Calculate offset
+      const slideWidth = this.getSlideWidth();
+      const gap = this.getGap();
+      const offset = this.currentIndex * (slideWidth + gap);
+
+      if (animate) {
+        this.wrapper.style.transition = `transform ${this.options.speed / 1000}s cubic-bezier(0.25, 0.1, 0.25, 1)`;
+      } else {
+        this.wrapper.style.transition = 'none';
+      }
+
+      this.wrapper.style.transform = `translateX(-${offset}px)`;
+
+      if (animate) {
+        setTimeout(() => {
+          this.isTransitioning = false;
+          this.element.classList.remove('is-changing');
+        }, this.options.speed);
+      } else {
+        this.isTransitioning = false;
+        this.element.classList.remove('is-changing');
+      }
+
+      this.updatePagination();
+      this.updateScrollbar();
+      this.updateSlideStates();
+
+      // Trigger slide change event
+      this.element.dispatchEvent(
+        new CustomEvent('slideChange', {
+          detail: { fromIndex: oldIndex, toIndex: this.currentIndex },
+        })
+      );
+    }
+
+    getSlideWidth() {
+      // Get the actual width of a slide element
+      if (this.slides.length > 0) {
+        const slideStyle = window.getComputedStyle(this.slides[0]);
+        const slideWidth = this.slides[0].offsetWidth;
+        const slideMarginLeft = parseFloat(slideStyle.marginLeft) || 0;
+        const slideMarginRight = parseFloat(slideStyle.marginRight) || 0;
+        return slideWidth + slideMarginLeft + slideMarginRight;
+      }
+
+      // Fallback calculation
+      const slidesPerView = this.getSlidesPerView();
+      const containerWidth = this.container.offsetWidth;
+      return containerWidth / slidesPerView;
+    }
+
+    next() {
+      // Calculate the maximum allowed index to prevent white space
+      const slidesPerView = this.getSlidesPerView();
+      const partialSlidesMobile = this.options.partialSlidesMobile && window.innerWidth < 576 ? 1.2 : 1;
+      const effectiveSlidesPerView = slidesPerView * partialSlidesMobile;
+      const maxIndex = Math.max(0, this.totalSlides - Math.ceil(effectiveSlidesPerView));
+
+      // If we're at the last valid position, loop back to the beginning
+      const nextIndex = this.currentIndex >= maxIndex ? 0 : this.currentIndex + 1;
+      this.goToSlide(nextIndex);
+    }
+
+    prev() {
+      // Calculate the maximum allowed index to prevent white space
+      const slidesPerView = this.getSlidesPerView();
+      const partialSlidesMobile = this.options.partialSlidesMobile && window.innerWidth < 576 ? 1.2 : 1;
+      const effectiveSlidesPerView = slidesPerView * partialSlidesMobile;
+      const maxIndex = Math.max(0, this.totalSlides - Math.ceil(effectiveSlidesPerView));
+
+      // If we're at the first position, loop to the last valid position
+      const prevIndex = this.currentIndex <= 0 ? maxIndex : this.currentIndex - 1;
+      this.goToSlide(prevIndex);
+    }
+
+    updatePagination() {
+      if (this.options.paginationType === 'bullets' && this.bullets) {
+        this.bullets.forEach((bullet, index) => {
+          bullet.classList.toggle('active', index === this.currentIndex);
+        });
+      } else if (this.options.paginationType === 'fraction' && this.fractionElement) {
+        // Calculate the total number of pages based on slides per view
+        const slidesPerView = this.getSlidesPerView();
+        const partialSlidesMobile = this.options.partialSlidesMobile && window.innerWidth < 576 ? 1.2 : 1;
+        const effectiveSlidesPerView = slidesPerView * partialSlidesMobile;
+        const totalPages = Math.ceil(this.totalSlides / effectiveSlidesPerView);
+        const currentPage = Math.floor(this.currentIndex / effectiveSlidesPerView) + 1;
+
+        this.fractionElement.textContent = `${currentPage}/${totalPages}`;
+      }
+    }
+
+    updateScrollbar() {
+      if (this.scrollbarDrag) {
+        // Calculate the maximum allowed index to prevent white space
+        const slidesPerView = this.getSlidesPerView();
+        const partialSlidesMobile = this.options.partialSlidesMobile && window.innerWidth < 576 ? 1.2 : 1;
+        const effectiveSlidesPerView = slidesPerView * partialSlidesMobile;
+        const maxIndex = Math.max(0, this.totalSlides - Math.ceil(effectiveSlidesPerView));
+
+        // Calculate progress based on current position relative to max position
+        const progress = maxIndex > 0 ? this.currentIndex / maxIndex : 0;
+        const scrollbarWidth = this.scrollbarDrag.parentElement.offsetWidth;
+        const dragWidth = Math.max(20, scrollbarWidth / Math.ceil(this.totalSlides / effectiveSlidesPerView));
+        const dragPosition = progress * (scrollbarWidth - dragWidth);
+
+        this.scrollbarDrag.style.width = `${dragWidth}px`;
+        this.scrollbarDrag.style.left = `${dragPosition}px`;
+      }
+    }
+
+    destroy() {
+      this.stopAutoplay();
+      if (this.keyboardHandler) {
+        document.removeEventListener('keydown', this.keyboardHandler);
+      }
+      if (this.resizeHandler) {
+        window.removeEventListener('resize', this.resizeHandler);
+      }
+    }
+  }
+
+  class KsShoppableVideos extends HTMLElement {
+    constructor() {
+      super();
+
+      // Initialize immediately when DOM is ready
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => this.init());
+      } else {
+        this.init();
+      }
+    }
+
+    init() {
+      // Initialize custom carousel
+      this.initCarousel();
+
+      this.querySelectorAll('.ks-shoppable-videos-btn-play').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const video = btn.closest('.ks-shoppable-videos-video-wrapper').querySelector('video');
+          this.onVideoPlay(video);
+        });
+      });
+
+      this.querySelectorAll('video').forEach((video) => {
+        video.addEventListener('click', () => {
+          this.onVideoPlay(video);
+        });
+
+        // Preload videos immediately
+        video.load();
+      });
+
+      // Handle autoplay videos
+      const lazyVideosObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              if (entry.target.dataset.autoplay === 'true') {
+                entry.target.play();
+              }
+            } else {
+              // Pause when not visible to save resources
+              entry.target.pause();
+            }
+          });
+        },
+        { rootMargin: '0px 0px 300px 0px' }
+      );
+
+      this.querySelectorAll('video').forEach((el) => {
+        lazyVideosObserver.observe(el);
+      });
+    }
+
+    initCarousel() {
+      const carouselElement = this.querySelector('.ks-carousel');
+      if (!carouselElement) return;
+
+      this.carousel = new KsCarousel(carouselElement, {
+        speed: Number(this.dataset.sliderSpeed),
+        navigation: this.dataset.sliderNav === 'true',
+        pagination: this.dataset.sliderPagination === 'true',
+        paginationType: this.dataset.sliderPaginationType,
+        scrollbar: this.dataset.sliderScrollbar === 'true',
+        autoplay: Number(this.dataset.sliderAutoplay),
+        partialSlidesMobile: this.dataset.partialSlidesMobile === 'true',
+        breakpoints: {
+          xs: Number(this.dataset.breakpointXs),
+          sm: Number(this.dataset.breakpointSm),
+          md: Number(this.dataset.breakpointMd),
+          lg: Number(this.dataset.breakpointLg),
+          xl: Number(this.dataset.breakpointXl),
+          xxl: Number(this.dataset.breakpointXxl),
+        },
+      });
+
+      carouselElement.addEventListener('slideChange', () => {
+        this.onSlideChange();
+      });
+    }
+
+    onSlideChange() {
+      this.querySelectorAll('.ks-shoppable-videos-card').forEach((elem) => {
+        elem.setAttribute('data-is-playing', 'false');
+        elem.querySelector('video')?.pause();
+      });
+    }
+
+    onVideoPlay(video) {
+      const card = video.closest('.ks-shoppable-videos-card');
+
+      this.querySelectorAll('.ks-shoppable-videos-card').forEach((elem) => {
+        if (elem.dataset.index !== card.dataset.index) {
+          elem.setAttribute('data-is-playing', 'false');
+          elem.querySelector('video')?.pause();
+        }
+      });
+
+      if (card.dataset.isPlaying === 'true') {
+        card.setAttribute('data-is-playing', 'false');
+        video.pause();
+      } else {
+        card.setAttribute('data-is-playing', 'true');
+        video.muted = false;
+        video.play();
+      }
+    }
+  }
+
+  customElements.define('ks-shoppable-videos', KsShoppableVideos);
+{%- endjavascript -%}
+
+<ks-shoppable-videos
+  id="ks-shoppable-videos-{{ section.id }}"
+  class="ks-shoppable-videos"
+  data-slider-speed="{{ section.settings.slider_speed }}"
+  data-slider-nav="{{ section.settings.slider_nav }}"
+  data-slider-pagination="{{ section.settings.slider_pagination }}"
+  data-slider-pagination-type="{{ section.settings.slider_pagination_type }}"
+  data-slider-scrollbar="{{ section.settings.slider_scrollbar }}"
+  data-partial-slides-mobile="{{ section.settings.slider_partial_slides_mobile }}"
+  data-slider-autoplay="{{ section.settings.slider_autoplay }}"
+  data-breakpoint-xs="{{ section.settings.breakpoint_xs }}"
+  data-breakpoint-sm="{{ section.settings.breakpoint_sm }}"
+  data-breakpoint-md="{{ section.settings.breakpoint_md }}"
+  data-breakpoint-lg="{{ section.settings.breakpoint_lg }}"
+  data-breakpoint-xl="{{ section.settings.breakpoint_xl }}"
+  data-breakpoint-xxl="{{ section.settings.breakpoint_xxl }}"
+>
+  <div class="section-header page-width">
+    {%- if section.settings.heading != blank -%}
+      <h2 class="title inline-richtext {{ section.settings.heading_size }}">
+        {{ section.settings.heading }}
+      </h2>
+    {%- endif -%}
+    {%- if section.settings.description != blank %}
+      <div class="description rte">
+        {{ section.settings.description }}
+      </div>
+    {% endif %}
+  </div>
+
+  <div class="ks-shoppable-videos-container{% unless section.settings.container %} full-width{% endunless %}">
+    <div class="ks-carousel">
+      <div class="ks-carousel-wrapper">
+
+        {% if section.blocks.size > 0 %}
+
+          {% for block in section.blocks %}
+            <div class="ks-carousel-slide" {{ block.shopify_attributes }}>
+              <div
+                class="ks-shoppable-videos-card"
+                data-is-playing="false"
+                data-index="{{ forloop.index0 }}"
+              >
+                {% if block.settings.video != blank %}
+                  <div class="ks-shoppable-videos-video-wrapper">
+                    {{-
+                      block.settings.video
+                      | video_tag:
+                        class: '',
+                        image_size: '600x',
+                        autoplay: false,
+                        loop: true,
+                        muted: true,
+                        controls: false,
+                        loading: 'eager',
+                        preload: 'auto',
+                        data-autoplay: block.settings.video_autoplay
+                    -}}
+                    <button class="ks-shoppable-videos-btn-play" aria-label="Play video">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        fill="currentColor"
+                        class="bi bi-play-fill"
+                        viewBox="0 0 16 16"
+                      >
+                        <path d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393"/>
+                      </svg>
+                    </button>
+                  </div>
+                {% else %}
+                  <!-- PLACEHOLDER: No video uploaded yet -->
+                  <div class="ks-shoppable-videos-video-wrapper">
+                    <div class="ks-shoppable-videos-card-placeholder-bg">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="23 7 16 12 23 17 23 7"></polygon>
+                        <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
+                      </svg>
+                    </div>
+                    <button class="ks-shoppable-videos-btn-play" aria-label="Play video" disabled style="opacity: 0.4;">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-play-fill" viewBox="0 0 16 16">
+                        <path d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393"/>
+                      </svg>
+                    </button>
+                  </div>
+                {% endif %}
+
+                <div class="ks-shoppable-videos-card-inner">
+                  {% if block.settings.badge != blank %}
+                    <div
+                      class="ks-shoppable-videos-card-badge"
+                      style="background-color: {{ block.settings.badge_bg_color }}"
+                    >
+                      {{ block.settings.badge }}
+                    </div>
+                  {% endif %}
+
+                  {% if block.settings.views != blank %}
+                    <div
+                      class="ks-shoppable-videos-card-views"
+                      style="background-color: {{ block.settings.views_bg_color | color_modify: 'alpha', 0.75  }};"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        aria-label="Views"
+                      >
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>
+                      </svg>
+                      {{ block.settings.views }}
+                    </div>
+                  {% endif %}
+
+                  {% if block.settings.product != blank %}
+                    <a
+                      class="ks-shoppable-videos-card-product"
+                      href="{{ block.settings.product.url }}"
+                      style="
+                        background-color: {{ block.settings.product_bg_color | color_modify: 'alpha', 0.75  }};
+                        color: {{ block.settings.product_text_color }};
+                      "
+                    >
+                      {% if block.settings.product.featured_image != blank %}
+                        <img
+                          src="{{ block.settings.product.featured_image | image_url: width: 150, height: 150, crop: 'center' }}"
+                          alt="{{ block.settings.product.featured_image.alt | default: block.settings.product.title }}"
+                          loading="eager"
+                        >
+                      {% else %}
+                        <div
+                          style="width: calc(var(--card-height) * 0.15); height: calc(var(--card-height) * 0.15); background: rgba(var(--color-foreground), 0.08); border-radius: calc(var(--border-radius) * 0.6); margin-right: calc(var(--spacing-unit) * 0.8); display: flex; align-items: center; justify-content: center;"
+                        >
+                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.3;">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline>
+                          </svg>
+                        </div>
+                      {% endif %}
+                      <div class="ks-shoppable-videos-card-product-content">
+                        <h3 class="ks-shoppable-videos-card-product-title">
+                          {{ block.settings.product.title }}
+                          <span>→</span>
+                        </h3>
+                        <div class="ks-shoppable-videos-card-product-price">
+                          {% if block.settings.product.compare_at_price > block.settings.product.price %}
+                            <span class="">
+                              <span class="visually-hidden visually-hidden--inline"> Regular price </span>
+                              <s>{{ block.settings.product.compare_at_price | money }}</s>
+                            </span>
+                          {% endif %}
+                          <span class="product-item-price-final">
+                            {{ block.settings.product.price | money }}
+                          </span>
+                        </div>
+                      </div>
+                    </a>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+
+        {% else %}
+          <!-- ==============================================
+               DEFAULT PLACEHOLDER ITEMS (no blocks configured)
+               Shows 8 default video cards with placeholder SVGs
+               and sample badge/views text.
+          ============================================== -->
+          {%- for i in (1..8) -%}
+            {%- assign ph_icon = 'product-' | append: i | modulo: 3 | plus: 1 -%}
+            <div class="ks-carousel-slide">
+              <div class="ks-shoppable-videos-card" data-is-playing="false" data-index="{{ forloop.index0 }}">
+                <div class="ks-shoppable-videos-video-wrapper">
+                  <div class="ks-shoppable-videos-card-placeholder-bg">
+                    {{ ph_icon | placeholder_svg_tag: 'ks-shoppable-placeholder-svg' }}
+                  </div>
+                  <div class="ks-shoppable-videos-card-placeholder-badge"></div>
+                  <div class="ks-shoppable-videos-card-placeholder-views"></div>
+                  <button class="ks-shoppable-videos-btn-play" aria-label="Play video" disabled style="opacity: 0.4;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-play-fill" viewBox="0 0 16 16">
+                      <path d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393"/>
+                    </svg>
+                  </button>
+                </div>
+                <div class="ks-shoppable-videos-card-inner">
+                  <div class="ks-shoppable-videos-card-product ks-shoppable-videos-card-placeholder-product" style="text-decoration: none; cursor: default;">
+                    <div class="ks-shoppable-videos-card-placeholder-product-icon">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline>
+                      </svg>
+                    </div>
+                    <div class="ks-shoppable-videos-card-placeholder-text">
+                      <div class="ks-shoppable-videos-card-placeholder-text-line"></div>
+                      <div class="ks-shoppable-videos-card-placeholder-text-line"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          {%- endfor -%}
+        {% endif %}
+
+      </div>
+
+      <button class="ks-carousel-button-prev" aria-label="Previous slide">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+      </button>
+      <button class="ks-carousel-button-next" aria-label="Next slide">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </button>
+
+      <div class="ks-carousel-pagination"></div>
+      <div class="ks-carousel-scrollbar"></div>
+    </div>
+  </div>
+</ks-shoppable-videos>
+
+{% schema %}
+{
+  "name": "KS - Shoppable videos",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "General"
+    },
+    {
+      "type": "color",
+      "id": "color_background",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "color_foreground",
+      "label": "Foreground color",
+      "default": "#121212"
+    },
+    {
+      "type": "checkbox",
+      "id": "container",
+      "label": "Wrap in a container",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Header"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Shoppable Videos"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "label": "Heading size",
+      "options": [
+        { "value": "h2", "label": "Small" },
+        { "value": "h1", "label": "Medium" },
+        { "value": "h0", "label": "Large" }
+      ],
+      "default": "h1"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description",
+      "default": "<p>Optional description for this section</p>",
+      "info": "Leave empty to disable"
+    },
+    {
+      "type": "header",
+      "content": "Slider"
+    },
+    {
+      "type": "range",
+      "id": "slider_speed",
+      "label": "Speed",
+      "default": 300,
+      "min": 0,
+      "max": 2000,
+      "step": 100,
+      "unit": "ms"
+    },
+    {
+      "type": "checkbox",
+      "id": "slider_nav",
+      "label": "Show navigation (arrows)",
+      "info": "NOTE: Will not show on mobile",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "slider_pagination",
+      "label": "Show pagination",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "slider_pagination_type",
+      "label": "Pagination type",
+      "default": "bullets",
+      "options": [
+        { "value": "bullets", "label": "Bullets" },
+        { "value": "fraction", "label": "Fraction" }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "slider_scrollbar",
+      "label": "Show scrollbar",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "slider_partial_slides_mobile",
+      "label": "Partial slides on mobile",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "slider_autoplay",
+      "label": "Autoplay",
+      "min": 0,
+      "max": 10,
+      "default": 0,
+      "unit": "sec",
+      "info": "Selecting \"0\" will disable autoplay."
+    },
+    {
+      "type": "header",
+      "content": "Video card"
+    },
+    {
+      "type": "range",
+      "id": "card_height",
+      "label": "Card height",
+      "min": 200,
+      "max": 800,
+      "step": 10,
+      "unit": "px",
+      "default": 500,
+      "info": "All card elements will automatically scale based on this height"
+    },
+    {
+      "type": "range",
+      "id": "card_gap",
+      "label": "Gap between cards",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 16,
+      "info": "Space between video cards"
+    },
+    {
+      "type": "range",
+      "id": "card_border_width",
+      "label": "Border width (px)",
+      "min": 0,
+      "max": 10,
+      "step": 1,
+      "default": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "card_border_radius",
+      "label": "Border radius (px)",
+      "min": 0,
+      "max": 60,
+      "step": 1,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "checkbox",
+      "id": "card_box_shadow",
+      "label": "Box shadow",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "card_equal_height",
+      "label": "Equal-height cards",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Breakpoints",
+      "info": "Adjust items per slide based on screen resolution"
+    },
+    {
+      "type": "range",
+      "id": "breakpoint_xs",
+      "label": "Items per slide / xs",
+      "info": "Screen width: less than 576px",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "default": 1
+    },
+    {
+      "type": "range",
+      "id": "breakpoint_sm",
+      "label": "Items per slide / sm",
+      "info": "Screen width: ≥576px",
+      "min": 1,
+      "max": 30,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "range",
+      "id": "breakpoint_md",
+      "label": "Items per slide / md",
+      "info": "Screen width: ≥768px",
+      "min": 1,
+      "max": 40,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "breakpoint_lg",
+      "label": "Items per slide / lg",
+      "info": "Screen width: ≥992px",
+      "min": 1,
+      "max": 60,
+      "step": 1,
+      "default": 6
+    },
+    {
+      "type": "range",
+      "id": "breakpoint_xl",
+      "label": "Items per slide / xl",
+      "info": "Screen width: ≥1200px",
+      "min": 1,
+      "max": 60,
+      "step": 1,
+      "default": 6
+    },
+    {
+      "type": "range",
+      "id": "breakpoint_xxl",
+      "label": "Items per slide / xxl",
+      "info": "Screen width: ≥1400px",
+      "min": 1,
+      "max": 60,
+      "step": 1,
+      "default": 6
+    },
+    {
+      "type": "header",
+      "content": "Section padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 80
+    }
+  ],
+  "blocks": [
+    {
+      "type": "item",
+      "name": "Item",
+      "settings": [
+        {
+          "type": "video",
+          "id": "video",
+          "label": "Video"
+        },
+        {
+          "type": "checkbox",
+          "id": "video_autoplay",
+          "label": "Autoplay video",
+          "default": true,
+          "info": "NOTE: Video will autoplay muted."
+        },
+        {
+          "type": "header",
+          "content": "Top area"
+        },
+        {
+          "type": "text",
+          "id": "badge",
+          "label": "Badge",
+          "info": "NOTE: Leave empty to disable",
+          "default": "NEW"
+        },
+        {
+          "type": "color",
+          "id": "badge_bg_color",
+          "label": "Badge - background color",
+          "default": "#334FB4"
+        },
+        {
+          "type": "text",
+          "id": "views",
+          "label": "Views",
+          "info": "NOTE: Leave empty to disable",
+          "default": "3.8k"
+        },
+        {
+          "type": "color",
+          "id": "views_bg_color",
+          "label": "Views - background color",
+          "default": "#000000"
+        },
+        {
+          "type": "header",
+          "content": "Product"
+        },
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Product"
+        },
+        {
+          "type": "color",
+          "id": "product_bg_color",
+          "label": "Background color",
+          "default": "#ffffff"
+        },
+        {
+          "type": "color",
+          "id": "product_text_color",
+          "label": "Text color",
+          "default": "#000000"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "KS - Shoppable videos",
+      "blocks": [
+        { "type": "item" },
+        { "type": "item" },
+        { "type": "item" },
+        { "type": "item" },
+        { "type": "item" },
+        { "type": "item" },
+        { "type": "item" },
+        { "type": "item" }
+      ]
+    }
+  ]
+}
+{% endschema %}
