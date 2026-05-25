@@ -20,6 +20,58 @@
     },
     "hero-banner": {
       "type": "hero-banner",
+      "blocks": {
+        "slide_zhjgGT": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/BFCM25_GW_PC_Hero._CB775393558.jpg",
+            "text_position": "left",
+            "overlay_opacity": 0,
+            "bg_color": "#003087",
+            "bg_color_2": "#0066cc",
+            "badge": "",
+            "heading": "Shop today's deals",
+            "subheading": "",
+            "button_text": "Shop now",
+            "button_link": ""
+          }
+        },
+        "slide_TpKM9X": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/78268._CB785061629_09dd4503-0a6f-4f74-9b44-67035a0079b4.jpg",
+            "text_position": "left",
+            "overlay_opacity": 0,
+            "bg_color": "#003087",
+            "bg_color_2": "#0066cc",
+            "badge": "",
+            "heading": "Shop today's deals",
+            "subheading": "",
+            "button_text": "Shop now",
+            "button_link": ""
+          }
+        },
+        "slide_CHKY7k": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/Desktop_tall_Hero_3000x1200_Books-for-SSC-UPSC--more_rec._CB762894798.jpg",
+            "text_position": "left",
+            "overlay_opacity": 0,
+            "bg_color": "#003087",
+            "bg_color_2": "#0066cc",
+            "badge": "",
+            "heading": "Shop today's deals",
+            "subheading": "",
+            "button_text": "Shop now",
+            "button_link": ""
+          }
+        }
+      },
+      "block_order": [
+        "slide_zhjgGT",
+        "slide_TpKM9X",
+        "slide_CHKY7k"
+      ],
       "settings": {
         "autoplay_speed": 5,
         "banner_height_desktop": 600,
