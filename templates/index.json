@@ -1,0 +1,61 @@
+{
+  "sections": {
+    "announcement-bar": {
+      "type": "announcement-bar",
+      "settings": {}
+    },
+    "hero-banner": {
+      "type": "hero-banner",
+      "settings": {}
+    },
+    "featured-products": {
+      "type": "featured-products",
+      "settings": {}
+    },
+    "featured-products-2": {
+      "type": "featured-products",
+      "settings": {}
+    },
+    "featured-products-3": {
+      "type": "featured-products",
+      "settings": {}
+    },
+    "deals-of-the-day": {
+      "type": "deals-of-the-day",
+      "settings": {}
+    },
+    "amazon-product-slider": {
+      "type": "amazon-product-slider",
+      "settings": {}
+    },
+    "trust-badges": {
+      "type": "trust-badges",
+      "settings": {}
+    },
+    "category-grid": {
+      "type": "category-grid",
+      "settings": {}
+    },
+    "promo-banners": {
+      "type": "promo-banners",
+      "settings": {}
+    },
+    "newsletter": {
+      "type": "newsletter",
+      "settings": {}
+    }
+  },
+  "order": [
+    "announcement-bar",
+    "hero-banner",
+    "featured-products",
+    "featured-products-2",
+    "featured-products-3",
+    "deals-of-the-day",
+    "amazon-product-slider",
+    "trust-badges",
+    "category-grid",
+    "promo-banners",
+    "newsletter"
+  ]
+}
