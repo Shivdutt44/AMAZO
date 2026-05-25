@@ -132,6 +132,22 @@
     },
     "category-grid": {
       "type": "category-grid",
+      "blocks": {
+        "category_LGnL6z": {
+          "type": "category",
+          "settings": {
+            "title": "Shop by Category",
+            "image": "shopify://shop_images/glow__juicy_dew_drop_02_36410cbc-f0a7-45ba-a185-9717602c5dc4.jpg",
+            "bg_color": "#f3f3f3",
+            "accent_color": "#e0e0e0",
+            "link": "",
+            "link_text": "See more"
+          }
+        }
+      },
+      "block_order": [
+        "category_LGnL6z"
+      ],
       "settings": {}
     },
     "promo-banners": {
