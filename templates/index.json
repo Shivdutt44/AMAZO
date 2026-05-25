@@ -11,31 +11,120 @@
   "sections": {
     "announcement-bar": {
       "type": "announcement-bar",
-      "settings": {}
+      "settings": {
+        "rotation_speed": 4000,
+        "animation": "fade",
+        "show_arrows": false,
+        "show_dots": false
+      }
     },
     "hero-banner": {
       "type": "hero-banner",
-      "settings": {}
+      "blocks": {
+        "slide_zhjgGT": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/BFCM25_GW_PC_Hero._CB775393558.jpg",
+            "text_position": "left",
+            "overlay_opacity": 0,
+            "bg_color": "#003087",
+            "bg_color_2": "#0066cc",
+            "badge": "",
+            "heading": "Shop today's deals",
+            "subheading": "",
+            "button_text": "Shop now",
+            "button_link": ""
+          }
+        },
+        "slide_TpKM9X": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/78268._CB785061629_09dd4503-0a6f-4f74-9b44-67035a0079b4.jpg",
+            "text_position": "left",
+            "overlay_opacity": 0,
+            "bg_color": "#003087",
+            "bg_color_2": "#0066cc",
+            "badge": "",
+            "heading": "Shop today's deals",
+            "subheading": "",
+            "button_text": "Shop now",
+            "button_link": ""
+          }
+        },
+        "slide_CHKY7k": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/Desktop_tall_Hero_3000x1200_Books-for-SSC-UPSC--more_rec._CB762894798.jpg",
+            "text_position": "left",
+            "overlay_opacity": 0,
+            "bg_color": "#003087",
+            "bg_color_2": "#0066cc",
+            "badge": "",
+            "heading": "Shop today's deals",
+            "subheading": "",
+            "button_text": "Shop now",
+            "button_link": ""
+          }
+        }
+      },
+      "block_order": [
+        "slide_zhjgGT",
+        "slide_TpKM9X",
+        "slide_CHKY7k"
+      ],
+      "settings": {
+        "autoplay_speed": 5,
+        "banner_height_desktop": 600,
+        "banner_height_mobile": 350
+      }
     },
     "featured-products": {
       "type": "featured-products",
-      "settings": {}
+      "settings": {
+        "title": "Top Picks For You",
+        "collection": "3-products-999-build-your-box",
+        "product_count": 4,
+        "link_text": "See all recommendations",
+        "view_all_url": ""
+      }
     },
     "featured-products-2": {
       "type": "featured-products",
-      "settings": {}
+      "settings": {
+        "title": "Top Picks For You",
+        "collection": "2-sunscreens-699",
+        "product_count": 4,
+        "link_text": "See all recommendations",
+        "view_all_url": ""
+      }
     },
     "featured-products-3": {
       "type": "featured-products",
-      "settings": {}
+      "settings": {
+        "title": "Top Picks For You",
+        "collection": "3-999",
+        "product_count": 4,
+        "link_text": "See all recommendations",
+        "view_all_url": ""
+      }
     },
     "deals-of-the-day": {
       "type": "deals-of-the-day",
-      "settings": {}
+      "settings": {
+        "title": "Deals of the Day",
+        "deals_collection": "20-off-products",
+        "view_all_link": ""
+      }
     },
     "amazon-product-slider": {
       "type": "amazon-product-slider",
-      "settings": {}
+      "settings": {
+        "title": "Best Sellers",
+        "collection": "essential-oils",
+        "product_count": 12,
+        "view_all_text": "See all best sellers",
+        "view_all_link": ""
+      }
     },
     "trust-badges": {
       "type": "trust-badges",
@@ -43,6 +132,22 @@
     },
     "category-grid": {
       "type": "category-grid",
+      "blocks": {
+        "category_LGnL6z": {
+          "type": "category",
+          "settings": {
+            "title": "Shop by Category",
+            "image": "shopify://shop_images/glow__juicy_dew_drop_02_36410cbc-f0a7-45ba-a185-9717602c5dc4.jpg",
+            "bg_color": "#f3f3f3",
+            "accent_color": "#e0e0e0",
+            "link": "",
+            "link_text": "See more"
+          }
+        }
+      },
+      "block_order": [
+        "category_LGnL6z"
+      ],
       "settings": {}
     },
     "promo-banners": {
@@ -59,7 +164,12 @@
     },
     "newsletter": {
       "type": "newsletter",
-      "settings": {}
+      "settings": {
+        "title": "Stay Updated",
+        "subtitle": "Get deals, new arrivals, and exclusive offers",
+        "placeholder": "Enter your email address",
+        "button_text": "Subscribe"
+      }
     }
   },
   "order": [
