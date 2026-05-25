@@ -304,6 +304,80 @@
     },
     "cro-comparison-table": {
       "type": "cro-comparison-table",
+      "blocks": {
+        "product_Ua8jYp": {
+          "type": "product",
+          "settings": {
+            "product_name": "Product",
+            "price": "₹499",
+            "highlight": false,
+            "price_value": "₹499",
+            "quality_value": "Premium",
+            "warranty_value": "2 Years",
+            "shipping_value": "Free",
+            "support_value": "24/7"
+          }
+        },
+        "product_CFCXRA": {
+          "type": "product",
+          "settings": {
+            "product_name": "Product",
+            "price": "₹499",
+            "highlight": false,
+            "price_value": "₹499",
+            "quality_value": "Premium",
+            "warranty_value": "2 Years",
+            "shipping_value": "Free",
+            "support_value": "24/7"
+          }
+        },
+        "product_ay4Qhy": {
+          "type": "product",
+          "settings": {
+            "product_name": "Product",
+            "price": "₹499",
+            "highlight": false,
+            "price_value": "₹499",
+            "quality_value": "Premium",
+            "warranty_value": "2 Years",
+            "shipping_value": "Free",
+            "support_value": "24/7"
+          }
+        },
+        "product_hjARKT": {
+          "type": "product",
+          "settings": {
+            "product_name": "Product",
+            "price": "₹499",
+            "highlight": false,
+            "price_value": "₹499",
+            "quality_value": "Premium",
+            "warranty_value": "2 Years",
+            "shipping_value": "Free",
+            "support_value": "24/7"
+          }
+        },
+        "product_eL6rBF": {
+          "type": "product",
+          "settings": {
+            "product_name": "Product",
+            "price": "₹499",
+            "highlight": false,
+            "price_value": "₹499",
+            "quality_value": "Premium",
+            "warranty_value": "2 Years",
+            "shipping_value": "Free",
+            "support_value": "24/7"
+          }
+        }
+      },
+      "block_order": [
+        "product_Ua8jYp",
+        "product_CFCXRA",
+        "product_ay4Qhy",
+        "product_hjARKT",
+        "product_eL6rBF"
+      ],
       "settings": {
         "heading": "Compare Products",
         "heading_color": "#0f1111",
@@ -337,6 +411,66 @@
     },
     "cro-faq-accordion": {
       "type": "cro-faq-accordion",
+      "blocks": {
+        "question_x3BKKB": {
+          "type": "question",
+          "settings": {
+            "question": "What is your return policy?",
+            "answer": "We offer a 30-day hassle-free return policy. If you're not satisfied, simply contact our support team and we'll help you with the process."
+          }
+        },
+        "question_RL8b8D": {
+          "type": "question",
+          "settings": {
+            "question": "What is your return policy?",
+            "answer": "We offer a 30-day hassle-free return policy. If you're not satisfied, simply contact our support team and we'll help you with the process."
+          }
+        },
+        "question_9w9ppT": {
+          "type": "question",
+          "settings": {
+            "question": "What is your return policy?",
+            "answer": "We offer a 30-day hassle-free return policy. If you're not satisfied, simply contact our support team and we'll help you with the process."
+          }
+        },
+        "question_9aMKqk": {
+          "type": "question",
+          "settings": {
+            "question": "What is your return policy?",
+            "answer": "We offer a 30-day hassle-free return policy. If you're not satisfied, simply contact our support team and we'll help you with the process."
+          }
+        },
+        "question_K4pPyC": {
+          "type": "question",
+          "settings": {
+            "question": "What is your return policy?",
+            "answer": "We offer a 30-day hassle-free return policy. If you're not satisfied, simply contact our support team and we'll help you with the process."
+          }
+        },
+        "question_JRATgR": {
+          "type": "question",
+          "settings": {
+            "question": "What is your return policy?",
+            "answer": "We offer a 30-day hassle-free return policy. If you're not satisfied, simply contact our support team and we'll help you with the process."
+          }
+        },
+        "question_WwmEVq": {
+          "type": "question",
+          "settings": {
+            "question": "What is your return policy?",
+            "answer": "We offer a 30-day hassle-free return policy. If you're not satisfied, simply contact our support team and we'll help you with the process."
+          }
+        }
+      },
+      "block_order": [
+        "question_x3BKKB",
+        "question_RL8b8D",
+        "question_9w9ppT",
+        "question_9aMKqk",
+        "question_K4pPyC",
+        "question_JRATgR",
+        "question_WwmEVq"
+      ],
       "settings": {
         "heading": "Frequently Asked Questions",
         "subheading": "Everything you need to know before buying",
@@ -350,6 +484,80 @@
     },
     "cro-reviews-carousel": {
       "type": "cro-reviews-carousel",
+      "blocks": {
+        "review_VCBnph": {
+          "type": "review",
+          "settings": {
+            "author": "Verified Customer",
+            "date": "2 weeks ago",
+            "rating": "★★★★★",
+            "review_text": "Absolutely love this product! The quality exceeded my expectations."
+          }
+        },
+        "review_CjRFcM": {
+          "type": "review",
+          "settings": {
+            "author": "Verified Customer",
+            "date": "2 weeks ago",
+            "rating": "★★★★★",
+            "review_text": "Absolutely love this product! The quality exceeded my expectations."
+          }
+        },
+        "review_yt4eef": {
+          "type": "review",
+          "settings": {
+            "author": "Verified Customer",
+            "date": "2 weeks ago",
+            "rating": "★★★★★",
+            "review_text": "Absolutely love this product! The quality exceeded my expectations."
+          }
+        },
+        "review_wUtNGM": {
+          "type": "review",
+          "settings": {
+            "author": "Verified Customer",
+            "date": "2 weeks ago",
+            "rating": "★★★★★",
+            "review_text": "Absolutely love this product! The quality exceeded my expectations."
+          }
+        },
+        "review_HLRKyB": {
+          "type": "review",
+          "settings": {
+            "author": "Verified Customer",
+            "date": "2 weeks ago",
+            "rating": "★★★★★",
+            "review_text": "Absolutely love this product! The quality exceeded my expectations."
+          }
+        },
+        "review_Vm4jKX": {
+          "type": "review",
+          "settings": {
+            "author": "Verified Customer",
+            "date": "2 weeks ago",
+            "rating": "★★★★★",
+            "review_text": "Absolutely love this product! The quality exceeded my expectations."
+          }
+        },
+        "review_JyCyHK": {
+          "type": "review",
+          "settings": {
+            "author": "Verified Customer",
+            "date": "2 weeks ago",
+            "rating": "★★★★★",
+            "review_text": "Absolutely love this product! The quality exceeded my expectations."
+          }
+        }
+      },
+      "block_order": [
+        "review_VCBnph",
+        "review_CjRFcM",
+        "review_yt4eef",
+        "review_wUtNGM",
+        "review_HLRKyB",
+        "review_Vm4jKX",
+        "review_JyCyHK"
+      ],
       "settings": {
         "heading": "What Our Customers Are Saying",
         "subheading": "Real reviews from real customers",
