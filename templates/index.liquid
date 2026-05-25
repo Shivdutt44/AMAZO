@@ -1,0 +1,49 @@
+{% comment %} AMAZO Homepage — Amazon.com Style v2 {% endcomment %}
+
+<!-- ── ANNOUNCEMENT BAR ── -->
+{% section 'announcement-bar' %}
+
+<!-- ── HERO CAROUSEL (full-width, no padding) ── -->
+{% section 'hero-banner' %}
+
+<!-- ── 4-COLUMN FEATURE CARDS (consolidated from 3 duplicated sections → 1 reusable) ── -->
+<div class="amz-homepage-cards">
+  <div class="amz-homepage-cards__grid">
+
+    <div class="amz-homepage-cards__card">
+      {% section 'featured-products' %}
+    </div>
+
+    <div class="amz-homepage-cards__card">
+      {% section 'featured-products' %}
+    </div>
+
+    <div class="amz-homepage-cards__card">
+      {% section 'featured-products' %}
+    </div>
+
+    <div class="amz-homepage-cards__card">
+      {% section 'deals-of-the-day' %}
+    </div>
+
+  </div>
+</div>
+
+<!-- ── BEST SELLERS PRODUCT SLIDER ── -->
+{% section 'amazon-product-slider' %}
+
+<!-- ── TRUST BADGES ── -->
+{% section 'trust-badges' %}
+
+<!-- ── CATEGORY GRID ── -->
+{% section 'category-grid' %}
+
+<!-- ── PROMO BANNERS ── -->
+<div class="page-width" style="padding: 8px 10px;">
+  {% section 'promo-banners' %}
+</div>
+
+<!-- ── NEWSLETTER ── -->
+{% section 'newsletter' %}
+
+<!-- content_for_index intentionally removed — sections are included manually with custom layout wrappers above -->

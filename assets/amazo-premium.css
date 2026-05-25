@@ -3243,6 +3243,17 @@ textarea {
   transform: scale(1.02);
 }
 
+/* Homepage 4-col layout */
+.homepage-4col-top {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.hp-box {
+  min-height: 300px;
+}
+
 /* Featured products */
 .amz-featured {
   background: var(--amz-bg);
@@ -3362,6 +3373,9 @@ textarea {
     grid-template-columns: repeat(2, 1fr);
   }
 
+  .homepage-4col-top {
+    grid-template-columns: repeat(2, 1fr);
+  }
 
   .amz-featured__grid {
     grid-template-columns: repeat(3, 1fr);
@@ -3463,6 +3477,9 @@ textarea {
     grid-template-columns: repeat(2, 1fr);
   }
 
+  .homepage-4col-top {
+    grid-template-columns: repeat(2, 1fr);
+  }
 
   .amz-featured__grid {
     grid-template-columns: repeat(2, 1fr);
@@ -3655,6 +3672,10 @@ textarea {
     gap: 10px;
   }
 
+  .homepage-4col-top {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
 
   /* Homepage collection sections */
   .amz-fc__grid {
@@ -4322,6 +4343,350 @@ body.menu-open {
   font-size: 12px;
   color: var(--amz-gray);
   margin-top: 4px;
+}
+
+/* ============================================================
+   26. HOMEPAGE — Fix 4-column cards layout, height fill,
+   section overlapping, hero banner, responsive
+   ============================================================ */
+
+/* Homepage 4-col card grid — proper equal heights */
+.amz-homepage-cards {
+  background: var(--amz-bg) !important;
+  padding: 8px 0 !important;
+}
+
+.amz-homepage-cards__grid {
+  display: grid !important;
+  grid-template-columns: repeat(4, 1fr) !important;
+  gap: 8px !important;
+  max-width: 1500px !important;
+  margin: 0 auto !important;
+  padding: 0 10px !important;
+  align-items: start !important;
+}
+
+.amz-homepage-cards__card {
+  background: #fff !important;
+  border-radius: var(--radius-md) !important;
+  overflow: hidden !important;
+  min-height: 300px !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+/* Remove extra wrapper div margin/padding created by sections */
+.amz-homepage-cards__card>div,
+.amz-homepage-cards__card>section {
+  flex: 1 !important;
+  height: auto !important;
+  min-height: 0 !important;
+}
+
+/* Fix amz-fc (featured collection) sections inside cards */
+.amz-fc {
+  background: transparent !important;
+  padding: 0 !important;
+  height: 100% !important;
+}
+
+.amz-fc__inner {
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 18px !important;
+  background: #fff !important;
+  height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  margin: 0 !important;
+  max-width: none !important;
+}
+
+.amz-fc__title {
+  font-size: 18px !important;
+  margin-bottom: 12px !important;
+}
+
+.amz-fc__grid {
+  flex: 1 !important;
+  gap: 6px !important;
+}
+
+.amz-fc__grid-item img {
+  height: 110px !important;
+}
+
+.amz-fc__link {
+  margin-top: auto !important;
+  padding-top: 10px !important;
+}
+
+/* Fix amz-deals (deals of the day) section inside cards */
+.amz-deals {
+  background: transparent !important;
+  padding: 0 !important;
+  height: 100% !important;
+}
+
+.amz-deals__inner {
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 18px !important;
+  height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  max-width: none !important;
+}
+
+.amz-deals__header {
+  flex-wrap: wrap !important;
+  gap: 4px !important;
+  margin-bottom: 10px !important;
+}
+
+.amz-deals__title {
+  font-size: 18px !important;
+}
+
+.amz-deals__slider-wrap {
+  flex: 1;
+}
+
+.amz-deals__track-outer {
+  overflow: hidden;
+}
+
+.amz-deals__item {
+  min-width: 145px !important;
+}
+
+.amz-deals__card-img-wrap img {
+  height: 130px !important;
+}
+
+/* Fix amz-featured (featured products) inside cards */
+.amz-featured {
+  background: transparent !important;
+  padding: 0 !important;
+  height: 100% !important;
+}
+
+.amz-featured__inner {
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 18px !important;
+  background: #fff !important;
+  height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  margin: 0 !important;
+  max-width: none !important;
+}
+
+.amz-featured__title {
+  font-size: 18px !important;
+}
+
+.amz-featured__grid {
+  grid-template-columns: repeat(2, 1fr) !important;
+  flex: 1 !important;
+}
+
+.amz-featured__link-all {
+  margin-top: auto !important;
+  padding-top: 8px !important;
+}
+
+/* Hero banner — fix overflow, proper height */
+.amz-hero {
+  position: relative !important;
+  overflow: hidden !important;
+  background: var(--amz-dark) !important;
+}
+
+.amz-hero__carousel {
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+.amz-hero__slides {
+  display: flex !important;
+  transition: transform 0.5s ease !important;
+  will-change: transform !important;
+}
+
+.amz-hero__slide {
+  min-width: 100% !important;
+  flex-shrink: 0 !important;
+}
+
+.amz-hero__img {
+  width: 100% !important;
+  height: clamp(280px, 38vw, 550px) !important;
+  object-fit: cover !important;
+  display: block !important;
+}
+
+.amz-hero__slide-default {
+  width: 100% !important;
+  height: clamp(280px, 38vw, 550px) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.amz-hero__slide-content {
+  padding: 40px 60px !important;
+  max-width: 600px !important;
+}
+
+.amz-hero__slide-content--center {
+  text-align: center !important;
+  max-width: 500px !important;
+}
+
+.amz-hero__heading,
+.amz-hero__heading-white {
+  font-size: clamp(24px, 3.5vw, 42px) !important;
+  font-weight: 700 !important;
+  color: #111 !important;
+  margin-bottom: 10px !important;
+  line-height: 1.2 !important;
+}
+
+.amz-hero__subheading,
+.amz-hero__sub-white {
+  font-size: clamp(14px, 1.8vw, 18px) !important;
+  color: #333 !important;
+  margin-bottom: 20px !important;
+}
+
+.amz-hero__btn,
+.amz-hero__cta-btn {
+  display: inline-block !important;
+  background: linear-gradient(to bottom, #f7dfa5, var(--amz-yellow)) !important;
+  border: 1px solid #a88734 !important;
+  border-radius: 3px !important;
+  padding: 10px 24px !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  color: var(--amz-text) !important;
+  text-decoration: none !important;
+  transition: var(--transition) !important;
+}
+
+.amz-hero__btn:hover,
+.amz-hero__cta-btn:hover {
+  background: linear-gradient(to bottom, #f5d78e, #ddb347) !important;
+  text-decoration: none !important;
+}
+
+/* Hero prev/next buttons */
+.amz-hero__prev,
+.amz-hero__next {
+  position: absolute !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  background: rgba(255, 255, 255, 0.7) !important;
+  border: none !important;
+  border-radius: 50% !important;
+  width: 44px !important;
+  height: 44px !important;
+  font-size: 18px !important;
+  cursor: pointer !important;
+  z-index: 10 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: background 0.2s !important;
+  color: #111 !important;
+}
+
+.amz-hero__prev:hover,
+.amz-hero__next:hover {
+  background: rgba(255, 255, 255, 0.95) !important;
+}
+
+.amz-hero__prev {
+  left: 12px !important;
+}
+
+.amz-hero__next {
+  right: 12px !important;
+}
+
+/* Hero fade overlays */
+.amz-hero__fade-left,
+.amz-hero__fade-right {
+  position: absolute !important;
+  top: 0 !important;
+  bottom: 0 !important;
+  width: 80px !important;
+  pointer-events: none !important;
+  z-index: 5 !important;
+}
+
+.amz-hero__fade-left {
+  left: 0 !important;
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.12), transparent) !important;
+}
+
+.amz-hero__fade-right {
+  right: 0 !important;
+  background: linear-gradient(to left, rgba(0, 0, 0, 0.12), transparent) !important;
+}
+
+/* Hero dots */
+.amz-hero__dots {
+  position: absolute !important;
+  bottom: 14px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  display: flex !important;
+  gap: 6px !important;
+  z-index: 10 !important;
+}
+
+.amz-hero__dot {
+  width: 8px !important;
+  height: 8px !important;
+  border-radius: 50% !important;
+  background: rgba(255, 255, 255, 0.6) !important;
+  cursor: pointer !important;
+  transition: background 0.2s !important;
+  display: block !important;
+}
+
+.amz-hero__dot--active {
+  background: rgba(255, 255, 255, 1) !important;
+}
+
+/* ---- Homepage responsive ---- */
+@media (max-width: 1024px) {
+  .amz-homepage-cards__grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .amz-homepage-cards__grid {
+    grid-template-columns: 1fr !important;
+    gap: 6px !important;
+    padding: 0 8px !important;
+  }
+
+  .amz-homepage-cards__card {
+    min-height: auto !important;
+  }
+
+  .amz-hero__slide-content {
+    padding: 24px !important;
+  }
+
+  .amz-hero__prev,
+  .amz-hero__next {
+    display: none !important;
+  }
 }
 
 /* ============================================================
@@ -5005,6 +5370,28 @@ body.menu-open {
     grid-template-columns: 1fr 1fr;
   }
 }
+/* OS 2.0 Homepage Grid */
+@media(min-width: 1024px) {
+  #shopify-section-template--index__featured-products { width: 25%; float: left; padding: 20px 10px 20px 20px; box-sizing: border-box; }
+  #shopify-section-template--index__featured-collection-2,
+  #shopify-section-template--index__featured-collection-3 { width: 25%; float: left; padding: 20px 10px; box-sizing: border-box; }
+  #shopify-section-template--index__deals-of-the-day { width: 25%; float: left; padding: 20px 20px 20px 10px; box-sizing: border-box; }
+  #shopify-section-template--index__amazon-product-slider { clear: both; }
+}
+@media(max-width: 1023px) and (min-width: 768px) {
+  #shopify-section-template--index__featured-products,
+  #shopify-section-template--index__featured-collection-2,
+  #shopify-section-template--index__featured-collection-3,
+  #shopify-section-template--index__deals-of-the-day { width: 50%; float: left; padding: 10px; box-sizing: border-box; }
+  #shopify-section-template--index__amazon-product-slider { clear: both; }
+}
+@media(max-width: 767px) {
+  #shopify-section-template--index__featured-products,
+  #shopify-section-template--index__featured-collection-2,
+  #shopify-section-template--index__featured-collection-3,
+  #shopify-section-template--index__deals-of-the-day { width: 100%; padding: 10px; box-sizing: border-box; }
+}
+
 /* ============================================================
    HOMEPAGE IMPROVEMENTS v2 — Featured Cards + Product Slider
    ============================================================ */
