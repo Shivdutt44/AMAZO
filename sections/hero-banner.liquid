@@ -77,10 +77,14 @@
               {%- endif -%}
 
             {%- else -%}
-              <!-- Default Amazon-style gradient slide -->
-              <div class="amz-hero__slide-default" style="background: linear-gradient(135deg, {{ block.settings.bg_color | default: '#003087' }} 0%, {{ block.settings.bg_color_2 | default: '#0066cc' }} 100%);">
+              <!-- Default slide with Shopify placeholder image -->
+              {%- assign ph_names = 'lifestyle-1, lifestyle-2, lifestyle-3' | split: ', ' -%}
+              {%- assign ph_idx = forloop.index0 | modulo: 3 -%}
+              <div class="amz-hero__slide-default" style="position:relative;overflow:hidden;background:var(--amz-bg);">
+                {{ ph_names[ph_idx] | placeholder_svg_tag: 'amz-hero__placeholder-svg' }}
+                <div style="position:absolute;inset:0;background:rgba(0,0,0,0.15);pointer-events:none;z-index:1;"></div>
                 {%- assign tpos = block.settings.text_position | default: 'center' -%}
-                <div class="amz-hero__slide-content amz-hero__slide-content--{{ tpos }}">
+                <div class="amz-hero__slide-content amz-hero__slide-content--{{ tpos }}" style="position:absolute;bottom:15%;{% if tpos == 'center' %}left:50%;transform:translateX(-50%);text-align:center;min-width:300px;{% elsif tpos == 'right' %}right:5%;text-align:right;{% else %}left:5%;{% endif %}z-index:2;">
                   {%- if block.settings.badge != blank -%}
                     <span class="amz-hero__badge">{{ block.settings.badge }}</span>
                   {%- endif -%}
@@ -102,28 +106,34 @@
         {%- endif -%}
       {%- else -%}
 
-      <!-- DEFAULT SLIDES - Amazon Style (shown when no blocks configured) -->
-      <div class="amz-hero__slide amz-hero__slide--1">
-        <div class="amz-hero__slide-default" style="background: linear-gradient(180deg, #b6c4de 0%, #e8ecf0 40%, #eaeded 100%);">
-          <div class="amz-hero__slide-content amz-hero__slide-content--center">
+      <!-- DEFAULT SLIDES - Shopify placeholder images (shown when no blocks configured) -->
+      <div class="amz-hero__slide amz-hero__slide--1" style="position:relative;">
+        <div class="amz-hero__slide-default" style="position:relative;overflow:hidden;background:var(--amz-bg);">
+          {{ 'lifestyle-1' | placeholder_svg_tag: 'amz-hero__placeholder-svg' }}
+          <div style="position:absolute;inset:0;background:rgba(0,0,0,0.15);pointer-events:none;z-index:1;"></div>
+          <div class="amz-hero__slide-content amz-hero__slide-content--center" style="position:absolute;bottom:15%;left:50%;transform:translateX(-50%);z-index:2;text-align:center;min-width:300px;">
             <h2 class="amz-hero__heading-white">Shop today's deals</h2>
             <p class="amz-hero__sub-white">Discover amazing deals across all categories</p>
             <a href="/collections/all" class="amz-hero__cta-btn">See all deals</a>
           </div>
         </div>
       </div>
-      <div class="amz-hero__slide amz-hero__slide--2">
-        <div class="amz-hero__slide-default" style="background: linear-gradient(180deg, #c8e6c9 0%, #e8f5e9 40%, #eaeded 100%);">
-          <div class="amz-hero__slide-content amz-hero__slide-content--center">
+      <div class="amz-hero__slide amz-hero__slide--2" style="position:relative;">
+        <div class="amz-hero__slide-default" style="position:relative;overflow:hidden;background:var(--amz-bg);">
+          {{ 'lifestyle-2' | placeholder_svg_tag: 'amz-hero__placeholder-svg' }}
+          <div style="position:absolute;inset:0;background:rgba(0,0,0,0.15);pointer-events:none;z-index:1;"></div>
+          <div class="amz-hero__slide-content amz-hero__slide-content--center" style="position:absolute;bottom:15%;left:50%;transform:translateX(-50%);z-index:2;text-align:center;min-width:300px;">
             <h2 class="amz-hero__heading-white">New Arrivals</h2>
             <p class="amz-hero__sub-white">Discover what's new and trending</p>
             <a href="/collections/new" class="amz-hero__cta-btn">Shop now</a>
           </div>
         </div>
       </div>
-      <div class="amz-hero__slide amz-hero__slide--3">
-        <div class="amz-hero__slide-default" style="background: linear-gradient(180deg, #fff9c4 0%, #fffde7 40%, #eaeded 100%);">
-          <div class="amz-hero__slide-content amz-hero__slide-content--center">
+      <div class="amz-hero__slide amz-hero__slide--3" style="position:relative;">
+        <div class="amz-hero__slide-default" style="position:relative;overflow:hidden;background:var(--amz-bg);">
+          {{ 'lifestyle-3' | placeholder_svg_tag: 'amz-hero__placeholder-svg' }}
+          <div style="position:absolute;inset:0;background:rgba(0,0,0,0.15);pointer-events:none;z-index:1;"></div>
+          <div class="amz-hero__slide-content amz-hero__slide-content--center" style="position:absolute;bottom:15%;left:50%;transform:translateX(-50%);z-index:2;text-align:center;min-width:300px;">
             <h2 class="amz-hero__heading-white">Prime Member Deals</h2>
             <p class="amz-hero__sub-white">Exclusive savings for Prime members</p>
             <a href="#" class="amz-hero__cta-btn">Join Prime</a>

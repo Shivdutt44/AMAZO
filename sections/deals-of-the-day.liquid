@@ -39,10 +39,12 @@
                   <span class="amz-deals__badge">-{{ deal_pct }}%</span>
                   {%- if product.featured_image != blank -%}
                     <img
-                      src="{{ product.featured_image | image_url: width: 220 }}"
+                      src="{{ product.featured_image | image_url: width: 600 }}"
+                      srcset="{{ product.featured_image | image_url: width: 300 }} 300w, {{ product.featured_image | image_url: width: 600 }} 600w, {{ product.featured_image | image_url: width: 900 }} 900w"
+                      sizes="(max-width: 480px) 40vw, (max-width: 768px) 30vw, 200px"
                       alt="{{ product.title | escape }}"
                       loading="lazy"
-                      width="220" height="220"
+                      width="600" height="600"
                     >
                   {%- else -%}
                     {{ 'product-' | append: forloop.index | modulo: 6 | plus: 1 | placeholder_svg_tag: 'amz-deals__img-placeholder' }}

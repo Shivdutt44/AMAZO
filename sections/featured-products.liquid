@@ -16,12 +16,16 @@
           <a href="{{ product.url }}" class="amz-fc__product-link">
             <div class="amz-fc__img-wrap">
               {%- if product.featured_image != blank -%}
+                {%- assign img_src = product.featured_image | image_url: width: 600 -%}
+                {%- capture img_srcset -%}{{ product.featured_image | image_url: width: 400 }} 400w, {{ product.featured_image | image_url: width: 600 }} 600w, {{ product.featured_image | image_url: width: 800 }} 800w{%- endcapture -%}
                 <img
-                  src="{{ product.featured_image | image_url: width: 200 }}"
+                  src="{{ img_src }}"
+                  srcset="{{ img_srcset }}"
+                  sizes="(max-width: 480px) 45vw, (max-width: 768px) 45vw, (max-width: 1200px) 23vw, 280px"
                   alt="{{ product.title | escape }}"
                   loading="lazy"
                   class="amz-fc__grid-img"
-                  width="200" height="200">
+                  width="600" height="600">
               {%- else -%}
                 {{ 'product-' | append: forloop.index | placeholder_svg_tag: 'amz-fc__grid-img amz-placeholder-svg' }}
               {%- endif -%}
@@ -45,23 +49,36 @@
             <p class="amz-fc__product-title">{{ product.title | truncate: 30 }}</p>
             <div class="amz-fc__stars" aria-label="{{ frating }} stars">
               {%- assign ffloor = frating | floor -%}
+              {%- assign fhalf = frating | minus: ffloor -%}
+              {%- assign next_star = ffloor | plus: 1 -%}
               {%- for s in (1..5) -%}
-                {%- if s <= ffloor -%}<span class="amz-fc__star amz-fc__star--on">★</span>{%- else -%}<span class="amz-fc__star">★</span>{%- endif -%}
+                {%- if s <= ffloor -%}<span class="amz-fc__star amz-fc__star--on">★</span>
+                {%- elsif s == next_star and fhalf >= 0.3 and fhalf <= 0.7 -%}<span class="amz-fc__star amz-fc__star--half">★</span>
+                {%- else -%}<span class="amz-fc__star">★</span>
+                {%- endif -%}
               {%- endfor -%}
             </div>
             <p class="amz-fc__product-price">
               {%- if fv.compare_at_price > fv.price -%}
+                {%- assign discount = fv.compare_at_price | minus: fv.price | times: 100.0 | divided_by: fv.compare_at_price | round -%}
                 <s class="amz-fc__was">{{ fv.compare_at_price | money }}</s>
+                <span class="amz-fc__discount">-{{ discount }}%</span>
               {%- endif -%}
-              <strong>{{ fv.price | money }}</strong>
+              <strong class="amz-fc__current">{{ fv.price | money }}</strong>
             </p>
           </a>
         </div>
       {%- else -%}
         {%- for i in (1..limit_count) -%}
           <div class="amz-fc__grid-item">
-            {{ 'product-' | append: i | placeholder_svg_tag: 'amz-fc__grid-img amz-placeholder-svg' }}
+            <div class="amz-fc__img-wrap">
+              {{ 'product-' | append: i | placeholder_svg_tag: 'amz-fc__grid-img amz-placeholder-svg' }}
+            </div>
             <p class="amz-fc__product-title" style="color:#565959;">Sample Product {{ i }}</p>
+            <div class="amz-fc__stars">
+              {%- for s in (1..5) -%}<span class="amz-fc__star amz-fc__star--on">★</span>{%- endfor -%}
+            </div>
+            <p class="amz-fc__product-price"><strong class="amz-fc__current">$19.99</strong></p>
           </div>
         {%- endfor -%}
       {%- endfor -%}
@@ -74,16 +91,174 @@
 </div>
 
 <style>
-.amz-fc__img-wrap { position: relative; }
-.amz-fc-wish-btn {
-  position: absolute; top: 5px; right: 5px; background: rgba(255,255,255,0.9); border: 1px solid #ddd;
-  border-radius: 50%; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center;
-  cursor: pointer; z-index: 5; opacity: 0; transition: opacity 0.2s;
+/* ── Featured Grid Product Cards ── */
+.amz-fc__img-wrap {
+  position: relative;
+  overflow: hidden;
+  border-radius: 6px;
+  background: #f7f7f7;
+  margin-bottom: 8px;
+  aspect-ratio: 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #f0f0f0;
+  transition: box-shadow 0.25s ease, border-color 0.25s ease;
 }
+
+.amz-fc__grid-item:hover .amz-fc__img-wrap {
+  border-color: #ddd;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+}
+
+.amz-fc__grid-item .amz-fc__grid-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain !important;
+  padding: 8px;
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  display: block;
+}
+
+.amz-fc__grid-item:hover .amz-fc__grid-img {
+  transform: scale(1.08);
+}
+
+.amz-fc__product-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  transition: color 0.15s;
+}
+
+.amz-fc__product-link:hover { text-decoration: none; }
+
+.amz-fc__product-title {
+  font-size: 13px;
+  color: #0f1111;
+  line-height: 1.4;
+  margin: 0 0 4px;
+  min-height: 34px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  transition: color 0.15s;
+}
+
+.amz-fc__product-link:hover .amz-fc__product-title {
+  color: #c45500;
+}
+
+.amz-fc__grid-item .amz-fc__stars {
+  display: flex;
+  gap: 1px;
+  margin-bottom: 4px;
+  line-height: 1;
+}
+
+.amz-fc__grid-item .amz-fc__star {
+  color: #ddd;
+  font-size: 12px;
+}
+
+.amz-fc__grid-item .amz-fc__star--on { color: #ff9900; }
+.amz-fc__grid-item .amz-fc__star--half {
+  position: relative;
+  color: #ff9900;
+}
+.amz-fc__grid-item .amz-fc__star--half::after {
+  content: '★';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 50%;
+  overflow: hidden;
+  color: #ff9900;
+}
+
+.amz-fc__grid-item .amz-fc__product-price {
+  font-size: 14px;
+  color: #0f1111;
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.amz-fc__grid-item .amz-fc__current {
+  font-size: 16px;
+  font-weight: 700;
+  color: #0f1111;
+}
+
+.amz-fc__grid-item .amz-fc__was {
+  color: #565959;
+  font-size: 12px;
+  font-weight: 400;
+  text-decoration: line-through;
+}
+
+.amz-fc__grid-item .amz-fc__discount {
+  font-size: 12px;
+  font-weight: 700;
+  color: #cc0c39;
+  background: #fef2f2;
+  padding: 1px 5px;
+  border-radius: 3px;
+}
+
+/* Wishlist Button */
+.amz-fc-wish-btn {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  z-index: 5;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.92);
+  border: 1px solid #ddd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.25s ease, transform 0.2s ease, background 0.2s;
+  backdrop-filter: blur(4px);
+}
+
 .amz-fc__grid-item:hover .amz-fc-wish-btn { opacity: 1; }
-.amz-fc-wish-btn .amz-heart-icon { stroke: #565959; fill: none; }
-.amz-fc-wish-btn.is-wishlisted .amz-heart-icon { stroke: #cc0c39; fill: #cc0c39; }
-@media (max-width: 768px) { .amz-fc-wish-btn { opacity: 1; } }
+
+.amz-fc-wish-btn:hover {
+  transform: scale(1.15);
+  background: #fff;
+}
+
+.amz-fc__grid-item .amz-fc-wish-btn .amz-heart-icon {
+  stroke: #565959;
+  fill: none;
+  transition: stroke 0.2s, fill 0.2s;
+}
+
+.amz-fc__grid-item .amz-fc-wish-btn.is-wishlisted .amz-heart-icon {
+  stroke: #cc0c39;
+  fill: #cc0c39;
+}
+
+/* Placeholder fallback */
+.amz-placeholder-svg {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 12px;
+}
+
+/* Mobile: always show wishlist */
+@media (max-width: 768px) {
+  .amz-fc-wish-btn { opacity: 1; }
+}
 </style>
 
 {% schema %}
