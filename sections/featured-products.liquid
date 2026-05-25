@@ -27,7 +27,7 @@
                   class="amz-fc__grid-img"
                   width="600" height="600">
               {%- else -%}
-                {{ 'product-' | append: forloop.index | placeholder_svg_tag: 'amz-fc__grid-img amz-placeholder-svg' }}
+                {{ 'product-' | append: forloop.index | modulo: 3 | plus: 1 | placeholder_svg_tag: 'amz-fc__grid-img amz-placeholder-svg' }}
               {%- endif -%}
 
               <!-- Wishlist -->
@@ -72,7 +72,7 @@
         {%- for i in (1..limit_count) -%}
           <div class="amz-fc__grid-item">
             <div class="amz-fc__img-wrap">
-              {{ 'product-' | append: i | placeholder_svg_tag: 'amz-fc__grid-img amz-placeholder-svg' }}
+              {{ 'product-' | append: i | modulo: 3 | plus: 1 | placeholder_svg_tag: 'amz-fc__grid-img amz-placeholder-svg' }}
             </div>
             <p class="amz-fc__product-title" style="color:#565959;">Sample Product {{ i }}</p>
             <div class="amz-fc__stars">

@@ -50,7 +50,7 @@
                         loading="lazy"
                         width="600" height="600">
                     {%- else -%}
-                      {{ 'product-' | append: forloop.index | modulo: 6 | plus: 1 | placeholder_svg_tag: 'amz-prod-card__img amz-placeholder-svg' }}
+                      {{ 'product-' | append: forloop.index | modulo: 3 | plus: 1 | placeholder_svg_tag: 'amz-prod-card__img amz-placeholder-svg' }}
                     {%- endif -%}
 
                   </div>

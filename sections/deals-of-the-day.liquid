@@ -47,7 +47,7 @@
                       width="600" height="600"
                     >
                   {%- else -%}
-                    {{ 'product-' | append: forloop.index | modulo: 6 | plus: 1 | placeholder_svg_tag: 'amz-deals__img-placeholder' }}
+                    {{ 'product-' | append: forloop.index | modulo: 3 | plus: 1 | placeholder_svg_tag: 'amz-deals__img-placeholder' }}
                   {%- endif -%}
 
                   <!-- Wishlist -->
@@ -92,7 +92,7 @@
                 <div class="amz-deals__card">
                   <div class="amz-deals__card-img-wrap">
                     <span class="amz-deals__badge">-{{ deal_discounts[di] }}%</span>
-                    {{ 'product-' | append: forloop.index | placeholder_svg_tag: 'amz-deals__img-placeholder' }}
+                    {{ 'product-' | append: forloop.index | modulo: 3 | plus: 1 | placeholder_svg_tag: 'amz-deals__img-placeholder' }}
                   </div>
                   <div class="amz-deals__progress-bar"><div class="amz-deals__progress-fill" style="width: {{ deal_discounts[di] | plus: 20 }}%;"></div></div>
                   <p class="amz-deals__claimed">{{ deal_discounts[di] | plus: 15 }}% claimed</p>

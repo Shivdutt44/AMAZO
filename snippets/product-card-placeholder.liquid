@@ -10,7 +10,7 @@
 {%- assign placeholder_ratings = "4.5,4.3,4.7,4.2,4.8,4.4,4.6,4.1" | split: "," -%}
 {%- assign placeholder_reviews = "1,247,3,891,892,2,156,5,643,734,2,891,1,428" | split: "," -%}
 {%- assign placeholder_discounts = "44,33,33,40,38,33,25,40" | split: "," -%}
-{%- assign placeholder_svgs = "product-1,product-2,product-3,product-4,product-5,product-6,product-1,product-2" | split: "," -%}
+{%- assign placeholder_svgs = "product-1,product-2,product-3,product-1,product-2,product-3,product-1,product-2" | split: "," -%}
 
 {%- assign idx = index | default: 1 | minus: 1 | modulo: 8 -%}
 {%- assign title = placeholder_titles[idx] -%}
