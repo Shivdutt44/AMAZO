@@ -18,6 +18,24 @@
         "show_dots": false
       }
     },
+    "17835355652ec7a9f1": {
+      "type": "apps",
+      "blocks": {
+        "ecom_reviews_expert_carousel_UHWakE": {
+          "type": "shopify://apps/ecom-reviews-expert/blocks/carousel/68936b0d-e80f-4e68-bd5d-8ca0f3afbc5c",
+          "settings": {}
+        },
+        "ecom_reviews_expert_rating_badge_cPxT9U": {
+          "type": "shopify://apps/ecom-reviews-expert/blocks/rating_badge/68936b0d-e80f-4e68-bd5d-8ca0f3afbc5c",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "ecom_reviews_expert_carousel_UHWakE",
+        "ecom_reviews_expert_rating_badge_cPxT9U"
+      ],
+      "settings": {}
+    },
     "17835086198c8f1160": {
       "type": "apps",
       "blocks": {
@@ -267,6 +285,7 @@
   },
   "order": [
     "announcement-bar",
+    "17835355652ec7a9f1",
     "17835086198c8f1160",
     "hero-banner",
     "1779710370ee0e97cf",
