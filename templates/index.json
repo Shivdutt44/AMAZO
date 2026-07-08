@@ -18,6 +18,24 @@
         "show_dots": false
       }
     },
+    "17835086198c8f1160": {
+      "type": "apps",
+      "blocks": {
+        "ai_instafeed_story_layout_hEJJJY": {
+          "type": "shopify://apps/ai-instafeed/blocks/story-layout/019d9e97-150a-7897-8fc5-04537079e185",
+          "settings": {}
+        },
+        "ai_instafeed_feed_grid_R6zxAC": {
+          "type": "shopify://apps/ai-instafeed/blocks/feed-grid/019d9e97-150a-7897-8fc5-04537079e185",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "ai_instafeed_story_layout_hEJJJY",
+        "ai_instafeed_feed_grid_R6zxAC"
+      ],
+      "settings": {}
+    },
     "hero-banner": {
       "type": "hero-banner",
       "blocks": {
@@ -82,14 +100,8 @@
       "type": "apps",
       "blocks": {
         "ecom_review_expert_carousel_FfwPAR": {
-          "type": "shopify://apps/ecom-review-expert/blocks/carousel/68936b0d-e80f-4e68-bd5d-8ca0f3afbc5c",
-          "settings": {
-            "title": "What Our Customers Say",
-            "card_bg": "#ffffff",
-            "text_color": "#1a1a1a",
-            "star_size": 16,
-            "autoplay_speed": 4000
-          }
+          "type": "shopify://apps/ecom-reviews-expert/blocks/carousel/68936b0d-e80f-4e68-bd5d-8ca0f3afbc5c",
+          "settings": {}
         }
       },
       "block_order": [
@@ -255,6 +267,7 @@
   },
   "order": [
     "announcement-bar",
+    "17835086198c8f1160",
     "hero-banner",
     "1779710370ee0e97cf",
     "featured-products",
