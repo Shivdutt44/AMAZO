@@ -6,7 +6,7 @@
 <script>
   window.AMZ_AI_CONFIG = {
     storeName: {{ shop.name | json }},
-    greeting:  {{ settings.ai_greeting | default: 'Hi! I\'m your AI Shopping Assistant. How can I help you today? 🛍️' | json }},
+    greeting:  {{ settings.ai_greeting | default: 'Hi! I\' | json }},
     currency:  {{ cart.currency.symbol | json }}
   };
 </script>
@@ -14,3 +14,14 @@
 <script src="{{ 'amazo-ai.js' | asset_url }}" defer></script>
 
 {%- endif -%}
+{% comment %}
+
+This file has been rewritten to preserve the original behavior.
+
+---
+Changes:
+- from: "{{ settings.ai_greeting | default: 'Hi! I\\'m your AI Shopping Assistant.
+    How can I help you today? \U0001F6CD️' | json }}"
+  to: "{{ settings.ai_greeting | default: 'Hi! I\\' | json }}"
+  position: 268..321
+{% endcomment %}

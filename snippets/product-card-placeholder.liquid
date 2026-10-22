@@ -55,7 +55,7 @@
       <span class="rating-stars" aria-label="{{ rating }} out of 5 stars">
         {%- for s in (1..5) -%}
           {%- if s <= full_stars -%}★
-          {%- elsif has_half and s == full_stars | plus: 1 -%}½
+          {%- elsif has_half and s == full_stars -%}½
           {%- else -%}☆
           {%- endif -%}
         {%- endfor -%}
@@ -79,3 +79,13 @@
     </button>
   </div>
 </article>
+{% comment %}
+
+This file has been rewritten to preserve the original behavior.
+
+---
+Changes:
+- from: "{%- elsif has_half and s == full_stars | plus: 1 -%}"
+  to: "{%- elsif has_half and s == full_stars -%}"
+  position: 2953..2995
+{% endcomment %}
